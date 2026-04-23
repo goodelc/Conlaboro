@@ -1,0 +1,4987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>共创公社 — Where Ideas Find Their Team</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --red: #D4213D;
+    --red-dark: #A11A30;
+    --gold: #D4A843;
+    --gold-light: #F0D68A;
+    --cream: #F5F0E8;
+    --ink: #1A1A1A;
+    --ink-light: #3D3D3D;
+    --paper: #FAF7F0;
+    --warm-gray: #8B8578;
+    --border: #D4CFC5;
+    --success: #228B22;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === PAGE SYSTEM === */
+  .page { display: none; }
+  .page.active { display: block; animation: pageIn 0.5s ease-out; }
+
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250, 247, 240, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-left { display: flex; align-items: center; gap: 2.5rem; }
+
+  .nav-logo {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .nav-logo .star {
+    display: inline-block;
+    width: 20px; height: 20px;
+    background: var(--red);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a, .nav-links span {
+    text-decoration: none;
+    color: var(--ink-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a:hover, .nav-links span:hover { color: var(--red); }
+
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+  .nav-icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+  }
+
+  .nav-icon-btn:hover { border-color: var(--red); }
+
+  .nav-icon-btn .badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    width: 16px; height: 16px;
+    background: var(--red);
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+  }
+
+  .nav-avatar:hover { border-color: var(--gold); }
+
+  .nav-cta {
+    padding: 0.45rem 1.2rem;
+    background: var(--red);
+    color: white;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .nav-cta:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 33, 61, 0.3);
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(212, 33, 61, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(212, 168, 67, 0.06) 0%, transparent 50%);
+    animation: heroGlow 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroGlow {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-5%, 3%) rotate(3deg); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInDown 0.8s ease-out;
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .hero h1 .highlight {
+    color: var(--red);
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0.05em;
+    left: -0.05em; right: -0.05em;
+    height: 0.15em;
+    background: var(--gold);
+    opacity: 0.6;
+    transform: skewX(-5deg);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--ink-light);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out 0.2s both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out 0.4s both;
+  }
+
+  .btn-primary {
+    padding: 1rem 2.5rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212, 33, 61, 0.25); }
+
+  .btn-secondary {
+    padding: 1rem 2.5rem;
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--border);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 4rem;
+    margin-top: 5rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out 0.6s both;
+  }
+
+  .hero-stat { text-align: center; }
+
+  .hero-stat .num {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--red);
+    line-height: 1;
+  }
+
+  .hero-stat .label {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  /* === MANIFESTO === */
+  .manifesto { padding: 8rem 2rem; }
+
+  .manifesto-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .manifesto-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 700;
+    margin-bottom: 3rem;
+  }
+
+  .manifesto-quote {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 2rem;
+  }
+
+  .manifesto-quote .em { color: var(--red); }
+
+  .manifesto-divider {
+    width: 60px; height: 2px;
+    background: var(--gold);
+    margin: 3rem auto;
+  }
+
+  .manifesto-text {
+    font-size: 1.05rem;
+    line-height: 2;
+    color: var(--ink-light);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* === HOW IT WORKS === */
+  .how {
+    padding: 6rem 2rem 8rem;
+    background: var(--ink);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .how::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, transparent, transparent 100px, rgba(255,255,255,0.02) 100px, rgba(255,255,255,0.02) 101px);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header .label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .section-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .how-step {
+    padding: 2.5rem 2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    transition: all 0.4s ease;
+  }
+
+  .how-step:hover {
+    border-color: var(--red);
+    background: rgba(212, 33, 61, 0.05);
+    transform: translateY(-4px);
+  }
+
+  .how-step .step-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.06);
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    line-height: 1;
+  }
+
+  .how-step .step-icon {
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .how-step h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .how-step p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+  }
+
+  /* === PROJECTS GRID === */
+  .projects { padding: 8rem 2rem; }
+
+  .projects-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .filter-tab {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink-light);
+  }
+
+  .filter-tab.active, .filter-tab:hover {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  /* === SEARCH === */
+  .search-bar {
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+
+  .search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1.2rem;
+    font-size: 1rem;
+    color: var(--warm-gray);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .search-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.08);
+  }
+
+  .search-input::placeholder { color: var(--warm-gray); }
+
+  .search-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .search-filter-chip {
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink-light);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .search-filter-chip.active, .search-filter-chip:hover {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+  }
+
+  .search-results-info {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    margin-top: 0.8rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--warm-gray);
+  }
+
+  .no-results .nr-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .no-results h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1.2rem; color: var(--ink); margin-bottom: 0.5rem; }
+
+  /* === LEADERBOARD === */
+  .leaderboard-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .lb-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .lb-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .lb-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .lb-header p { color: var(--warm-gray); font-size: 0.9rem; }
+
+  .lb-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .lb-tab {
+    padding: 0.6rem 1.5rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink-light);
+  }
+
+  .lb-tab.active, .lb-tab:hover {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .lb-podium {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .lb-podium-item {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--border);
+    background: white;
+    transition: all 0.4s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .lb-podium-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .lb-podium-item.first {
+    grid-column: 2;
+    grid-row: 1;
+    order: -1;
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(212,168,67,0.06), white);
+    padding: 2.5rem 1.5rem;
+  }
+
+  .lb-podium-item .podium-rank {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .lb-podium-item .podium-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: 'Noto Serif SC', serif;
+    margin: 0 auto 0.8rem;
+  }
+
+  .lb-podium-item.first .podium-avatar {
+    width: 80px; height: 80px;
+    font-size: 1.8rem;
+    border: 3px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(212,168,67,0.3);
+  }
+
+  .lb-podium-item .podium-name {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .lb-podium-item .podium-role {
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .lb-podium-item .podium-value {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--red);
+  }
+
+  .lb-podium-item .podium-label {
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.1em;
+  }
+
+  .lb-list {
+    border: 1px solid var(--border);
+    background: white;
+    overflow: hidden;
+  }
+
+  .lb-list-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .lb-list-item:hover { background: var(--cream); }
+  .lb-list-item:last-child { border-bottom: none; }
+
+  .lb-list-item .lb-rank {
+    width: 28px;
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .lb-list-item .lb-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .lb-list-item .lb-info { flex: 1; }
+  .lb-list-item .lb-info h4 { font-size: 0.85rem; font-weight: 700; }
+  .lb-list-item .lb-info p { font-size: 0.7rem; color: var(--warm-gray); }
+  .lb-list-item .lb-value { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1rem; color: var(--red); }
+
+  /* === SETTINGS === */
+  .settings-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .settings-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .settings-header {
+    margin-bottom: 3rem;
+  }
+
+  .settings-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .settings-header p { color: var(--warm-gray); font-size: 0.9rem; }
+
+  .settings-section {
+    border: 1px solid var(--border);
+    background: white;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .settings-section-title {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-row .sr-label h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .settings-row .sr-label p { font-size: 0.7rem; color: var(--warm-gray); }
+
+  .settings-row .sr-value {
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .settings-row .sr-value .edit-btn {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.7rem;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.3s;
+    color: var(--ink-light);
+  }
+
+  .settings-row .sr-value .edit-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .toggle-switch {
+    width: 44px; height: 24px;
+    background: var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .toggle-switch.active { background: var(--red); }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle-switch.active::after { left: 22px; }
+
+  .role-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .role-tag {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .role-tag.active {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+  }
+
+  .role-tag:hover:not(.active) { border-color: var(--red); color: var(--red); }
+
+  @media (max-width: 768px) {
+    .lb-podium { grid-template-columns: 1fr; }
+    .lb-podium-item.first { grid-column: 1; }
+    .settings-row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .project-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    background: white;
+  }
+
+  .project-card:hover {
+    border-color: var(--red);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .project-card .card-tag {
+    display: inline-block;
+    padding: 0.25rem 0.8rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
+  .tag-open { background: rgba(212, 33, 61, 0.1); color: var(--red); }
+  .tag-progress { background: rgba(212, 168, 67, 0.15); color: #8B6914; }
+  .tag-done { background: rgba(34, 139, 34, 0.1); color: #228B22; }
+
+  .project-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .project-card .desc {
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .project-card .roles {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .role-badge {
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--border);
+    font-size: 0.68rem;
+    color: var(--ink-light);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .role-badge.filled { background: var(--cream); border-color: var(--cream); }
+  .role-badge.open { border-color: var(--red); color: var(--red); background: rgba(212, 33, 61, 0.03); }
+
+  .role-badge .role-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+
+  .role-dot.green { background: #228B22; }
+  .role-dot.red { background: var(--red); }
+
+  .project-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-footer .members { display: flex; align-items: center; }
+
+  .member-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .member-avatar:first-child { margin-left: 0; }
+
+  .card-footer .join-btn {
+    font-size: 0.75rem;
+    color: var(--red);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .card-footer .join-btn:hover { text-decoration: underline; }
+
+  /* === ROLES SECTION === */
+  .roles-section { padding: 8rem 2rem; background: var(--cream); }
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .role-card {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .role-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    border-color: var(--gold);
+  }
+
+  .role-card .role-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .role-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .role-card .role-count { font-size: 0.75rem; color: var(--warm-gray); }
+  .role-card .role-count span { color: var(--red); font-weight: 700; }
+
+  /* === PRINCIPLES === */
+  .principles { padding: 8rem 2rem; }
+
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .principle {
+    padding: 3rem 2.5rem;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: all 0.4s;
+  }
+
+  .principle:hover { background: var(--cream); }
+
+  .principle .p-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(212, 33, 61, 0.08);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .principle h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .principle p {
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    line-height: 1.8;
+  }
+
+  /* === CTA === */
+  .cta {
+    padding: 10rem 2rem;
+    text-align: center;
+    background: var(--red);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta::before {
+    content: '共创 共享 共建';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(6rem, 15vw, 14rem);
+    font-weight: 900;
+    color: rgba(255,255,255,0.05);
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  .cta h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta .btn-white {
+    padding: 1rem 3rem;
+    background: white;
+    color: var(--red);
+    border: none;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta .btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  /* === FOOTER === */
+  footer {
+    padding: 3rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.05em;
+  }
+
+  footer a { color: var(--red); text-decoration: none; }
+
+  /* === PROJECT DETAIL PAGE === */
+  .detail-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .detail-hero {
+    padding: 3rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  .detail-hero-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .detail-breadcrumb {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .detail-breadcrumb span { cursor: pointer; transition: color 0.3s; }
+  .detail-breadcrumb span:hover { color: var(--red); }
+
+  .detail-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .detail-title-row h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    line-height: 1.3;
+    flex: 1;
+  }
+
+  .detail-actions { display: flex; gap: 0.8rem; flex-shrink: 0; }
+
+  .detail-actions .btn-primary { padding: 0.7rem 1.8rem; font-size: 0.85rem; }
+  .detail-actions .btn-secondary { padding: 0.7rem 1.8rem; font-size: 0.85rem; }
+
+  .detail-meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .detail-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+  }
+
+  .detail-meta-item strong { color: var(--ink); }
+
+  .detail-body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 3rem;
+  }
+
+  .detail-main {}
+
+  .detail-section {
+    margin-bottom: 3rem;
+  }
+
+  .detail-section h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--ink);
+    display: inline-block;
+  }
+
+  .detail-section p {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: var(--ink-light);
+  }
+
+  /* Milestones */
+  .milestone-list { display: flex; flex-direction: column; gap: 0; }
+
+  .milestone {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .milestone::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 40px;
+    bottom: -1px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .milestone:last-child::before { display: none; }
+
+  .milestone-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .milestone-icon.done { background: var(--success); color: white; }
+  .milestone-icon.current { background: var(--gold); color: white; }
+  .milestone-icon.pending { background: var(--cream); color: var(--warm-gray); border: 1px solid var(--border); }
+
+  .milestone-content h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .milestone-content .ms-date {
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .milestone-content .ms-tasks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .ms-task {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--ink-light);
+  }
+
+  .ms-task.done { background: rgba(34,139,34,0.08); border-color: rgba(34,139,34,0.2); color: var(--success); text-decoration: line-through; }
+
+  /* Team */
+  .team-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .team-member {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .team-member:hover { border-color: var(--gold); }
+
+  .team-member .tm-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .team-member .tm-info h4 { font-size: 0.85rem; font-weight: 700; }
+  .team-member .tm-info p { font-size: 0.7rem; color: var(--warm-gray); }
+  .team-member .tm-status {
+    margin-left: auto;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    font-weight: 700;
+  }
+
+  .tm-status.active { background: rgba(34,139,34,0.1); color: var(--success); }
+  .tm-status.open-slot {
+    background: rgba(212,33,61,0.08);
+    color: var(--red);
+    border: 1px dashed var(--red);
+    cursor: pointer;
+  }
+
+  /* Sidebar */
+  .detail-sidebar {}
+
+  .sidebar-card {
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: white;
+  }
+
+  .sidebar-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-card .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.8rem;
+  }
+
+  .sidebar-card .info-row .label { color: var(--warm-gray); }
+  .sidebar-card .info-row .value { font-weight: 700; }
+
+  .role-slots { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .role-slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    transition: all 0.3s;
+  }
+
+  .role-slot.filled { background: var(--cream); }
+  .role-slot.open { border-color: var(--red); cursor: pointer; }
+  .role-slot.open:hover { background: rgba(212,33,61,0.05); }
+
+  .role-slot .slot-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .role-slot .slot-btn {
+    padding: 0.3rem 0.8rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.3s;
+  }
+
+  .role-slot .slot-btn:hover { background: var(--red-dark); }
+
+  .role-slot .slot-btn.applied {
+    background: var(--success);
+    pointer-events: none;
+  }
+
+  /* === CREATE PROJECT PAGE === */
+  .create-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .create-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .create-header {
+    margin-bottom: 3rem;
+  }
+
+  .create-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .create-header p {
+    color: var(--warm-gray);
+    font-size: 0.9rem;
+  }
+
+  .form-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .form-section h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-section h2 .step-badge {
+    width: 24px; height: 24px;
+    background: var(--red);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink-light);
+  }
+
+  .form-group label .required {
+    color: var(--red);
+    margin-left: 0.2rem;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.1);
+  }
+
+  .form-input::placeholder { color: var(--warm-gray); }
+
+  textarea.form-input {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .role-setup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .role-setup-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .role-setup-item .rs-emoji { font-size: 1.5rem; }
+  .role-setup-item .rs-name { flex: 1; font-size: 0.85rem; font-weight: 700; }
+
+  .role-setup-item .rs-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .rs-count button {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .rs-count button:hover { border-color: var(--red); color: var(--red); }
+  .rs-count span { font-size: 0.9rem; font-weight: 700; min-width: 20px; text-align: center; }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* === DASHBOARD PAGE === */
+  .dashboard-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .dashboard-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+
+  .dash-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+  }
+
+  .dash-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    background: white;
+    margin-bottom: 2rem;
+  }
+
+  .dash-profile .dp-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: 'Noto Serif SC', serif;
+    flex-shrink: 0;
+  }
+
+  .dash-profile .dp-info { flex: 1; }
+  .dash-profile .dp-info h2 { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .dash-profile .dp-info p { font-size: 0.8rem; color: var(--warm-gray); }
+
+  .dash-profile .dp-stats {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .dp-stat { text-align: center; }
+  .dp-stat .num { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.5rem; color: var(--red); }
+  .dp-stat .label { font-size: 0.65rem; color: var(--warm-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .dash-section {
+    border: 1px solid var(--border);
+    background: white;
+    overflow: hidden;
+  }
+
+  .dash-section-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dash-section-header h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .dash-section-header .count {
+    font-size: 0.7rem;
+    background: var(--cream);
+    padding: 0.2rem 0.6rem;
+    font-weight: 700;
+    color: var(--warm-gray);
+  }
+
+  .dash-list { list-style: none; }
+
+  .dash-list-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .dash-list-item:hover { background: var(--cream); }
+  .dash-list-item:last-child { border-bottom: none; }
+
+  .dash-list-item .dli-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .dash-list-item .dli-info { flex: 1; }
+  .dash-list-item .dli-info h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .dash-list-item .dli-info p { font-size: 0.7rem; color: var(--warm-gray); }
+
+  .dash-list-item .dli-status {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .dash-list-item .dli-action {
+    font-size: 0.7rem;
+    color: var(--red);
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .dash-list-item .dli-action:hover { text-decoration: underline; }
+
+  /* Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .skill-item {
+    text-align: center;
+    padding: 1.2rem 0.8rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .skill-item:hover { border-color: var(--gold); }
+
+  .skill-item .skill-emoji { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .skill-item .skill-name { font-size: 0.75rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .skill-item .skill-level {
+    font-size: 0.6rem;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .skill-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--cream);
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    background: var(--red);
+    transition: width 1s ease;
+  }
+
+  /* === HONOR SYSTEM === */
+  .honor-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--border);
+    background: white;
+    margin-bottom: 2rem;
+  }
+
+  .honor-level {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid var(--gold);
+    background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(212,33,61,0.05));
+    position: relative;
+  }
+
+  .honor-level .hl-icon {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 900;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .honor-level .hl-text h4 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .honor-level .hl-text p {
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.05em;
+  }
+
+  .honor-stats {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .honor-stat {
+    text-align: center;
+    position: relative;
+  }
+
+  .honor-stat .hs-num {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--red);
+    line-height: 1;
+  }
+
+  .honor-stat .hs-label {
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.08em;
+    margin-top: 0.2rem;
+  }
+
+  .honor-stat .hs-plus {
+    font-size: 0.6rem;
+    color: var(--success);
+    font-weight: 700;
+  }
+
+  .xp-bar-wrap {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .xp-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.3rem;
+  }
+
+  .xp-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 3px;
+    transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Badge Wall */
+  .badge-wall {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1.5rem;
+  }
+
+  .badge-item {
+    width: 72px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .badge-item:hover { transform: translateY(-4px); }
+
+  .badge-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 0.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .badge-item.earned .badge-icon {
+    background: linear-gradient(135deg, var(--cream), white);
+    border: 2px solid var(--gold);
+    box-shadow: 0 2px 8px rgba(212,168,67,0.2);
+  }
+
+  .badge-item.locked .badge-icon {
+    background: var(--cream);
+    border: 2px dashed var(--border);
+    filter: grayscale(1);
+    opacity: 0.4;
+  }
+
+  .badge-item.locked .badge-icon::after {
+    content: '🔒';
+    position: absolute;
+    bottom: -2px; right: -2px;
+    font-size: 0.6rem;
+  }
+
+  .badge-item .badge-name {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--ink-light);
+    line-height: 1.2;
+  }
+
+  .badge-item.locked .badge-name {
+    color: var(--warm-gray);
+  }
+
+  /* Timeline */
+  .timeline {
+    padding: 1.5rem;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-dot.xp { background: rgba(212,33,61,0.1); }
+  .timeline-dot.badge { background: rgba(212,168,67,0.15); }
+  .timeline-dot.project { background: rgba(34,139,34,0.1); }
+
+  .timeline-content h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .timeline-content p { font-size: 0.7rem; color: var(--warm-gray); }
+
+  .timeline-content .xp-gain {
+    display: inline-block;
+    font-size: 0.65rem;
+    color: var(--red);
+    font-weight: 700;
+    margin-left: 0.3rem;
+  }
+
+  /* Badge Detail Modal */
+  .badge-detail-modal .modal {
+    max-width: 420px;
+    text-align: center;
+  }
+
+  .badge-detail-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--gold);
+    background: linear-gradient(135deg, var(--cream), white);
+    box-shadow: 0 4px 20px rgba(212,168,67,0.2);
+  }
+
+  .badge-detail-modal .badge-detail-name {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .badge-detail-modal .badge-detail-series {
+    font-size: 0.7rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .badge-detail-modal .badge-detail-desc {
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .badge-detail-modal .badge-detail-condition {
+    padding: 0.8rem 1rem;
+    background: var(--cream);
+    font-size: 0.8rem;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+  }
+
+  .badge-detail-modal .badge-detail-condition strong {
+    color: var(--red);
+  }
+
+  .badge-detail-modal .badge-earned-date {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+  }
+
+  /* Achievement Unlock Animation */
+  @keyframes badgeUnlock {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .badge-unlock-anim {
+    animation: badgeUnlock 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes confetti {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+  }
+
+  .confetti-particle {
+    position: fixed;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 400;
+    animation: confetti 1s ease-out forwards;
+  }
+
+  /* === CONTRIBUTOR RANKING (completed projects) === */
+  .contrib-ranking {
+    margin-bottom: 3rem;
+  }
+
+  .contrib-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .contrib-summary-item {
+    text-align: center;
+    padding: 1.2rem;
+    background: var(--cream);
+    border: 1px solid var(--border);
+  }
+
+  .contrib-summary-item .csi-num {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: var(--red);
+  }
+
+  .contrib-summary-item .csi-label {
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+    margin-top: 0.2rem;
+  }
+
+  .contrib-list { display: flex; flex-direction: column; gap: 0; }
+
+  .contrib-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contrib-item:last-child { border-bottom: none; }
+
+  .contrib-rank {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .contrib-rank.gold { background: var(--gold); color: white; }
+  .contrib-rank.silver { background: #C0C0C0; color: white; }
+  .contrib-rank.bronze { background: #CD7F32; color: white; }
+  .contrib-rank.normal { background: var(--cream); color: var(--warm-gray); }
+
+  .contrib-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+  }
+
+  .contrib-avatar:hover { border-color: var(--gold); transform: scale(1.1); }
+
+  .contrib-info { flex: 1; }
+
+  .contrib-info .ci-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .contrib-info .ci-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .contrib-info .ci-name:hover { color: var(--red); }
+
+  .contrib-info .ci-role {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--cream);
+    color: var(--warm-gray);
+  }
+
+  .contrib-info .ci-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+  }
+
+  .contrib-info .ci-stats span { display: flex; align-items: center; gap: 0.2rem; }
+
+  .contrib-bar-wrap { width: 200px; flex-shrink: 0; }
+
+  .contrib-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .contrib-bar-label .cb-value { font-weight: 700; color: var(--red); }
+
+  .contrib-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .contrib-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .contrib-bar-fill.gold { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+  .contrib-bar-fill.silver { background: linear-gradient(90deg, #C0C0C0, #E0E0E0); }
+  .contrib-bar-fill.bronze { background: linear-gradient(90deg, #CD7F32, #E8A862); }
+  .contrib-bar-fill.normal { background: var(--border); }
+
+  /* Deliverables */
+  .deliverables {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .deliverable-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .deliverable-item:hover { border-color: var(--red); background: white; }
+
+  .deliverable-item .dl-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .deliverable-item .dl-info h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .deliverable-item .dl-info p { font-size: 0.65rem; color: var(--warm-gray); }
+  .deliverable-item .dl-arrow { margin-left: auto; color: var(--warm-gray); font-size: 0.8rem; }
+
+  /* Activity Feed */
+  .activity-feed { display: flex; flex-direction: column; }
+
+  .activity-item {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--ink-light);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-item .act-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .activity-item strong { color: var(--ink); cursor: pointer; }
+  .activity-item strong:hover { color: var(--red); }
+  .activity-item .act-time { color: var(--warm-gray); font-size: 0.7rem; margin-left: 0.3rem; }
+
+  /* === USER PROFILE PAGE === */
+  .profile-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .profile-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    background: white;
+    margin-bottom: 2rem;
+  }
+
+  .profile-hero .ph-avatar {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: 900;
+    font-family: 'Noto Serif SC', serif;
+    flex-shrink: 0;
+  }
+
+  .profile-hero .ph-info { flex: 1; }
+
+  .profile-hero .ph-info h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .profile-hero .ph-info .ph-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.8rem;
+  }
+
+  .profile-hero .ph-info .ph-bio {
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    line-height: 1.6;
+  }
+
+  .profile-hero .ph-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .ph-stat { text-align: center; }
+  .ph-stat .num { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.3rem; color: var(--red); }
+  .ph-stat .label { font-size: 0.6rem; color: var(--warm-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .profile-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+  }
+
+  .profile-section {
+    border: 1px solid var(--border);
+    background: white;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .profile-section-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .profile-section-header h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .profile-sidebar-section {
+    border: 1px solid var(--border);
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-sidebar-section h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .profile-badge-wall {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .profile-badge-item {
+    width: 48px;
+    text-align: center;
+  }
+
+  .profile-badge-item .pbi-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin: 0 auto 0.2rem;
+  }
+
+  .profile-badge-item.earned .pbi-icon {
+    background: linear-gradient(135deg, var(--cream), white);
+    border: 2px solid var(--gold);
+  }
+
+  .profile-badge-item.locked .pbi-icon {
+    background: var(--cream);
+    border: 1px dashed var(--border);
+    filter: grayscale(1);
+    opacity: 0.3;
+  }
+
+  .profile-badge-item .pbi-name {
+    font-size: 0.5rem;
+    color: var(--warm-gray);
+    line-height: 1.1;
+  }
+
+  .profile-skill-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .profile-skill-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .profile-skill-row .psr-label { width: 70px; flex-shrink: 0; font-weight: 700; }
+
+  .profile-skill-row .psr-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--cream);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .profile-skill-row .psr-bar-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+  }
+
+  .profile-skill-row .psr-val { font-size: 0.7rem; color: var(--warm-gray); width: 30px; text-align: right; }
+
+  @media (max-width: 1024px) {
+    .contrib-summary { grid-template-columns: repeat(2, 1fr); }
+    .profile-body { grid-template-columns: 1fr; }
+    .contrib-bar-wrap { width: 120px; }
+  }
+
+  @media (max-width: 768px) {
+    .contrib-summary { grid-template-columns: 1fr 1fr; }
+    .contrib-item { flex-wrap: wrap; }
+    .contrib-bar-wrap { width: 100%; order: 10; }
+    .deliverables { grid-template-columns: 1fr; }
+    .profile-hero { flex-direction: column; text-align: center; }
+    .profile-hero .ph-info .ph-meta { justify-content: center; }
+    .profile-hero .ph-stats { justify-content: center; }
+  }
+
+  /* === NOTIFICATIONS PANEL === */
+  .notif-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 200;
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .notif-overlay.active { display: block; }
+
+  .notif-panel {
+    position: fixed;
+    top: 0; right: -400px;
+    width: 400px;
+    height: 100%;
+    background: white;
+    z-index: 201;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+  }
+
+  .notif-panel.active { right: 0; }
+
+  .notif-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .notif-header h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .notif-close {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+
+  .notif-close:hover { border-color: var(--red); color: var(--red); }
+
+  .notif-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .notif-item {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .notif-item:hover { background: var(--cream); }
+  .notif-item.unread { border-left: 3px solid var(--red); }
+
+  .notif-item .ni-type {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 0.3rem;
+  }
+
+  .notif-item .ni-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--ink-light);
+  }
+
+  .notif-item .ni-time {
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+    margin-top: 0.3rem;
+  }
+
+  /* === TOAST === */
+  .toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toast {
+    padding: 1rem 1.5rem;
+    background: var(--ink);
+    color: white;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: toastIn 0.4s ease, toastOut 0.4s ease 2.6s forwards;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .toast.success { border-left: 4px solid var(--success); }
+  .toast.info { border-left: 4px solid var(--gold); }
+
+  @keyframes toastIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(20px); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* === MODAL === */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 250;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: white;
+    max-width: 500px;
+    width: 90%;
+    padding: 2.5rem;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .modal h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal p {
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal .form-group { margin-bottom: 1.2rem; }
+
+  .modal-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+
+  .modal-actions .btn-primary { padding: 0.6rem 1.5rem; font-size: 0.85rem; }
+  .modal-actions .btn-secondary { padding: 0.6rem 1.5rem; font-size: 0.85rem; }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 1024px) {
+    .how-grid { grid-template-columns: repeat(2, 1fr); }
+    .projects-grid { grid-template-columns: repeat(2, 1fr); }
+    .roles-grid { grid-template-columns: repeat(3, 1fr); }
+    .principles-grid { grid-template-columns: repeat(2, 1fr); }
+    .detail-body { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 2rem; }
+    .how-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .roles-grid { grid-template-columns: repeat(2, 1fr); }
+    .principles-grid { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; align-items: center; }
+    .detail-title-row { flex-direction: column; }
+    .detail-actions { width: 100%; }
+    .detail-actions button { flex: 1; }
+    .form-row { grid-template-columns: 1fr; }
+    .dash-profile { flex-direction: column; text-align: center; }
+    .dash-profile .dp-stats { justify-content: center; }
+    .team-list { grid-template-columns: 1fr; }
+    .notif-panel { width: 100%; right: -100%; }
+  }
+
+  /* === TASK BOARD === */
+  .task-board { margin-top: 1rem; }
+
+  .task-board-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .task-column {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    min-height: 200px;
+  }
+
+  .task-column-header {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .task-column-header .tch-count {
+    background: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+  }
+
+  .task-column.open-col .task-column-header { color: var(--red); }
+  .task-column.progress-col .task-column-header { color: #8B6914; }
+  .task-column.done-col .task-column-header { color: var(--success); }
+
+  .task-column-body { padding: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .task-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .task-card:hover { border-color: var(--red); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+  .task-card .tc-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; }
+
+  .task-card .tc-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-card .tc-assignee {
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .task-card .tc-assignee .ta-avatar {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.4rem;
+    font-weight: 700;
+  }
+
+  .task-card .tc-xp {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--red);
+    background: rgba(212,33,61,0.08);
+    padding: 0.15rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  .task-card .tc-claim-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.35rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.3s;
+  }
+
+  .task-card .tc-claim-btn:hover { background: var(--red-dark); }
+
+  .task-card .tc-claim-btn.claimed {
+    background: var(--success);
+    pointer-events: none;
+  }
+
+  .task-card.done-card { opacity: 0.6; }
+  .task-card.done-card .tc-name { text-decoration: line-through; }
+
+  /* === COLLABORATION SPACE === */
+  .collab-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .collab-tab {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.3s;
+    color: var(--warm-gray);
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .collab-tab.active { color: var(--red); border-bottom-color: var(--red); }
+  .collab-tab:hover:not(.active) { color: var(--ink); }
+
+  .collab-panel { display: none; }
+  .collab-panel.active { display: block; }
+
+  /* Comments */
+  .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .comment-item { display: flex; gap: 0.8rem; }
+
+  .comment-item .cm-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .comment-item .cm-body { flex: 1; }
+
+  .comment-item .cm-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .comment-item .cm-name { font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+  .comment-item .cm-name:hover { color: var(--red); }
+  .comment-item .cm-time { font-size: 0.65rem; color: var(--warm-gray); }
+  .comment-item .cm-text { font-size: 0.85rem; line-height: 1.7; color: var(--ink-light); }
+
+  .comment-input-wrap {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .comment-input-wrap .ci-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .comment-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    resize: none;
+    transition: all 0.3s;
+  }
+
+  .comment-input:focus { border-color: var(--red); }
+
+  .comment-submit {
+    padding: 0.7rem 1.2rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.3s;
+    align-self: flex-end;
+  }
+
+  .comment-submit:hover { background: var(--red-dark); }
+
+  /* Files */
+  .file-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .file-item:hover { border-color: var(--red); background: white; }
+
+  .file-item .fi-icon { font-size: 1.2rem; }
+  .file-item .fi-info { flex: 1; }
+  .file-item .fi-info h4 { font-size: 0.8rem; font-weight: 700; }
+  .file-item .fi-info p { font-size: 0.65rem; color: var(--warm-gray); }
+  .file-item .fi-arrow { color: var(--warm-gray); }
+
+  /* === AUTH PAGES === */
+  .auth-page {
+    padding-top: 80px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-card {
+    max-width: 440px;
+    width: 90%;
+    padding: 3rem;
+    border: 1px solid var(--border);
+    background: white;
+    text-align: center;
+  }
+
+  .auth-card .auth-logo {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: var(--red);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .auth-card .auth-subtitle { font-size: 0.8rem; color: var(--warm-gray); margin-bottom: 2rem; }
+
+  .auth-card .auth-form { text-align: left; }
+
+  .auth-card .auth-form .form-group { margin-bottom: 1.2rem; }
+
+  .auth-card .auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+  }
+
+  .auth-card .auth-divider::before,
+  .auth-card .auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .auth-oauth {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .auth-oauth-btn {
+    padding: 0.7rem;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .auth-oauth-btn:hover { border-color: var(--ink); background: var(--cream); }
+
+  .auth-switch {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+  }
+
+  .auth-switch span { color: var(--red); font-weight: 700; cursor: pointer; }
+  .auth-switch span:hover { text-decoration: underline; }
+
+  /* === SHOWCASE === */
+  .showcase-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .showcase-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .showcase-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .showcase-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-header p { color: var(--warm-gray); font-size: 0.9rem; }
+
+  .showcase-featured {
+    padding: 2.5rem;
+    border: 2px solid var(--gold);
+    background: linear-gradient(135deg, rgba(212,168,67,0.04), white);
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .showcase-featured::before {
+    content: '⭐ 精选项目';
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .showcase-featured h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-featured .sf-desc {
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    max-width: 700px;
+  }
+
+  .showcase-featured .sf-meta {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .showcase-featured .sf-meta strong { color: var(--ink); }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .showcase-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.4s;
+  }
+
+  .showcase-card:hover { border-color: var(--red); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+
+  .showcase-card .sc-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: rgba(34,139,34,0.1);
+    color: var(--success);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+  }
+
+  .showcase-card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-card .sc-desc {
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .showcase-card .sc-stats {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--warm-gray);
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .showcase-card .sc-stats strong { color: var(--ink); }
+
+  @media (max-width: 768px) {
+    .task-board-columns { grid-template-columns: 1fr; }
+    .showcase-grid { grid-template-columns: 1fr; }
+    .auth-card { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo" onclick="navigateTo('home')">
+      <span class="star"></span>
+      共创公社
+    </div>
+    <ul class="nav-links">
+      <li><span onclick="navigateTo('home')">首页</span></li>
+      <li><span onclick="navigateTo('home');setTimeout(()=>document.getElementById('projects').scrollIntoView({behavior:'smooth'}),100)">探索项目</span></li>
+      <li><span onclick="navigateTo('leaderboard')">排行榜</span></li>
+      <li><span onclick="navigateTo('dashboard')">我的公社</span></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon-btn" onclick="toggleNotif()" title="通知">
+      🔔
+      <span class="badge" id="notif-badge">3</span>
+    </div>
+    <span class="nav-links" style="gap:1rem;">
+      <span onclick="navigateTo('showcase')" style="font-size:0.75rem;font-weight:500;letter-spacing:0.08em;cursor:pointer;color:var(--ink-light);transition:color 0.3s;">成果展厅</span>
+    </span>
+    <div class="nav-avatar" onclick="navigateTo('dashboard')">你</div>
+    <button class="nav-cta" onclick="navigateTo('create')">+ 发起项目</button>
+  </div>
+</nav>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      开放 · 共享 · 协作
+    </div>
+    <h1>每个人都有<br><span class="highlight">创造力</span></h1>
+    <p class="hero-sub">
+      你有一个想法，这里有和你一样的人。<br>
+      不需要公司，不需要投资，不需要简历。<br>
+      一起把想法变成真实的产品。
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="navigateTo('home');setTimeout(()=>document.getElementById('projects').scrollIntoView({behavior:'smooth'}),100)">浏览项目</button>
+      <button class="btn-secondary" onclick="navigateTo('create')">发起你的想法</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">1,247</div><div class="label">创客</div></div>
+      <div class="hero-stat"><div class="num">386</div><div class="label">项目</div></div>
+      <div class="hero-stat"><div class="num">89</div><div class="label">已完成</div></div>
+    </div>
+  </section>
+
+  <section class="manifesto reveal">
+    <div class="manifesto-inner">
+      <div class="manifesto-label">我们的信念</div>
+      <div class="manifesto-quote">
+        "各尽所能，<span class="em">按需协作</span>。<br>每个人的创造力都值得被看见。"
+      </div>
+      <div class="manifesto-divider"></div>
+      <p class="manifesto-text">
+        我们相信，好的想法不应该因为"没有团队"而死掉。<br>
+        我们相信，有能力的人不应该因为"没有经验"而被拒绝。<br>
+        我们相信，当一群陌生人为了同一个目标聚在一起，奇迹就会发生。
+      </p>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="section-header reveal">
+      <span class="label">How it works</span>
+      <h2>四个步骤，从想法到产品</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">💡</div>
+        <h3>发布想法</h3>
+        <p>写下你想做什么，越具体越好。描述问题、用户、愿景。不需要完美，只需要真实。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤝</div>
+        <h3>组建团队</h3>
+        <p>产品、设计、开发、测试……每个角色都有人来认领。志同道合的人自动匹配。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-icon">🔨</div>
+        <h3>协作共建</h3>
+        <p>按里程碑推进，每个阶段有明确交付物。透明协作，贡献实时可见。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-icon">🚀</div>
+        <h3>共享成果</h3>
+        <p>产品上线，所有参与者获得贡献记录。这就是你的作品集，这就是你的经验。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="section-header reveal">
+      <span class="label">Explore Projects</span>
+      <h2>正在招募队友的项目</h2>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="搜索项目名称、描述、角色…" oninput="handleSearch()">
+      </div>
+      <div class="search-filters">
+        <button class="search-filter-chip active" onclick="filterByCategory('all', this)">全部</button>
+        <button class="search-filter-chip" onclick="filterByCategory('app', this)">📱 移动应用</button>
+        <button class="search-filter-chip" onclick="filterByCategory('web', this)">🌐 Web 应用</button>
+        <button class="search-filter-chip" onclick="filterByCategory('game', this)">🎮 游戏</button>
+        <button class="search-filter-chip" onclick="filterByCategory('ai', this)">🤖 AI</button>
+        <button class="search-filter-chip" onclick="filterByCategory('tool', this)">🔧 工具</button>
+        <span class="search-results-info" id="search-results-info"></span>
+      </div>
+    </div>
+    <div class="projects-grid" id="projects-grid">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="no-results" id="no-results" style="display:none;">
+      <div class="nr-icon">🔍</div>
+      <h3>没有找到匹配的项目</h3>
+      <p>试试其他关键词或筛选条件</p>
+    </div>
+  </section>
+
+  <section class="roles-section" id="roles">
+    <div class="section-header reveal">
+      <span class="label">Find Your Role</span>
+      <h2>找到你的位置</h2>
+    </div>
+    <div class="roles-grid">
+      <div class="role-card reveal"><span class="role-emoji">🎯</span><h3>产品经理</h3><p class="role-count"><span>128</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">🎨</span><h3>设计师</h3><p class="role-count"><span>96</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">💻</span><h3>开发者</h3><p class="role-count"><span>234</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">🧪</span><h3>测试工程师</h3><p class="role-count"><span>67</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">📣</span><h3>运营 / 增长</h3><p class="role-count"><span>89</span> 人在线</p></div>
+    </div>
+  </section>
+
+  <section class="principles" id="principles">
+    <div class="section-header reveal">
+      <span class="label">Our Principles</span>
+      <h2>公社原则</h2>
+    </div>
+    <div class="principles-grid">
+      <div class="principle reveal"><div class="p-num">01</div><h3>贡献即权力</h3><p>不靠头衔说话，靠贡献说话。谁做的事情多，谁就有更大的话语权。代码、文档、设计——一切贡献都被记录。</p></div>
+      <div class="principle reveal"><div class="p-num">02</div><h3>成果共享</h3><p>项目成果属于所有参与者。默认采用开源协议，任何人都可以使用、改进、再创造。知识不应该被垄断。</p></div>
+      <div class="principle reveal"><div class="p-num">03</div><h3>透明协作</h3><p>所有讨论、决策、进度都公开可见。没有暗箱操作，没有办公室政治。每个人都能看到项目的全貌。</p></div>
+      <div class="principle reveal"><div class="p-num">04</div><h3>自愿加入</h3><p>没有人被强迫做任何事。你选择感兴趣的项目，你选择适合自己的角色。随时可以退出，没有负担。</p></div>
+      <div class="principle reveal"><div class="p-num">05</div><h3>失败自由</h3><p>项目失败了？没关系。你获得的协作经验、作品集素材、结识的伙伴——这些永远不会消失。</p></div>
+      <div class="principle reveal"><div class="p-num">06</div><h3>多元包容</h3><p>不论你的背景、经验、年龄、地域。只要你愿意创造，你就是公社的一员。零经验也能参与。</p></div>
+    </div>
+  </section>
+
+  <section class="cta" id="cta">
+    <h2>你的想法，值得被实现</h2>
+    <p>不要让好想法烂在脑子里。发出来，找到你的队友，一起做点什么。</p>
+    <button class="btn-white" onclick="navigateTo('create')">免费加入共创公社</button>
+  </section>
+
+  <footer>
+    <p>共创公社 · Where Ideas Find Their Team · <a href="#">GitHub</a> · <a href="#">Twitter</a> · <a href="#">Discord</a></p>
+  </footer>
+</div>
+
+<!-- ==================== PROJECT DETAIL PAGE ==================== -->
+<div class="page" id="page-detail">
+  <div class="detail-page" id="detail-content">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ==================== USER PROFILE PAGE ==================== -->
+<div class="page" id="page-profile">
+  <div class="profile-page" id="profile-content">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ==================== LEADERBOARD PAGE ==================== -->
+<div class="page" id="page-leaderboard">
+  <div class="leaderboard-page" id="leaderboard-content">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ==================== SHOWCASE PAGE ==================== -->
+<div class="page" id="page-showcase">
+  <div class="showcase-page" id="showcase-content"></div>
+</div>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="star" style="width:18px;height:18px;background:var(--red);clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);display:inline-block;"></span> 共创公社</div>
+      <p class="auth-subtitle">加入公社，和志同道合的人一起创造</p>
+      <div class="auth-oauth">
+        <button class="auth-oauth-btn" onclick="navigateTo('home');showToast('GitHub 登录演示','success')">🐙 使用 GitHub 登录</button>
+        <button class="auth-oauth-btn" onclick="navigateTo('home');showToast('Google 登录演示','success')">📧 使用 Google 登录</button>
+      </div>
+      <div class="auth-divider">或</div>
+      <div class="auth-form">
+        <div class="form-group"><label>邮箱</label><input type="email" class="form-input" placeholder="your@email.com"></div>
+        <div class="form-group"><label>密码</label><input type="password" class="form-input" placeholder="输入密码"></div>
+        <button class="btn-primary" style="width:100%;" onclick="navigateTo('home');showToast('登录成功，欢迎回来！','success')">登录</button>
+      </div>
+      <div class="auth-switch">还没有账号？<span onclick="navigateTo('register')">立即注册</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== REGISTER PAGE ==================== -->
+<div class="page" id="page-register">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="star" style="width:18px;height:18px;background:var(--red);clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);display:inline-block;"></span> 共创公社</div>
+      <p class="auth-subtitle">创建你的创客身份</p>
+      <div class="auth-form">
+        <div class="form-group"><label>昵称 <span style="color:var(--red);">*</span></label><input type="text" class="form-input" placeholder="你的公社昵称"></div>
+        <div class="form-group"><label>邮箱 <span style="color:var(--red);">*</span></label><input type="email" class="form-input" placeholder="your@email.com"></div>
+        <div class="form-group"><label>密码 <span style="color:var(--red);">*</span></label><input type="password" class="form-input" placeholder="至少8位"></div>
+        <div class="form-group">
+          <label>你的角色</label>
+          <div class="role-tags" style="margin-top:0.3rem;">
+            <span class="role-tag" onclick="selectAuthRole(this)">🎯 产品经理</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">🎨 设计师</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">💻 开发者</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">🧪 测试</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">📣 运营</span>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="navigateTo('home');showToast('🎉 注册成功！欢迎加入共创公社','success')">创建账号</button>
+      </div>
+      <div class="auth-switch">已有账号？<span onclick="navigateTo('login')">立即登录</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SETTINGS PAGE ==================== -->
+<div class="page" id="page-settings">
+  <div class="settings-page">
+    <div class="settings-inner">
+      <div class="settings-header">
+        <h1>⚙️ 个人设置</h1>
+        <p>管理你的资料、偏好和通知</p>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">👤 个人资料</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>昵称</h4><p>你在公社的显示名称</p></div>
+          <div class="sr-value"><span>你</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>个人简介</h4><p>让别人了解你</p></div>
+          <div class="sr-value"><span>产品经理 / 设计师</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>技能标签</h4><p>展示你的专业能力</p></div>
+          <div class="sr-value"><span>需求分析、PRD撰写、UI设计</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🎯 角色偏好</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>你想担任的角色</h4><p>项目推荐会优先匹配这些角色</p></div>
+          <div class="sr-value">
+            <div class="role-tags">
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🎯 产品经理</span>
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🎨 设计师</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">💻 开发者</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🧪 测试</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">📣 运营</span>
+            </div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>偏好项目类别</h4><p>你感兴趣的项目类型</p></div>
+          <div class="sr-value">
+            <div class="role-tags">
+              <span class="role-tag active" onclick="this.classList.toggle('active')">📱 App</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🌐 Web</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🎮 游戏</span>
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🤖 AI</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🔧 工具</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔔 通知设置</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>申请状态更新</h4><p>你的项目申请被接受或拒绝时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>项目动态</h4><p>你参与的项目有新动态时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>新成员加入</h4><p>有人加入你发起的项目时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>项目推荐</h4><p>有匹配你技能的新项目时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>成就解锁</h4><p>获得新徽章或等级提升时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔒 隐私设置</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>公开个人主页</h4><p>其他用户可以查看你的资料和贡献</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>显示在线状态</h4><p>其他用户可以看到你是否在线</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>显示贡献值</h4><p>在排行榜和个人主页上展示你的贡献值</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:2rem;">
+        <button class="btn-secondary" onclick="navigateTo('dashboard')">← 返回我的公社</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATE PROJECT PAGE ==================== -->
+<div class="page" id="page-create">
+  <div class="create-page">
+    <div class="create-inner">
+      <div class="create-header">
+        <h1>💡 发起你的想法</h1>
+        <p>把你的创意变成一个真实的项目，找到志同道合的队友一起实现。</p>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">1</span> 项目基本信息</h2>
+        <div class="form-group">
+          <label>项目名称 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="create-name" placeholder="给你的项目起个名字">
+        </div>
+        <div class="form-group">
+          <label>一句话描述 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="create-tagline" placeholder="用一句话说明这个项目做什么">
+        </div>
+        <div class="form-group">
+          <label>详细描述 <span class="required">*</span></label>
+          <textarea class="form-input" id="create-desc" placeholder="描述你想解决的问题、目标用户、核心功能、你的愿景……越详细越好，这样别人更容易理解并加入。"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>项目类别</label>
+            <select class="form-input" id="create-category">
+              <option value="app">移动应用</option>
+              <option value="web">Web 应用</option>
+              <option value="game">游戏</option>
+              <option value="tool">工具</option>
+              <option value="ai">AI / 机器学习</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>预计周期</label>
+            <select class="form-input" id="create-duration">
+              <option value="2weeks">2 周</option>
+              <option value="1month" selected>1 个月</option>
+              <option value="2months">2 个月</option>
+              <option value="3months">3 个月+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">2</span> 团队角色配置</h2>
+        <p style="font-size:0.8rem;color:var(--warm-gray);margin-bottom:1rem;">设置每个角色需要多少人。你需要先认领一个角色作为发起人。</p>
+        <div class="role-setup" id="role-setup">
+          <div class="role-setup-item">
+            <span class="rs-emoji">🎯</span>
+            <span class="rs-name">产品经理</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">🎨</span>
+            <span class="rs-name">设计师</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">💻</span>
+            <span class="rs-name">前端开发</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">⚙️</span>
+            <span class="rs-name">后端开发</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">🧪</span>
+            <span class="rs-name">测试工程师</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>0</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">3</span> 里程碑规划</h2>
+        <p style="font-size:0.8rem;color:var(--warm-gray);margin-bottom:1rem;">设定项目的关键节点，让参与者了解整体节奏。</p>
+        <div class="form-group">
+          <label>里程碑 1</label>
+          <input type="text" class="form-input" placeholder="例：完成需求文档和原型设计" id="ms-1">
+        </div>
+        <div class="form-group">
+          <label>里程碑 2</label>
+          <input type="text" class="form-input" placeholder="例：完成核心功能开发" id="ms-2">
+        </div>
+        <div class="form-group">
+          <label>里程碑 3</label>
+          <input type="text" class="form-input" placeholder="例：测试、修复、上线" id="ms-3">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="navigateTo('home')">取消</button>
+        <button class="btn-primary" onclick="submitProject()">🚀 发布项目</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD PAGE ==================== -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-page">
+    <div class="dashboard-inner">
+      <div class="dash-header">
+        <h1>我的公社</h1>
+        <div style="display:flex;gap:0.8rem;">
+          <button class="btn-secondary" onclick="navigateTo('settings')" style="padding:0.7rem 1.5rem;font-size:0.85rem;">⚙️ 设置</button>
+          <button class="btn-primary" onclick="navigateTo('create')">+ 发起新项目</button>
+        </div>
+      </div>
+
+      <!-- Honor Bar -->
+      <div class="honor-bar">
+        <div class="honor-level">
+          <div class="hl-icon">3</div>
+          <div class="hl-text">
+            <h4>建设者</h4>
+            <p>LEVEL 3 · Lv.3</p>
+          </div>
+        </div>
+        <div class="honor-stats">
+          <div class="honor-stat">
+            <div class="hs-num">847</div>
+            <div class="hs-label">贡献值</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">2</div>
+            <div class="hs-label">参与项目</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">12</div>
+            <div class="hs-label">贡献次数</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">6<span class="hs-plus">/16</span></div>
+            <div class="hs-label">徽章</div>
+          </div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-label">
+            <span>847 / 1500</span>
+            <span>→ 引领者</span>
+          </div>
+          <div class="xp-bar"><div class="xp-bar-fill" style="width:56%"></div></div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <!-- Badge Wall -->
+        <div class="dash-section" style="grid-column: 1 / -1;">
+          <div class="dash-section-header">
+            <h3>🏅 成就徽章墙</h3>
+            <span class="count">6 / 16 已解锁</span>
+          </div>
+          <div class="badge-wall" id="badge-wall">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h3>📋 我的项目</h3>
+            <span class="count">2</span>
+          </div>
+          <ul class="dash-list">
+            <li class="dash-list-item" onclick="navigateTo('detail', 0)">
+              <div class="dli-icon" style="background:rgba(212,33,61,0.1);">🍳</div>
+              <div class="dli-info">
+                <h4>面向独居青年的社交做饭 App</h4>
+                <p>产品经理 · 进行中</p>
+              </div>
+              <span class="dli-status tag-progress" style="background:rgba(212,168,67,0.15);color:#8B6914;">进行中</span>
+            </li>
+            <li class="dash-list-item" onclick="navigateTo('detail', 1)">
+              <div class="dli-icon" style="background:rgba(212,168,67,0.1);">🧠</div>
+              <div class="dli-info">
+                <h4>AI 驱动的个人知识图谱工具</h4>
+                <p>设计师 · 进行中</p>
+              </div>
+              <span class="dli-status tag-progress" style="background:rgba(212,168,67,0.15);color:#8B6914;">进行中</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contribution Timeline -->
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h3>📜 贡献记录</h3>
+            <span class="count">最近动态</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot badge">🏅</div>
+              <div class="timeline-content">
+                <h4>解锁徽章「第一把火」</h4>
+                <p>2 小时前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot xp">+30</div>
+              <div class="timeline-content">
+                <h4>完成里程碑任务「用户调研报告」 <span class="xp-gain">+30 XP</span></h4>
+                <p>社交做饭 App · 5 小时前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot project">🤝</div>
+              <div class="timeline-content">
+                <h4>加入「AI 知识图谱工具」担任设计师 <span class="xp-gain">+10 XP</span></h4>
+                <p>1 天前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot xp">+15</div>
+              <div class="timeline-content">
+                <h4>提交竞品分析报告 <span class="xp-gain">+15 XP</span></h4>
+                <p>社交做饭 App · 3 天前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot badge">🏅</div>
+              <div class="timeline-content">
+                <h4>解锁徽章「初心者」</h4>
+                <p>2025年3月15日</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot project">🔥</div>
+              <div class="timeline-content">
+                <h4>发起项目「社交做饭 App」 <span class="xp-gain">+50 XP</span></h4>
+                <p>2025年4月10日</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-section" style="grid-column: 1 / -1;">
+          <div class="dash-section-header">
+            <h3>📊 能力图谱</h3>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-item">
+              <div class="skill-emoji">🎯</div>
+              <div class="skill-name">需求分析</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:65%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">📝</div>
+              <div class="skill-name">PRD 撰写</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:55%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🎨</div>
+              <div class="skill-name">UI 设计</div>
+              <div class="skill-level">初级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:35%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🤝</div>
+              <div class="skill-name">团队协作</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:70%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">📊</div>
+              <div class="skill-name">竞品分析</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:60%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🧪</div>
+              <div class="skill-name">用户调研</div>
+              <div class="skill-level">初级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:25%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== NOTIFICATIONS ==================== -->
+<div class="notif-overlay" id="notif-overlay" onclick="toggleNotif()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <h3>通知</h3>
+    <button class="notif-close" onclick="toggleNotif()">✕</button>
+  </div>
+  <div class="notif-list">
+    <div class="notif-item unread" onclick="navigateTo('detail', 0);toggleNotif();">
+      <div class="ni-type">🎉 申请通过</div>
+      <div class="ni-text">恭喜！你已被接受加入「面向独居青年的社交做饭 App」担任产品经理角色。</div>
+      <div class="ni-time">2 小时前</div>
+    </div>
+    <div class="notif-item unread" onclick="navigateTo('detail', 1);toggleNotif();">
+      <div class="ni-type">🤝 新成员加入</div>
+      <div class="ni-text">Ming 加入了「AI 驱动的个人知识图谱工具」担任前端开发。</div>
+      <div class="ni-time">5 小时前</div>
+    </div>
+    <div class="notif-item unread">
+      <div class="ni-type">📢 项目更新</div>
+      <div class="ni-text">「像素风农场经营」项目完成了里程碑 M1：核心玩法设计。</div>
+      <div class="ni-time">1 天前</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-type">💡 新项目推荐</div>
+      <div class="ni-text">有一个新项目「老年人健康打卡小程序」正在招募产品经理，与你的技能匹配。</div>
+      <div class="ni-time">2 天前</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-type">🏆 成就解锁</div>
+      <div class="ni-text">你已完成第一个里程碑贡献！获得「初出茅庐」成就徽章。</div>
+      <div class="ni-time">3 天前</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JOIN MODAL ==================== -->
+<div class="modal-overlay" id="join-modal">
+  <div class="modal">
+    <h2>🤝 申请加入项目</h2>
+    <p id="join-modal-desc">选择你想担任的角色，向项目发起人发送申请。</p>
+    <div class="form-group">
+      <label>选择角色 <span class="required">*</span></label>
+      <select class="form-input" id="join-role-select">
+        <!-- Populated by JS -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>自我介绍 <span class="required">*</span></label>
+      <textarea class="form-input" id="join-intro" placeholder="简单介绍你自己，为什么想加入这个项目，你能贡献什么……" style="min-height:100px;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeJoinModal()">取消</button>
+      <button class="btn-primary" onclick="submitJoin()">提交申请</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Badge Detail Modal -->
+<div class="modal-overlay badge-detail-modal" id="badge-modal">
+  <div class="modal">
+    <div class="badge-detail-icon" id="badge-modal-icon">🌟</div>
+    <div class="badge-detail-series" id="badge-modal-series">入门系列</div>
+    <div class="badge-detail-name" id="badge-modal-name">初心者</div>
+    <div class="badge-detail-desc" id="badge-modal-desc">你来了，你准备好了。</div>
+    <div class="badge-detail-condition" id="badge-modal-condition">获得条件：<strong>完成个人资料</strong></div>
+    <div class="badge-earned-date" id="badge-modal-date">✅ 已于 2025年3月15日 解锁</div>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn-secondary" onclick="closeBadgeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== BADGE DATA ====================
+const badges = [
+  // 入门系列
+  { id: 0, icon: '🌟', name: '初心者', series: '入门系列', desc: '你来了，你准备好了。每一段伟大的旅程都始于第一步。', condition: '完成个人资料', earned: true, date: '2025年3月15日' },
+  { id: 1, icon: '🔥', name: '第一把火', series: '入门系列', desc: '跨出了第一步，加入了你的第一个项目。星星之火，可以燎原。', condition: '加入第一个项目', earned: true, date: '2025年4月10日' },
+  { id: 2, icon: '✍️', name: '第一笔', series: '入门系列', desc: '你提交了第一次贡献。从此以后，你不再是一个旁观者。', condition: '提交第一次贡献', earned: true, date: '2025年4月12日' },
+  { id: 3, icon: '🤝', name: '握手', series: '入门系列', desc: '第一次被项目接受。你的能力得到了认可。', condition: '第一次被项目接受', earned: true, date: '2025年4月10日' },
+  // 实践系列
+  { id: 4, icon: '🎯', name: '产品之手', series: '实践系列', desc: '作为产品经理完成了3个项目。你擅长定义产品、洞察需求。', condition: '作为PM完成3个项目', earned: false },
+  { id: 5, icon: '🎨', name: '设计之眼', series: '实践系列', desc: '作为设计师完成了3个项目。你擅长创造美好的体验。', condition: '作为设计师完成3个项目', earned: false },
+  { id: 6, icon: '💻', name: '代码之力', series: '实践系列', desc: '作为开发者完成了3个项目。你擅长将想法变为现实。', condition: '作为开发者完成3个项目', earned: false },
+  { id: 7, icon: '🔍', name: '质量之盾', series: '实践系列', desc: '作为测试完成了3个项目。你是产品质量的守护者。', condition: '作为测试完成3个项目', earned: false },
+  // 协作系列
+  { id: 8, icon: '🧭', name: '领航者', series: '协作系列', desc: '发起并成功上线一个项目。你证明了自己能把想法变成现实。', condition: '发起并成功上线一个项目', earned: false },
+  { id: 9, icon: '🌉', name: '桥梁', series: '协作系列', desc: '参与了5个不同类型的项目。你是真正的多面手。', condition: '参与5个不同类型的项目', earned: false },
+  { id: 10, icon: '📚', name: '导师', series: '协作系列', desc: '帮助10个人Review过方案。你在用自己的经验帮助他人成长。', condition: '帮10个人Review过方案', earned: false },
+  { id: 11, icon: '🔥', name: '不灭', series: '协作系列', desc: '连续30天有贡献记录。坚持是最稀缺的品质。', condition: '连续30天有贡献记录', earned: false },
+  // 传奇系列
+  { id: 12, icon: '⭐', name: '公社之星', series: '传奇系列', desc: '累计贡献值排名前1%。你是公社的传奇，你的名字将被铭记。', condition: '累计积分Top 1%', earned: false },
+  { id: 13, icon: '🌈', name: '全栈创客', series: '传奇系列', desc: '集齐产品经理+设计师+开发者徽章。你什么都能做，你是全能的。', condition: '集齐PM+设计+开发徽章', earned: false },
+  { id: 14, icon: '🚀', name: '造物主', series: '传奇系列', desc: '发起3个项目并成功上线。你是真正的创造者，世界因你而不同。', condition: '发起3个项目并成功上线', earned: false },
+  { id: 15, icon: '🏆', name: '初出茅庐', series: '入门系列', desc: '完成了第一个里程碑贡献。万里长征第一步，但你已经迈出去了。', condition: '完成第一个里程碑任务', earned: true, date: '2025年4月20日' },
+];
+
+// ==================== DATA ====================
+const projects = [
+  {
+    id: 0,
+    title: '面向独居青年的社交做饭 App',
+    desc: '一个人做饭太麻烦，点外卖又不健康。做一个让独居的人可以"拼饭"的 App——匹配附近的做饭搭子，一起做饭、一起吃饭、交到朋友。解决独居青年的社交困境和吃饭问题。',
+    status: 'open',
+    category: 'app',
+    author: 'Lina',
+    authorColor: '#D4213D',
+    createdAt: '2025-04-10',
+    duration: '2 个月',
+    license: 'MIT 开源协议',
+    roles: [
+      { name: '产品经理', emoji: '🎯', needed: 1, filled: 1, members: [{name:'Lina', color:'#D4213D'}] },
+      { name: '设计师', emoji: '🎨', needed: 1, filled: 0, members: [] },
+      { name: '前端开发', emoji: '💻', needed: 2, filled: 0, members: [] },
+      { name: '后端开发', emoji: '⚙️', needed: 1, filled: 1, members: [{name:'Kevin', color:'#4A90D9'}] },
+    ],
+    milestones: [
+      { title: '需求调研与原型设计', status: 'done', date: '4月10日 - 4月20日', tasks: [
+        { name: '用户调研报告', status: 'done', assignee: 'Lina', xp: 15 },
+        { name: '竞品分析', status: 'done', assignee: 'Lina', xp: 15 },
+        { name: '低保真原型', status: 'done', assignee: null, xp: 20 },
+        { name: 'PRD文档', status: 'done', assignee: 'Lina', xp: 15 },
+      ]},
+      { title: 'UI 设计与前端开发', status: 'current', date: '4月21日 - 5月15日', tasks: [
+        { name: '高保真设计稿', status: 'progress', assignee: null, xp: 25 },
+        { name: '首页开发', status: 'open', assignee: null, xp: 20 },
+        { name: '匹配功能开发', status: 'open', assignee: null, xp: 25 },
+        { name: '聊天功能开发', status: 'open', assignee: null, xp: 20 },
+      ]},
+      { title: '后端开发与联调', status: 'pending', date: '5月16日 - 6月5日', tasks: [
+        { name: 'API开发', status: 'open', assignee: null, xp: 25 },
+        { name: '数据库设计', status: 'open', assignee: null, xp: 20 },
+        { name: '前后端联调', status: 'open', assignee: null, xp: 15 },
+      ]},
+      { title: '测试与上线', status: 'pending', date: '6月6日 - 6月15日', tasks: [
+        { name: '功能测试', status: 'open', assignee: null, xp: 15 },
+        { name: 'Bug修复', status: 'open', assignee: null, xp: 15 },
+        { name: '性能优化', status: 'open', assignee: null, xp: 15 },
+        { name: '正式上线', status: 'open', assignee: null, xp: 30 },
+      ]},
+    ],
+    comments: [
+      { user: 'Lina', color: '#D4213D', text: 'M1 的所有任务已完成！大家辛苦了，接下来进入设计+开发阶段 🎉', time: '2天前' },
+      { user: 'Kevin', color: '#4A90D9', text: '数据库 schema 我已经设计好了，等 M2 开始就可以直接用。', time: '1天前' },
+      { user: 'Lina', color: '#D4213D', text: '@Kevin 太好了！设计稿出来后我们就可以同步开发了', time: '18小时前' },
+    ],
+    files: [
+      { name: '用户调研报告.pdf', icon: '📄', uploader: 'Lina', time: '4月18日' },
+      { name: '竞品分析报告.pdf', icon: '📊', uploader: 'Lina', time: '4月16日' },
+      { name: 'PRD v1.2.docx', icon: '📝', uploader: 'Lina', time: '4月20日' },
+      { name: '低保真原型.fig', icon: '🎨', uploader: 'Lina', time: '4月19日' },
+      { name: '数据库设计.md', icon: '🗃️', uploader: 'Kevin', time: '4月21日' },
+    ],
+  },
+  {
+    id: 1,
+    title: 'AI 驱动的个人知识图谱工具',
+    desc: '用 AI 自动整理你的笔记、书签、截图，生成可视化的知识图谱。让碎片化的信息变成系统化的知识。支持多种数据源导入，智能关联，帮助用户发现知识之间的隐藏联系。',
+    status: 'progress',
+    category: 'ai',
+    author: 'Wang',
+    authorColor: '#F59E0B',
+    createdAt: '2025-03-28',
+    duration: '3 个月',
+    license: 'Apache 2.0',
+    roles: [
+      { name: '产品经理', emoji: '🎯', needed: 1, filled: 1, members: [{name:'Wang', color:'#F59E0B'}] },
+      { name: '设计师', emoji: '🎨', needed: 1, filled: 1, members: [{name:'Mia', color:'#10B981'}] },
+      { name: '前端开发', emoji: '💻', needed: 2, filled: 1, members: [{name:'Zhang', color:'#6366F1'}] },
+      { name: 'AI 工程师', emoji: '🤖', needed: 1, filled: 0, members: [] },
+    ],
+    milestones: [
+      { title: '产品定义与技术选型', status: 'done', date: '3月28日 - 4月10日', tasks: ['需求文档','技术方案','AI模型选型'] },
+      { title: '核心功能 MVP', status: 'current', date: '4月11日 - 5月10日', tasks: ['知识图谱可视化','AI自动分类','数据导入功能'] },
+      { title: '高级功能开发', status: 'pending', date: '5月11日 - 6月10日', tasks: ['智能关联','搜索功能','分享功能'] },
+    ]
+  },
+  {
+    id: 2,
+    title: '二手物品交换平台（校园版）',
+    desc: '不卖二手，只交换。你不需要的东西，可能正是别人想要的。以物易物，让闲置物品流动起来。专注校园场景，基于地理位置匹配，打造信任感强的交换社区。',
+    status: 'open',
+    category: 'web',
+    author: 'Sisi',
+    authorColor: '#EC4899',
+    createdAt: '2025-04-18',
+    duration: '1 个月',
+    license: 'MIT',
+    roles: [
+      { name: '产品经理', emoji: '🎯', needed: 1, filled: 0, members: [] },
+      { name: '设计师', emoji: '🎨', needed: 1, filled: 0, members: [] },
+      { name: '全栈开发', emoji: '💻', needed: 2, filled: 0, members: [] },
+      { name: '测试', emoji: '🧪', needed: 1, filled: 0, members: [] },
+    ],
+    milestones: [
+      { title: '需求与设计', status: 'current', date: '4月18日 - 4月28日', tasks: ['用户调研','产品设计','数据库设计'] },
+      { title: '核心开发', status: 'pending', date: '4月29日 - 5月15日', tasks: ['发布物品','匹配算法','聊天功能'] },
+      { title: '测试上线', status: 'pending', date: '5月16日 - 5月22日', tasks: ['测试','Bug修复','上线'] },
+    ]
+  },
+  {
+    id: 3,
+    title: '程序员远程协作白板工具',
+    desc: '专为远程团队设计的实时白板，支持代码片段、架构图、流程图。轻量、快速、免费。已成功上线，日活用户 500+。',
+    status: 'done',
+    category: 'tool',
+    author: 'Jay',
+    authorColor: '#14B8A6',
+    createdAt: '2025-01-15',
+    duration: '2 个月',
+    license: 'MIT',
+    roles: [
+      { name: '产品经理', emoji: '🎯', needed: 1, filled: 1, members: [{name:'Jay', color:'#14B8A6'}] },
+      { name: '设计师', emoji: '🎨', needed: 1, filled: 1, members: [{name:'Yuki', color:'#F97316'}] },
+      { name: '前端开发', emoji: '💻', needed: 2, filled: 2, members: [{name:'Chen', color:'#8B5CF6'},{name:'Rui', color:'#EF4444'}] },
+      { name: '后端开发', emoji: '⚙️', needed: 1, filled: 1, members: [{name:'Alex', color:'#0EA5E9'}] },
+    ],
+    contributors: [
+      { name: 'Jay', color: '#14B8A6', role: '产品经理', xp: 245, hours: 68, commits: 12, details: 'PRD×3 · 评审×7 · 需求分析×2', pct: 82 },
+      { name: 'Chen', color: '#8B5CF6', role: '前端开发', xp: 198, hours: 92, commits: 18, details: '代码×15 · Review×3', pct: 66 },
+      { name: 'Yuki', color: '#F97316', role: '设计师', xp: 156, hours: 54, commits: 9, details: '设计稿×6 · 评审×3', pct: 52 },
+      { name: 'Alex', color: '#0EA5E9', role: '后端开发', xp: 134, hours: 78, commits: 8, details: 'API×8 · 数据库×3', pct: 45 },
+    ],
+    totalHours: 292,
+    totalCommits: 47,
+    completedAt: '2025-03-15',
+    deliverables: [
+      { icon: '📄', name: 'PRD文档', desc: 'v3.2 最终版 · 32页', bg: 'rgba(212,33,61,0.1)' },
+      { icon: '🎨', name: '设计稿', desc: 'Figma · 48个页面', bg: 'rgba(249,115,22,0.1)' },
+      { icon: '💻', name: '源代码', desc: 'GitHub · MIT协议', bg: 'rgba(139,92,246,0.1)' },
+      { icon: '📊', name: '测试报告', desc: '覆盖率 89%', bg: 'rgba(14,165,233,0.1)' },
+      { icon: '🌐', name: '在线地址', desc: 'whiteboard.co · 日活500+', bg: 'rgba(34,139,34,0.1)' },
+      { icon: '📹', name: '演示视频', desc: '3分钟产品Demo', bg: 'rgba(212,168,67,0.1)' },
+    ],
+    activities: [
+      { user: 'Jay', color: '#14B8A6', text: '提交了最终版PRD文档', time: '3月14日' },
+      { user: 'Chen', color: '#8B5CF6', text: '修复了3个性能问题', time: '3月13日' },
+      { user: 'Alex', color: '#0EA5E9', text: '完成了API压力测试', time: '3月12日' },
+      { user: 'Yuki', color: '#F97316', text: '更新了导出功能的UI设计', time: '3月10日' },
+      { user: 'Chen', color: '#8B5CF6', text: '完成了流程图编辑器', time: '3月8日' },
+      { user: 'Jay', color: '#14B8A6', text: '项目正式上线！🎉', time: '3月15日' },
+    ],
+    milestones: [
+      { title: 'MVP 开发', status: 'done', date: '1月15日 - 2月10日', tasks: ['白板核心','实时协作','代码片段'] },
+      { title: '功能完善', status: 'done', date: '2月11日 - 3月1日', tasks: ['架构图','流程图','导出功能'] },
+      { title: '上线运营', status: 'done', date: '3月2日 - 3月15日', tasks: ['性能优化','正式上线','用户反馈'] },
+    ]
+  },
+  {
+    id: 4,
+    title: '老年人友好的健康打卡小程序',
+    desc: '大字体、语音输入、一键操作。让不会用智能手机的老人也能记录血压、吃药、运动。子女可以远程查看父母的健康数据，安心又方便。',
+    status: 'open',
+    category: 'app',
+    author: 'Han',
+    authorColor: '#0EA5E9',
+    createdAt: '2025-04-20',
+    duration: '1 个月',
+    license: 'MIT',
+    roles: [
+      { name: '产品经理', emoji: '🎯', needed: 1, filled: 1, members: [{name:'Han', color:'#0EA5E9'}] },
+      { name: '设计师', emoji: '🎨', needed: 1, filled: 0, members: [] },
+      { name: '小程序开发', emoji: '📱', needed: 1, filled: 0, members: [] },
+    ],
+    milestones: [
+      { title: '需求与原型', status: 'current', date: '4月20日 - 4月30日', tasks: ['老人用户调研','适老化设计规范','低保真原型'] },
+      { title: '开发与测试', status: 'pending', date: '5月1日 - 5月18日', tasks: ['小程序开发','语音功能','子女端开发'] },
+    ]
+  },
+  {
+    id: 5,
+    title: '独立游戏：像素风农场经营',
+    desc: '像素风格的农场经营游戏，融合社交元素。种田、养殖、交易、交朋友。用 Godot 引擎开发，目标平台 PC + Switch。',
+    status: 'progress',
+    category: 'game',
+    author: 'Qi',
+    authorColor: '#A855F7',
+    createdAt: '2025-03-01',
+    duration: '3 个月+',
+    license: 'CC BY-NC-SA 4.0',
+    roles: [
+      { name: '游戏策划', emoji: '🎮', needed: 1, filled: 1, members: [{name:'Qi', color:'#A855F7'}] },
+      { name: '像素美术', emoji: '🎨', needed: 1, filled: 1, members: [{name:'Tao', color:'#22C55E'}] },
+      { name: '游戏开发', emoji: '💻', needed: 2, filled: 1, members: [{name:'Ning', color:'#EAB308'}] },
+      { name: '音效设计', emoji: '🔊', needed: 1, filled: 0, members: [] },
+    ],
+    milestones: [
+      { title: '核心玩法设计', status: 'done', date: '3月1日 - 3月20日', tasks: ['游戏设计文档','核心机制原型','美术风格定义'] },
+      { title: 'Alpha 版本', status: 'current', date: '3月21日 - 5月10日', tasks: ['农场系统','NPC系统','交易系统','社交系统'] },
+      { title: 'Beta 与发布', status: 'pending', date: '5月11日 - 6月30日', tasks: ['音效','平衡性调整','测试','Steam发布'] },
+    ]
+  }
+];
+
+// ==================== USER DATA ====================
+const users = {
+  'Jay': { name: 'Jay', color: '#14B8A6', role: '产品经理', level: 5, levelName: '引领者', xp: 4230, projects: 4, badges: 9, joined: '2024年8月', bio: '连续创业者，擅长从0到1。相信好的产品能改变世界。在公社发起了3个项目，2个已成功上线。', skills: [{name:'需求分析',pct:92},{name:'PRD撰写',pct:88},{name:'竞品分析',pct:85},{name:'团队协作',pct:90},{name:'用户调研',pct:78},{name:'项目管理',pct:86}], earnedBadges: [0,1,2,3,8,11,14,15,4] },
+  'Chen': { name: 'Chen', color: '#8B5CF6', role: '前端开发', level: 4, levelName: '骨干', xp: 2890, projects: 5, badges: 7, joined: '2024年10月', bio: '全栈开发者，热爱开源。擅长 React / Vue / Node.js，追求极致的用户体验。', skills: [{name:'React',pct:90},{name:'Vue',pct:85},{name:'Node.js',pct:78},{name:'CSS',pct:88},{name:'TypeScript',pct:82},{name:'团队协作',pct:75}], earnedBadges: [0,1,2,3,6,15,9] },
+  'Yuki': { name: 'Yuki', color: '#F97316', role: '设计师', level: 3, levelName: '建设者', xp: 1120, projects: 3, badges: 5, joined: '2024年12月', bio: 'UI/UX 设计师，喜欢极简风格。Figma 重度用户，相信设计能解决问题。', skills: [{name:'UI设计',pct:88},{name:'交互设计',pct:82},{name:'Figma',pct:92},{name:'用户研究',pct:70},{name:'品牌设计',pct:65},{name:'团队协作',pct:72}], earnedBadges: [0,1,2,3,5] },
+  'Alex': { name: 'Alex', color: '#0EA5E9', role: '后端开发', level: 3, levelName: '建设者', xp: 980, projects: 3, badges: 4, joined: '2025年1月', bio: '后端工程师，专注高并发系统设计。Go / Python / PostgreSQL。', skills: [{name:'Go',pct:85},{name:'Python',pct:80},{name:'PostgreSQL',pct:78},{name:'系统设计',pct:75},{name:'API设计',pct:82},{name:'团队协作',pct:68}], earnedBadges: [0,1,2,3] },
+  'Lina': { name: 'Lina', color: '#D4213D', role: '产品经理', level: 2, levelName: '创客', xp: 380, projects: 1, badges: 3, joined: '2025年3月', bio: '转行做产品经理的前运营人。喜欢研究用户心理，正在公社积累第一个完整项目经验。', skills: [{name:'需求分析',pct:55},{name:'用户调研',pct:60},{name:'竞品分析',pct:50},{name:'团队协作',pct:65},{name:'PRD撰写',pct:40},{name:'数据分析',pct:45}], earnedBadges: [0,1,3] },
+  'Wang': { name: 'Wang', color: '#F59E0B', role: '产品经理', level: 3, levelName: '建设者', xp: 1050, projects: 2, badges: 5, joined: '2024年11月', bio: 'AI 产品经理，对知识管理有执念。正在做一款让自己也用的知识图谱工具。', skills: [{name:'AI产品',pct:80},{name:'需求分析',pct:75},{name:'数据分析',pct:72},{name:'竞品分析',pct:70},{name:'PRD撰写',pct:68},{name:'团队协作',pct:78}], earnedBadges: [0,1,2,3,15] },
+  'Mia': { name: 'Mia', color: '#10B981', role: '设计师', level: 2, levelName: '创客', xp: 420, projects: 1, badges: 3, joined: '2025年2月', bio: '视觉设计师，擅长数据可视化。加入公社是为了认识更多有趣的人。', skills: [{name:'数据可视化',pct:78},{name:'UI设计',pct:72},{name:'Figma',pct:80},{name:'插画',pct:65},{name:'团队协作',pct:60}], earnedBadges: [0,1,3] },
+  'Zhang': { name: 'Zhang', color: '#6366F1', role: '前端开发', level: 2, levelName: '创客', xp: 350, projects: 1, badges: 3, joined: '2025年3月', bio: '前端开发新人，正在通过公社项目积累实战经验。', skills: [{name:'React',pct:60},{name:'CSS',pct:65},{name:'JavaScript',pct:58},{name:'团队协作',pct:55}], earnedBadges: [0,1,3] },
+  'Sisi': { name: 'Sisi', color: '#EC4899', role: '发起人', level: 1, levelName: '新社员', xp: 50, projects: 1, badges: 1, joined: '2025年4月', bio: '大学生，对创业充满热情。发起了二手交换平台项目，正在寻找队友。', skills: [{name:'用户调研',pct:30},{name:'产品设计',pct:25},{name:'团队协作',pct:35}], earnedBadges: [0] },
+  'Han': { name: 'Han', color: '#0EA5E9', role: '产品经理', level: 2, levelName: '创客', xp: 280, projects: 1, badges: 2, joined: '2025年4月', bio: '关注适老化设计的产品经理。希望用技术帮助老年人更好地生活。', skills: [{name:'用户调研',pct:55},{name:'需求分析',pct:50},{name:'适老化设计',pct:45},{name:'团队协作',pct:50}], earnedBadges: [0,1] },
+  'Qi': { name: 'Qi', color: '#A855F7', role: '游戏策划', level: 3, levelName: '建设者', xp: 890, projects: 2, badges: 4, joined: '2024年12月', bio: '独立游戏开发者，像素艺术爱好者。正在做一款像素风农场经营游戏。', skills: [{name:'游戏设计',pct:82},{name:'关卡设计',pct:75},{name:'像素美术',pct:60},{name:'Godot',pct:70},{name:'团队协作',pct:72}], earnedBadges: [0,1,2,3] },
+  'Tao': { name: 'Tao', color: '#22C55E', role: '像素美术', level: 2, levelName: '创客', xp: 310, projects: 1, badges: 2, joined: '2025年1月', bio: '像素艺术家，擅长16-bit风格的角色和场景设计。', skills: [{name:'像素角色',pct:80},{name:'像素场景',pct:75},{name:'动画',pct:65},{name:'团队协作',pct:55}], earnedBadges: [0,1] },
+  'Ning': { name: 'Ning', color: '#EAB308', role: '游戏开发', level: 2, levelName: '创客', xp: 260, projects: 1, badges: 2, joined: '2025年2月', bio: 'Godot 引擎开发者，热爱独立游戏。', skills: [{name:'Godot',pct:72},{name:'GDScript',pct:68},{name:'游戏物理',pct:60},{name:'团队协作',pct:55}], earnedBadges: [0,1] },
+  'Kevin': { name: 'Kevin', color: '#4A90D9', role: '后端开发', level: 2, levelName: '创客', xp: 320, projects: 1, badges: 3, joined: '2025年3月', bio: '后端开发工程师，擅长 Node.js 和数据库设计。', skills: [{name:'Node.js',pct:70},{name:'MongoDB',pct:65},{name:'API设计',pct:68},{name:'团队协作',pct:60}], earnedBadges: [0,1,3] },
+  'Rui': { name: 'Rui', color: '#EF4444', role: '前端开发', level: 2, levelName: '创客', xp: 290, projects: 1, badges: 3, joined: '2025年1月', bio: '前端开发者，擅长动画和交互效果。', skills: [{name:'CSS动画',pct:78},{name:'React',pct:65},{name:'Three.js',pct:55},{name:'团队协作',pct:58}], earnedBadges: [0,1,3] },
+};
+
+// ==================== NAVIGATION ====================
+function navigateTo(page, projectId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  window.scrollTo(0, 0);
+
+  if (page === 'home') {
+    document.getElementById('page-home').classList.add('active');
+    initReveal();
+  } else if (page === 'detail') {
+    renderDetail(projectId);
+    document.getElementById('page-detail').classList.add('active');
+  } else if (page === 'create') {
+    document.getElementById('page-create').classList.add('active');
+  } else if (page === 'dashboard') {
+    document.getElementById('page-dashboard').classList.add('active');
+    renderBadges();
+  } else if (page === 'profile') {
+    renderProfile(projectId);
+    document.getElementById('page-profile').classList.add('active');
+  } else if (page === 'leaderboard') {
+    renderLeaderboard('xp');
+    document.getElementById('page-leaderboard').classList.add('active');
+  } else if (page === 'settings') {
+    document.getElementById('page-settings').classList.add('active');
+  } else if (page === 'showcase') {
+    renderShowcase();
+    document.getElementById('page-showcase').classList.add('active');
+  } else if (page === 'login') {
+    document.getElementById('page-login').classList.add('active');
+  } else if (page === 'register') {
+    document.getElementById('page-register').classList.add('active');
+  }
+}
+
+// ==================== RENDER PROJECTS ====================
+// ==================== SEARCH & FILTER ====================
+let currentCategoryFilter = 'all';
+let currentStatusFilter = 'all';
+let currentSearchQuery = '';
+
+function handleSearch() {
+  currentSearchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+  applyFilters();
+}
+
+function filterByCategory(cat, btn) {
+  document.querySelectorAll('.search-filter-chip').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentCategoryFilter = cat;
+  applyFilters();
+}
+
+function filterProjects(status, btn) {
+  if (btn) {
+    document.querySelectorAll('.search-filter-chip').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  currentStatusFilter = status;
+  applyFilters();
+}
+
+function applyFilters() {
+  let filtered = projects;
+
+  if (currentCategoryFilter !== 'all') {
+    filtered = filtered.filter(p => p.category === currentCategoryFilter);
+  }
+
+  if (currentStatusFilter !== 'all') {
+    filtered = filtered.filter(p => p.status === currentStatusFilter);
+  }
+
+  if (currentSearchQuery) {
+    filtered = filtered.filter(p =>
+      p.title.toLowerCase().includes(currentSearchQuery) ||
+      p.desc.toLowerCase().includes(currentSearchQuery) ||
+      p.roles.some(r => r.name.toLowerCase().includes(currentSearchQuery))
+    );
+  }
+
+  const grid = document.getElementById('projects-grid');
+  const noResults = document.getElementById('no-results');
+  const info = document.getElementById('search-results-info');
+
+  if (filtered.length === 0) {
+    grid.style.display = 'none';
+    noResults.style.display = 'block';
+    info.textContent = '';
+  } else {
+    grid.style.display = '';
+    noResults.style.display = 'none';
+    info.textContent = `找到 ${filtered.length} 个项目`;
+  }
+
+  const statusMap = { open: '招募中', progress: '进行中', done: '已完成' };
+  const tagClass = { open: 'tag-open', progress: 'tag-progress', done: 'tag-done' };
+
+  grid.innerHTML = filtered.map(p => {
+    const allMembers = p.roles.flatMap(r => r.members);
+    const avatarHtml = allMembers.slice(0, 3).map(m =>
+      `<div class="member-avatar" style="background:${m.color};">${m.name[0]}</div>`
+    ).join('') + (allMembers.length > 3 ? `<div class="member-avatar" style="background:var(--warm-gray);">+${allMembers.length - 3}</div>` : '');
+    const rolesHtml = p.roles.map(r =>
+      `<span class="role-badge ${r.filled >= r.needed ? 'filled' : 'open'}"><span class="role-dot ${r.filled >= r.needed ? 'green' : 'red'}"></span>${r.name}</span>`
+    ).join('');
+    const btnText = p.status === 'done' ? '查看成果 →' : '查看详情 →';
+    return `
+      <div class="project-card reveal visible" onclick="navigateTo('detail', ${p.id})">
+        <span class="card-tag ${tagClass[p.status]}">${statusMap[p.status]}</span>
+        <h3>${p.title}</h3>
+        <p class="desc">${p.desc}</p>
+        <div class="roles">${rolesHtml}</div>
+        <div class="card-footer">
+          <div class="members">${avatarHtml}</div>
+          <span class="join-btn">${btnText}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderProjects(filter) {
+  currentStatusFilter = filter || 'all';
+  applyFilters();
+}
+
+// ==================== RENDER DETAIL ====================
+function renderDetail(id) {
+  const p = projects[id];
+  if (!p) return;
+
+  const statusMap = { open: '招募中', progress: '进行中', done: '已完成' };
+  const tagClass = { open: 'tag-open', progress: 'tag-progress', done: 'tag-done' };
+
+  const milestonesHtml = p.milestones.map(ms => {
+    const iconClass = ms.status === 'done' ? 'done' : ms.status === 'current' ? 'current' : 'pending';
+    const icon = ms.status === 'done' ? '✓' : ms.status === 'current' ? '→' : ms.milestones ? '○' : '○';
+    const tasksHtml = ms.tasks.map(t =>
+      `<span class="ms-task ${ms.status === 'done' ? 'done' : ''}">${t}</span>`
+    ).join('');
+    return `
+      <div class="milestone">
+        <div class="milestone-icon ${iconClass}">${icon}</div>
+        <div class="milestone-content">
+          <h3>${ms.title}</h3>
+          <div class="ms-date">${ms.date}</div>
+          <div class="ms-tasks">${tasksHtml}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const teamHtml = p.roles.map(r => {
+    const filledHtml = r.members.map(m =>
+      `<div class="team-member">
+        <div class="tm-avatar" style="background:${m.color};cursor:pointer;" onclick="navigateTo('profile','${m.name}')">${m.name[0]}</div>
+        <div class="tm-info"><h4 style="cursor:pointer;" onclick="navigateTo('profile','${m.name}')">${m.name}</h4><p>${r.name}</p></div>
+        <span class="tm-status active">活跃</span>
+      </div>`
+    ).join('');
+    const openSlots = r.needed - r.filled;
+    const openHtml = openSlots > 0 ? Array(openSlots).fill(0).map(() =>
+      `<div class="team-member" onclick="openJoinModal(${p.id}, '${r.name}')">
+        <div class="tm-avatar" style="background:var(--cream);color:var(--warm-gray);border:1px dashed var(--border);">?</div>
+        <div class="tm-info"><h4>等待加入</h4><p>${r.name}</p></div>
+        <span class="tm-status open-slot">申请</span>
+      </div>`
+    ).join('') : '';
+    return filledHtml + openHtml;
+  }).join('');
+
+  const roleSlotsHtml = p.roles.map(r => {
+    const openSlots = r.needed - r.filled;
+    if (openSlots > 0) {
+      return `
+        <div class="role-slot open">
+          <div class="slot-left"><span>${r.emoji}</span><span>${r.name}</span></div>
+          <button class="slot-btn" onclick="openJoinModal(${p.id}, '${r.name}')">申请</button>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="role-slot filled">
+          <div class="slot-left"><span>${r.emoji}</span><span>${r.name}</span></div>
+          <span style="font-size:0.7rem;color:var(--success);font-weight:700;">已满</span>
+        </div>
+      `;
+    }
+  }).join('');
+
+  const content = `
+    <div class="detail-hero">
+      <div class="detail-hero-inner">
+        <div class="detail-breadcrumb">
+          <span onclick="navigateTo('home')">首页</span> / <span onclick="navigateTo('home');setTimeout(()=>document.getElementById('projects').scrollIntoView({behavior:'smooth'}),100)">探索项目</span> / <strong>${p.title}</strong>
+        </div>
+        <div class="detail-title-row">
+          <h1><span class="card-tag ${tagClass[p.status]}" style="margin-right:0.8rem;">${statusMap[p.status]}</span>${p.title}</h1>
+          <div class="detail-actions">
+            ${p.status === 'done' ? '<button class="btn-secondary" onclick="showToast(\'已 Fork 该项目\',\'success\')">🍴 Fork 项目</button>' : '<button class="btn-secondary" onclick="showToast(\'已收藏该项目\',\'info\')">♡ 收藏</button>'}
+            ${p.status !== 'done' ? `<button class="btn-primary" onclick="openJoinModal(${p.id})">🤝 加入项目</button>` : ''}
+          </div>
+        </div>
+        <div class="detail-meta">
+          <div class="detail-meta-item">👤 发起人：<strong style="cursor:pointer;color:var(--red);" onclick="navigateTo('profile','${p.author}')">${p.author}</strong></div>
+          <div class="detail-meta-item">📅 创建于：<strong>${p.createdAt}</strong></div>
+          ${p.completedAt ? `<div class="detail-meta-item">🎉 上线于：<strong>${p.completedAt}</strong></div>` : ''}
+          <div class="detail-meta-item">⏱ ${p.completedAt ? '总用时' : '预计周期'}：<strong>${p.totalHours ? p.totalHours + ' 小时' : p.duration}</strong></div>
+          <div class="detail-meta-item">📜 协议：<strong>${p.license}</strong></div>
+          <div class="detail-meta-item">👥 团队：<strong>${p.roles.reduce((a,r)=>a+r.members.length,0)} / ${p.roles.reduce((a,r)=>a+r.needed,0)} 人</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-main">
+        <div class="detail-section">
+          <h2>项目描述</h2>
+          <p>${p.desc}</p>
+        </div>
+
+        ${p.status === 'done' && p.contributors ? `
+        <div class="detail-section contrib-ranking">
+          <h2>🏆 贡献者排行</h2>
+          <div class="contrib-summary">
+            <div class="contrib-summary-item"><div class="csi-num">${p.totalHours || 0}</div><div class="csi-label">总用时（小时）</div></div>
+            <div class="contrib-summary-item"><div class="csi-num">${p.totalCommits || 0}</div><div class="csi-label">总提交次数</div></div>
+            <div class="contrib-summary-item"><div class="csi-num">${p.contributors.length}</div><div class="csi-label">贡献者人数</div></div>
+            <div class="contrib-summary-item"><div class="csi-num">100%</div><div class="csi-label">完成度</div></div>
+          </div>
+          <div class="contrib-list">
+            ${p.contributors.map((c, i) => {
+              const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
+              const barClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
+              return `
+                <div class="contrib-item">
+                  <div class="contrib-rank ${rankClass}">${i + 1}</div>
+                  <div class="contrib-avatar" style="background:${c.color};" onclick="navigateTo('profile','${c.name}')">${c.name[0]}</div>
+                  <div class="contrib-info">
+                    <div class="ci-top">
+                      <span class="ci-name" onclick="navigateTo('profile','${c.name}')">${c.name}</span>
+                      <span class="ci-role">${c.role}</span>
+                    </div>
+                    <div class="ci-stats">
+                      <span>⭐ ${c.xp} XP</span>
+                      <span>⏱ ${c.hours}h</span>
+                      <span>📝 ${c.commits}次提交</span>
+                    </div>
+                    <div style="font-size:0.65rem;color:var(--warm-gray);margin-top:0.15rem;">${c.details}</div>
+                  </div>
+                  <div class="contrib-bar-wrap">
+                    <div class="contrib-bar-label"><span>贡献占比</span><span class="cb-value">${c.pct}%</span></div>
+                    <div class="contrib-bar"><div class="contrib-bar-fill ${barClass}" style="width:${c.pct}%"></div></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        ${p.status === 'done' && p.deliverables ? `
+        <div class="detail-section">
+          <h2>📦 交付物</h2>
+          <div class="deliverables">
+            ${p.deliverables.map(d => `
+              <div class="deliverable-item">
+                <div class="dl-icon" style="background:${d.bg};">${d.icon}</div>
+                <div class="dl-info"><h4>${d.name}</h4><p>${d.desc}</p></div>
+                <span class="dl-arrow">→</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="detail-section">
+          <h2>📋 任务看板</h2>
+          ${renderTaskBoard(p)}
+        </div>
+
+        <div class="detail-section">
+          <h2>💬 协作空间</h2>
+          ${renderCollabSpace(p)}
+        </div>
+
+        <div class="detail-section">
+          <h2>📍 里程碑</h2>
+          <div class="milestone-list">${milestonesHtml}</div>
+        </div>
+
+        ${p.activities ? `
+        <div class="detail-section">
+          <h2>📋 项目动态</h2>
+          <div class="activity-feed">
+            ${p.activities.map(a => `
+              <div class="activity-item">
+                <div class="act-avatar" style="background:${a.color};">${a.user[0]}</div>
+                <div><strong onclick="navigateTo('profile','${a.user}')">${a.user}</strong> ${a.text}<span class="act-time">${a.time}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="detail-section">
+          <h2>团队成员</h2>
+          <div class="team-list">${teamHtml}</div>
+        </div>
+      </div>
+      <div class="detail-sidebar">
+        ${p.status === 'done' ? `
+        <div class="sidebar-card" style="border-color:var(--gold);background:linear-gradient(135deg,rgba(212,168,67,0.05),white);">
+          <h3>🏆 项目成就</h3>
+          <div style="font-size:0.85rem;line-height:1.8;color:var(--ink-light);">
+            ${p.contributors ? p.contributors.slice(0,2).map(c => `<div style="margin-bottom:0.3rem;">${c.name} 解锁了「${c.role === '产品经理' ? '领航者' : c.role === '前端开发' ? '代码之力' : '设计之眼'}」徽章</div>`).join('') : ''}
+            <div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border);font-size:0.75rem;color:var(--warm-gray);">所有成员获得「造物参与者」纪念徽章</div>
+          </div>
+        </div>
+        ` : ''}
+        <div class="sidebar-card">
+          <h3>角色招募</h3>
+          <div class="role-slots">${roleSlotsHtml}</div>
+        </div>
+        <div class="sidebar-card">
+          <h3>项目信息</h3>
+          <div class="info-row"><span class="label">类别</span><span class="value">${p.category}</span></div>
+          <div class="info-row"><span class="label">周期</span><span class="value">${p.duration}</span></div>
+          <div class="info-row"><span class="label">协议</span><span class="value">${p.license}</span></div>
+          <div class="info-row"><span class="label">创建</span><span class="value">${p.createdAt}</span></div>
+        </div>
+        <div class="sidebar-card">
+          <h3>贡献记录</h3>
+          <div class="info-row"><span class="label">总提交</span><span class="value">${p.totalCommits || 47}</span></div>
+          <div class="info-row"><span class="label">本周活跃</span><span class="value">${p.status === 'done' ? '—' : '8 次'}</span></div>
+          <div class="info-row"><span class="label">完成度</span><span class="value" style="color:var(--red);">${p.status === 'done' ? '100%' : p.status === 'progress' ? '45%' : '15%'}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detail-content').innerHTML = content;
+}
+
+// ==================== JOIN MODAL ====================
+let currentJoinProject = null;
+
+function openJoinModal(projectId, preselectedRole) {
+  currentJoinProject = projectId;
+  const p = projects[projectId];
+  const select = document.getElementById('join-role-select');
+  const openRoles = p.roles.filter(r => r.filled < r.needed);
+  select.innerHTML = openRoles.map(r => `<option value="${r.name}">${r.emoji} ${r.name}</option>`).join('');
+  if (preselectedRole) {
+    select.value = preselectedRole;
+  }
+  document.getElementById('join-modal-desc').textContent = `申请加入「${p.title}」`;
+  document.getElementById('join-intro').value = '';
+  document.getElementById('join-modal').classList.add('active');
+}
+
+function closeJoinModal() {
+  document.getElementById('join-modal').classList.remove('active');
+}
+
+function submitJoin() {
+  const role = document.getElementById('join-role-select').value;
+  const intro = document.getElementById('join-intro').value.trim();
+  if (!intro) {
+    showToast('请填写自我介绍', 'info');
+    return;
+  }
+  closeJoinModal();
+  showToast(`已申请「${role}」角色，等待审核`, 'success');
+  document.getElementById('notif-badge').textContent = parseInt(document.getElementById('notif-badge').textContent) + 1;
+}
+
+// ==================== CREATE PROJECT ====================
+function changeRoleCount(btn, delta) {
+  const countEl = btn.parentElement.querySelector('span');
+  let val = parseInt(countEl.textContent) + delta;
+  if (val < 0) val = 0;
+  if (val > 5) val = 5;
+  countEl.textContent = val;
+}
+
+function submitProject() {
+  const name = document.getElementById('create-name').value.trim();
+  const tagline = document.getElementById('create-tagline').value.trim();
+  const desc = document.getElementById('create-desc').value.trim();
+
+  if (!name || !tagline || !desc) {
+    showToast('请填写所有必填项', 'info');
+    return;
+  }
+
+  showToast('🎉 项目发布成功！等待队友加入...', 'success');
+
+  setTimeout(() => {
+    navigateTo('dashboard');
+  }, 1500);
+}
+
+// ==================== NOTIFICATIONS ====================
+function toggleNotif() {
+  const overlay = document.getElementById('notif-overlay');
+  const panel = document.getElementById('notif-panel');
+  const isActive = panel.classList.contains('active');
+
+  if (isActive) {
+    overlay.classList.remove('active');
+    panel.classList.remove('active');
+  } else {
+    overlay.classList.add('active');
+    panel.classList.add('active');
+    document.getElementById('notif-badge').textContent = '0';
+  }
+}
+
+// ==================== TOAST ====================
+function showToast(msg, type) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type || ''}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ==================== SCROLL REVEAL ====================
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+}
+
+// ==================== TASK BOARD RENDERING ====================
+function renderTaskBoard(p) {
+  const ms = p.milestones;
+  if (!ms || !ms[0].tasks || typeof ms[0].tasks[0] === 'string') {
+    return '<p style="font-size:0.85rem;color:var(--warm-gray);">该项目尚未创建详细任务。</p>';
+  }
+
+  const allTasks = ms.flatMap(m => m.tasks.map(t => ({ ...t, msStatus: m.status })));
+  const openTasks = allTasks.filter(t => t.status === 'open');
+  const progressTasks = allTasks.filter(t => t.status === 'progress');
+  const doneTasks = allTasks.filter(t => t.status === 'done');
+
+  function taskCardHtml(t) {
+    const isDone = t.status === 'done';
+    const assigneeHtml = t.assignee
+      ? `<span class="tc-assignee"><span class="ta-avatar" style="background:${users[t.assignee]?.color || '#999'};">${t.assignee[0]}</span>${t.assignee}</span>`
+      : `<span class="tc-assignee" style="color:var(--red);">待认领</span>`;
+    const claimBtn = !t.assignee && !isDone
+      ? `<button class="tc-claim-btn" onclick="event.stopPropagation();claimTask(this, '${t.name}', ${t.xp})">认领此任务 · +${t.xp} XP</button>`
+      : '';
+    return `
+      <div class="task-card ${isDone ? 'done-card' : ''}" onclick="event.stopPropagation()">
+        <div class="tc-name">${t.name}</div>
+        <div class="tc-meta">
+          ${assigneeHtml}
+          <span class="tc-xp">+${t.xp} XP</span>
+        </div>
+        ${claimBtn}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="task-board">
+      <div class="task-board-columns">
+        <div class="task-column open-col">
+          <div class="task-column-header">待认领 <span class="tch-count">${openTasks.length}</span></div>
+          <div class="task-column-body">${openTasks.map(taskCardHtml).join('')}</div>
+        </div>
+        <div class="task-column progress-col">
+          <div class="task-column-header">进行中 <span class="tch-count">${progressTasks.length}</span></div>
+          <div class="task-column-body">${progressTasks.map(taskCardHtml).join('')}</div>
+        </div>
+        <div class="task-column done-col">
+          <div class="task-column-header">已完成 <span class="tch-count">${doneTasks.length}</span></div>
+          <div class="task-column-body">${doneTasks.map(taskCardHtml).join('')}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function claimTask(btn, taskName, xp) {
+  btn.textContent = '✓ 已认领';
+  btn.classList.add('claimed');
+  showToast(`已认领「${taskName}」· +${xp} XP`, 'success');
+}
+
+// ==================== COLLABORATION SPACE RENDERING ====================
+function renderCollabSpace(p) {
+  const hasComments = p.comments && p.comments.length > 0;
+  const hasFiles = p.files && p.files.length > 0;
+
+  return `
+    <div class="collab-tabs">
+      <button class="collab-tab active" onclick="switchCollabTab(this, 'comments-${p.id}')">💬 讨论 ${hasComments ? '(' + p.comments.length + ')' : ''}</button>
+      <button class="collab-tab" onclick="switchCollabTab(this, 'files-${p.id}')">📂 文件 ${hasFiles ? '(' + p.files.length + ')' : ''}</button>
+      <button class="collab-tab" onclick="switchCollabTab(this, 'log-${p.id}')">📋 项目日志</button>
+    </div>
+
+    <div class="collab-panel active" id="comments-${p.id}">
+      ${hasComments ? `
+        <div class="comment-list">
+          ${p.comments.map(c => `
+            <div class="comment-item">
+              <div class="cm-avatar" style="background:${c.color};" onclick="navigateTo('profile','${c.user}')">${c.user[0]}</div>
+              <div class="cm-body">
+                <div class="cm-header">
+                  <span class="cm-name" onclick="navigateTo('profile','${c.user}')">${c.user}</span>
+                  <span class="cm-time">${c.time}</span>
+                </div>
+                <div class="cm-text">${c.text}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : '<p style="font-size:0.85rem;color:var(--warm-gray);">还没有讨论，来说点什么吧。</p>'}
+      <div class="comment-input-wrap">
+        <div class="ci-avatar">你</div>
+        <textarea class="comment-input" rows="2" placeholder="写下你的想法…" id="comment-input-${p.id}"></textarea>
+        <button class="comment-submit" onclick="submitComment(${p.id})">发送</button>
+      </div>
+    </div>
+
+    <div class="collab-panel" id="files-${p.id}">
+      ${hasFiles ? `
+        <div class="file-list">
+          ${p.files.map(f => `
+            <div class="file-item">
+              <span class="fi-icon">${f.icon}</span>
+              <div class="fi-info"><h4>${f.name}</h4><p>${f.uploader} · ${f.time}</p></div>
+              <span class="fi-arrow">↓</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : '<p style="font-size:0.85rem;color:var(--warm-gray);">还没有共享文件。</p>'}
+    </div>
+
+    <div class="collab-panel" id="log-${p.id}">
+      ${p.activities ? `
+        <div class="activity-feed">
+          ${p.activities.map(a => `
+            <div class="activity-item">
+              <div class="act-avatar" style="background:${a.color};">${a.user[0]}</div>
+              <div><strong onclick="navigateTo('profile','${a.user}')">${a.user}</strong> ${a.text}<span class="act-time">${a.time}</span></div>
+            </div>
+          `).join('')}
+        </div>
+      ` : '<p style="font-size:0.85rem;color:var(--warm-gray);">暂无项目动态。</p>'}
+    </div>
+  `;
+}
+
+function switchCollabTab(btn, panelId) {
+  const parent = btn.closest('.detail-section');
+  parent.querySelectorAll('.collab-tab').forEach(t => t.classList.remove('active'));
+  parent.querySelectorAll('.collab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+function submitComment(projectId) {
+  const input = document.getElementById(`comment-input-${projectId}`);
+  const text = input.value.trim();
+  if (!text) { showToast('请输入评论内容', 'info'); return; }
+  input.value = '';
+  showToast('评论已发送', 'success');
+}
+
+// ==================== SHOWCASE RENDERING ====================
+function renderShowcase() {
+  const doneProjects = projects.filter(p => p.status === 'done');
+  const featured = doneProjects[0];
+  const rest = doneProjects.slice(1);
+
+  document.getElementById('showcase-content').innerHTML = `
+    <div class="showcase-inner">
+      <div class="showcase-header">
+        <h1>🏆 成果展厅</h1>
+        <p>每一个完成的项目，都是一群人共同的荣耀</p>
+      </div>
+
+      ${featured ? `
+      <div class="showcase-featured" onclick="navigateTo('detail', ${featured.id})">
+        <h2>${featured.title}</h2>
+        <p class="sf-desc">${featured.desc}</p>
+        <div class="sf-meta">
+          <span>👤 发起人：<strong>${featured.author}</strong></span>
+          <span>👥 团队：<strong>${featured.contributors ? featured.contributors.length : featured.roles.reduce((a,r)=>a+r.members.length,0)} 人</strong></span>
+          <span>⏱ 总用时：<strong>${featured.totalHours || 0} 小时</strong></span>
+          <span>📅 上线：<strong>${featured.completedAt || ''}</strong></span>
+        </div>
+        <button class="btn-primary" style="font-size:0.85rem;padding:0.6rem 1.5rem;">查看完整项目 →</button>
+      </div>
+      ` : ''}
+
+      ${rest.length > 0 ? `
+      <div class="showcase-grid">
+        ${rest.map(p => `
+          <div class="showcase-card" onclick="navigateTo('detail', ${p.id})">
+            <span class="sc-badge">✅ 已完成</span>
+            <h3>${p.title}</h3>
+            <p class="sc-desc">${p.desc.substring(0, 80)}…</p>
+            <div class="sc-stats">
+              <span>发起人：<strong>${p.author}</strong></span>
+              <span>用时：<strong>${p.totalHours || '?'}h</strong></span>
+              <span>提交：<strong>${p.totalCommits || '?'}次</strong></span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+
+      ${doneProjects.length === 0 ? '<p style="text-align:center;color:var(--warm-gray);padding:4rem;">暂无已完成的项目。成为第一个完成项目的人吧！</p>' : ''}
+    </div>
+  `;
+}
+
+function selectAuthRole(el) {
+  el.classList.toggle('active');
+}
+
+// ==================== LEADERBOARD RENDERING ====================
+function renderLeaderboard(tab) {
+  const allUsers = Object.values(users).sort((a, b) => b.xp - a.xp);
+  const top3 = allUsers.slice(0, 3);
+  const rest = allUsers.slice(3);
+
+  const tabLabels = { xp: '贡献值总榜', weekly: '本周活跃', monthly: '月度新星', badges: '徽章收集' };
+  const tabValues = { xp: 'xp', weekly: 'xp', monthly: 'xp', badges: 'badges' };
+
+  const podiumHtml = top3.map((u, i) => {
+    const isFirst = i === 0;
+    const medals = ['🥇', '🥈', '🥉'];
+    return `
+      <div class="lb-podium-item ${isFirst ? 'first' : ''}" onclick="navigateTo('profile','${u.name}')">
+        <div class="podium-rank">${medals[i]}</div>
+        <div class="podium-avatar" style="background:${u.color};">${u.name[0]}</div>
+        <div class="podium-name">${u.name}</div>
+        <div class="podium-role">${u.role} · ${u.levelName}</div>
+        <div class="podium-value">${tab === 'badges' ? u.badges : u.xp.toLocaleString()}</div>
+        <div class="podium-label">${tab === 'badges' ? '枚徽章' : '贡献值'}</div>
+      </div>
+    `;
+  }).join('');
+
+  const listHtml = rest.map((u, i) => `
+    <div class="lb-list-item" onclick="navigateTo('profile','${u.name}')">
+      <div class="lb-rank">${i + 4}</div>
+      <div class="lb-avatar" style="background:${u.color};">${u.name[0]}</div>
+      <div class="lb-info">
+        <h4>${u.name}</h4>
+        <p>${u.role} · ${u.levelName} · Lv.${u.level}</p>
+      </div>
+      <div class="lb-value">${tab === 'badges' ? u.badges + ' 🏅' : u.xp.toLocaleString()}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('leaderboard-content').innerHTML = `
+    <div class="lb-inner">
+      <div class="lb-header">
+        <h1>🏆 排行榜</h1>
+        <p>致敬每一位为公社贡献力量的创客</p>
+      </div>
+      <div class="lb-tabs">
+        <button class="lb-tab ${tab === 'xp' ? 'active' : ''}" onclick="renderLeaderboard('xp')">贡献值总榜</button>
+        <button class="lb-tab ${tab === 'weekly' ? 'active' : ''}" onclick="renderLeaderboard('weekly')">本周活跃</button>
+        <button class="lb-tab ${tab === 'monthly' ? 'active' : ''}" onclick="renderLeaderboard('monthly')">月度新星</button>
+        <button class="lb-tab ${tab === 'badges' ? 'active' : ''}" onclick="renderLeaderboard('badges')">徽章收集</button>
+      </div>
+      <div class="lb-podium">${podiumHtml}</div>
+      <div class="lb-list">${listHtml}</div>
+    </div>
+  `;
+}
+
+// ==================== PROFILE RENDERING ====================
+function renderProfile(userName) {
+  const u = users[userName];
+  if (!u) {
+    document.getElementById('profile-content').innerHTML = '<div style="text-align:center;padding:5rem;"><h2>用户不存在</h2><p style="color:var(--warm-gray);margin-top:1rem;"><button class="btn-secondary" onclick="navigateTo(\'home\')" style="margin-top:1rem;">返回首页</button></p></div>';
+    return;
+  }
+
+  // Find user's projects
+  const userProjects = projects.filter(p => p.roles.some(r => r.members.some(m => m.name === userName)));
+
+  const projectListHtml = userProjects.map(p => {
+    const statusMap = { open: '招募中', progress: '进行中', done: '已完成' };
+    const tagClass = { open: 'tag-open', progress: 'tag-progress', done: 'tag-done' };
+    const role = p.roles.find(r => r.members.some(m => m.name === userName));
+    return `
+      <div class="dash-list-item" onclick="navigateTo('detail', ${p.id})">
+        <div class="dli-icon" style="background:rgba(${parseInt(u.color.slice(1,3),16)},${parseInt(u.color.slice(3,5),16)},${parseInt(u.color.slice(5,7),16)},0.1);">${role ? role.emoji : '📋'}</div>
+        <div class="dli-info">
+          <h4>${p.title}</h4>
+          <p>${role ? role.name : '成员'} · ${statusMap[p.status]}</p>
+        </div>
+        <span class="dli-status" style="background:${p.status === 'done' ? 'rgba(34,139,34,0.1)' : p.status === 'progress' ? 'rgba(212,168,67,0.15)' : 'rgba(212,33,61,0.1)'};color:${p.status === 'done' ? 'var(--success)' : p.status === 'progress' ? '#8B6914' : 'var(--red)'};">${statusMap[p.status]}</span>
+      </div>
+    `;
+  }).join('');
+
+  const badgeWallHtml = badges.map(b => {
+    const isEarned = u.earnedBadges && u.earnedBadges.includes(b.id);
+    return `
+      <div class="profile-badge-item ${isEarned ? 'earned' : 'locked'}" onclick="showBadgeDetail(${b.id})">
+        <div class="pbi-icon">${b.icon}</div>
+        <div class="pbi-name">${b.name}</div>
+      </div>
+    `;
+  }).join('');
+
+  const skillsHtml = u.skills.map(s => `
+    <div class="profile-skill-row">
+      <span class="psr-label">${s.name}</span>
+      <div class="psr-bar"><div class="psr-bar-fill" style="width:${s.pct}%"></div></div>
+      <span class="psr-val">${s.pct}%</span>
+    </div>
+  `).join('');
+
+  const levelColors = { 1: 'var(--warm-gray)', 2: '#4A90D9', 3: 'var(--success)', 4: '#8B5CF6', 5: 'var(--gold)', 6: 'var(--red)' };
+  const nextLevelXp = [0, 100, 500, 1500, 4000, 10000, 99999];
+
+  document.getElementById('profile-content').innerHTML = `
+    <div class="profile-inner">
+      <div class="detail-breadcrumb" style="margin-bottom:2rem;">
+        <span onclick="navigateTo('home')" style="cursor:pointer;">首页</span> / <strong>${u.name} 的主页</strong>
+      </div>
+
+      <div class="profile-hero">
+        <div class="ph-avatar" style="background:${u.color};">${u.name[0]}</div>
+        <div class="ph-info">
+          <h1>${u.name}</h1>
+          <div class="ph-meta">
+            <span>${u.role}</span>
+            <span>·</span>
+            <span style="color:${levelColors[u.level] || 'var(--red)'};font-weight:700;">${u.levelName} · Lv.${u.level}</span>
+            <span>·</span>
+            <span>加入于 ${u.joined}</span>
+          </div>
+          <p class="ph-bio">${u.bio}</p>
+        </div>
+        <div class="ph-stats">
+          <div class="ph-stat"><div class="num">${u.xp.toLocaleString()}</div><div class="label">贡献值</div></div>
+          <div class="ph-stat"><div class="num">${u.projects}</div><div class="label">项目</div></div>
+          <div class="ph-stat"><div class="num">${u.badges}</div><div class="label">徽章</div></div>
+        </div>
+      </div>
+
+      <div class="profile-body">
+        <div>
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <h3>📋 参与项目</h3>
+              <span class="count">${userProjects.length}</span>
+            </div>
+            <ul class="dash-list">${projectListHtml}</ul>
+          </div>
+        </div>
+
+        <div>
+          <div class="profile-sidebar-section">
+            <h3>🏅 徽章 (${u.badges}/${badges.length})</h3>
+            <div class="profile-badge-wall">${badgeWallHtml}</div>
+          </div>
+
+          <div class="profile-sidebar-section">
+            <h3>📊 技能</h3>
+            <div class="profile-skill-list">${skillsHtml}</div>
+          </div>
+
+          <div class="profile-sidebar-section">
+            <h3>📈 等级进度</h3>
+            <div class="xp-bar-label">
+              <span>${u.xp.toLocaleString()} / ${nextLevelXp[u.level].toLocaleString()}</span>
+              <span>Lv.${u.level + 1}</span>
+            </div>
+            <div class="xp-bar"><div class="xp-bar-fill" style="width:${Math.min(100, (u.xp / nextLevelXp[u.level]) * 100)}%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ==================== BADGE RENDERING ====================
+function renderBadges() {
+  const wall = document.getElementById('badge-wall');
+  if (!wall) return;
+  wall.innerHTML = badges.map(b => `
+    <div class="badge-item ${b.earned ? 'earned' : 'locked'}" onclick="showBadgeDetail(${b.id})">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+    </div>
+  `).join('');
+}
+
+function showBadgeDetail(id) {
+  const b = badges[id];
+  document.getElementById('badge-modal-icon').textContent = b.icon;
+  document.getElementById('badge-modal-series').textContent = b.series;
+  document.getElementById('badge-modal-name').textContent = b.name;
+  document.getElementById('badge-modal-desc').textContent = b.desc;
+  document.getElementById('badge-modal-condition').innerHTML = `获得条件：<strong>${b.condition}</strong>`;
+  document.getElementById('badge-modal-date').textContent = b.earned ? `✅ 已于 ${b.date} 解锁` : `🔒 尚未解锁 — 继续努力！`;
+  document.getElementById('badge-modal').classList.add('active');
+}
+
+function closeBadgeModal() {
+  document.getElementById('badge-modal').classList.remove('active');
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderProjects('all');
+  renderBadges();
+  initReveal();
+
+  // Close modals on overlay click
+  document.getElementById('join-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeJoinModal();
+  });
+  document.getElementById('badge-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeBadgeModal();
+  });
+});
+</script>
+
+</body>
+</html>
