@@ -1,0 +1,20 @@
+# Test 配置 - 使用 H2 内存数据库
+spring:
+  datasource:
+    url: jdbc:h2:mem:conlaboro_test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+# 安全配置 - 测试时关闭 CSRF 和安全过滤
+security:
+  filter:
+    order: SecurityProperties.DEFAULT_FILTER_ORDER
