@@ -1,84 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>共创公社 — Where Ideas Find Their Team</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-
-  <!-- 导航栏 -->
-  <div id="nav-container"></div>
-
-  <!-- 页面容器 -->
-  <div id="pages-container"></div>
-
-  <!-- 全局组件：通知、弹窗、Toast -->
-  <div id="components-container"></div>
-
-  <!-- JS 模块 -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  <script>
-    // ==================== 模块加载器 ====================
-    const PAGE_MODULES = [
-      'nav.html',
-      'home.html',
-      'detail.html',
-      'profile.html',
-      'leaderboard.html',
-      'showcase.html',
-      'login.html',
-      'register.html',
-      'settings.html',
-      'create.html',
-      'dashboard.html',
-      'notifications.html',
-      'join-modal.html',
-      'modals.html'
-    ];
-
-    async function loadModules() {
-      try {
-        // 并行加载所有 HTML 模块
-        const results = await Promise.allSettled(
-          PAGE_MODULES.map(file =>
-            fetch(`pages/${file}`).then(r => {
-              if (!r.ok) throw new Error(`${file}: ${r.status}`);
-              return r.text();
-            })
-          )
-        );
-
-        // 导航栏 → nav-container
-        document.getElementById('nav-container').innerHTML = results[0].status === 'fulfilled'
-          ? results[0].value : '<nav>加载失败</nav>';
-
-        // 页面 → pages-container
-        const pagesHTML = results.slice(1, 12).map(r =>
-          r.status === 'fulfilled' ? r.value : `<!-- 加载失败: ${r.reason} -->`
-        ).join('\n');
-        document.getElementById('pages-container').innerHTML = pagesHTML;
-
-        // 全局组件 → components-container
-        const compHTML = results.slice(12).map(r =>
-          r.status === 'fulfilled' ? r.value : ''
-        ).join('\n');
-        document.getElementById('components-container').innerHTML = compHTML;
-
-        // 所有模块加载完成后初始化
-        if (typeof initApp === 'function') {
-          initApp();
-        }
-      } catch (err) {
-        console.error('模块加载失败:', err);
-        document.body.innerHTML = '<div style="padding:4rem;text-align:center;"><h2>加载失败</h2><p>请确保通过 HTTP 服务器访问（如 npx serve）</p></div>';
-      }
-    }
-
-    // 启动
-    document.addEventListener('DOMContentLoaded', loadModules);
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>共创公社 — Where Ideas Find Their Team</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

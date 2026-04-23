@@ -1,0 +1,18 @@
+export const badges = [
+  { id: 0, icon: '🌟', name: '初心者', series: '入门系列', desc: '你来了，你准备好了。每一段伟大的旅程都始于第一步。', condition: '完成个人资料', earned: true, date: '2025年3月15日' },
+  { id: 1, icon: '🔥', name: '第一把火', series: '入门系列', desc: '跨出了第一步，加入了你的第一个项目。星星之火，可以燎原。', condition: '加入第一个项目', earned: true, date: '2025年4月10日' },
+  { id: 2, icon: '✍️', name: '第一笔', series: '入门系列', desc: '你提交了第一次贡献。从此以后，你不再是一个旁观者。', condition: '提交第一次贡献', earned: true, date: '2025年4月12日' },
+  { id: 3, icon: '🤝', name: '握手', series: '入门系列', desc: '第一次被项目接受。你的能力得到了认可。', condition: '第一次被项目接受', earned: true, date: '2025年4月10日' },
+  { id: 4, icon: '🎯', name: '产品之手', series: '实践系列', desc: '作为产品经理完成了3个项目。你擅长定义产品、洞察需求。', condition: '作为PM完成3个项目', earned: false },
+  { id: 5, icon: '🎨', name: '设计之眼', series: '实践系列', desc: '作为设计师完成了3个项目。你擅长创造美好的体验。', condition: '作为设计师完成3个项目', earned: false },
+  { id: 6, icon: '💻', name: '代码之力', series: '实践系列', desc: '作为开发者完成了3个项目。你擅长将想法变为现实。', condition: '作为开发者完成3个项目', earned: false },
+  { id: 7, icon: '🔍', name: '质量之盾', series: '实践系列', desc: '作为测试完成了3个项目。你是产品质量的守护者。', condition: '作为测试完成3个项目', earned: false },
+  { id: 8, icon: '🧭', name: '领航者', series: '协作系列', desc: '发起并成功上线一个项目。你证明了自己能把想法变成现实。', condition: '发起并成功上线一个项目', earned: false },
+  { id: 9, icon: '🌉', name: '桥梁', series: '协作系列', desc: '参与了5个不同类型的项目。你是真正的多面手。', condition: '参与5个不同类型的项目', earned: false },
+  { id: 10, icon: '📚', name: '导师', series: '协作系列', desc: '帮助10个人Review过方案。你在用自己的经验帮助他人成长。', condition: '帮10个人Review过方案', earned: false },
+  { id: 11, icon: '🔥', name: '不灭', series: '协作系列', desc: '连续30天有贡献记录。坚持是最稀缺的品质。', condition: '连续30天有贡献记录', earned: false },
+  { id: 12, icon: '⭐', name: '公社之星', series: '传奇系列', desc: '累计贡献值排名前1%。你是公社的传奇，你的名字将被铭记。', condition: '累计积分Top 1%', earned: false },
+  { id: 13, icon: '🌈', name: '全栈创客', series: '传奇系列', desc: '集齐产品经理+设计师+开发者徽章。你什么都能做，你是全能的。', condition: '集齐PM+设计+开发徽章', earned: false },
+  { id: 14, icon: '🚀', name: '造物主', series: '传奇系列', desc: '发起3个项目并成功上线。你是真正的创造者，世界因你而不同。', condition: '发起3个项目并成功上线', earned: false },
+  { id: 15, icon: '🏆', name: '初出茅庐', series: '入门系列', desc: '完成了第一个里程碑贡献。万里长征第一步，但你已经迈出去了。', condition: '完成第一个里程碑任务', earned: true, date: '2025年4月20日' },
+];
