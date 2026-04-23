@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
 import { STATUS_MAP, TAG_CLASS, STATUS_COLORS, getProjectEmoji } from '../constants'
+import { getProjectDetail } from '../api'
 
 function TaskBoard({ milestones }) {
   const ms = milestones
@@ -150,11 +151,23 @@ function CollabSpace({ p }) {
 export default function DetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { projects, users } = useData()
+  const { users } = useData()
   const { showToast, openJoinModal } = useApp()
+  const [detail, setDetail] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const p = projects[parseInt(id)]
-  if (!p) {
+  useEffect(() => {
+    getProjectDetail(id).then(data => {
+      setDetail(data)
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '5rem' }}>加载中...</div>
+  }
+
+  if (!detail) {
     return (
       <div className="page active" id="page-detail">
         <div style={{ textAlign: 'center', padding: '5rem' }}><h2>项目不存在</h2><p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>
@@ -163,6 +176,23 @@ export default function DetailPage() {
       </div>
     )
   }
+
+  const p = detail.project || {}
+  p.roles = detail.roles || []
+  p.milestones = detail.milestones || []
+  p.tasks = detail.tasks || []
+  p.comments = (detail.comments || []).map(c => ({
+    user: c.authorName || c.author || '匿名',
+    text: c.content || c.text || '',
+    time: c.time || c.createdAt || '',
+    color: c.authorColor || c.color || '#999',
+  }))
+  p.files = (detail.files || []).map(f => ({
+    name: f.fileName || f.name || '文件',
+    icon: '📄',
+    uploader: f.uploaderName || f.uploader || '未知',
+    time: f.time || f.createdAt || '',
+  }))
 
   return (
     <div className="page active" id="page-detail">
@@ -180,19 +210,19 @@ export default function DetailPage() {
               </div>
             </div>
             <div className="detail-meta">
-              <div className="detail-meta-item">👤 发起人：<strong style={{ cursor: 'pointer', color: 'var(--red)' }} onClick={() => navigate(`/profile/${p.author}`)}>{p.author}</strong></div>
+              <div className="detail-meta-item">👤 发起人：<strong style={{ cursor: 'pointer', color: 'var(--red)' }} onClick={() => navigate(`/profile/${p.authorName || p.author}`)}>{p.authorName || p.author}</strong></div>
               <div className="detail-meta-item">📅 创建于：<strong>{p.createdAt}</strong></div>
               {p.completedAt && <div className="detail-meta-item">🎉 上线于：<strong>{p.completedAt}</strong></div>}
               <div className="detail-meta-item">⏱ {p.completedAt ? '总用时' : '预计周期'}：<strong>{p.totalHours ? p.totalHours + ' 小时' : p.duration}</strong></div>
               <div className="detail-meta-item">📜 协议：<strong>{p.license}</strong></div>
-              <div className="detail-meta-item">👥 团队：<strong>{p.roles.reduce((a,r)=>a+r.members.length,0)} / {p.roles.reduce((a,r)=>a+r.needed,0)} 人</strong></div>
+              <div className="detail-meta-item">👥 团队：<strong>{p.roles.reduce((a,r)=>a+(r.filled||0),0)} / {p.roles.reduce((a,r)=>a+r.needed,0)} 人</strong></div>
             </div>
           </div>
         </div>
 
         <div className="detail-body">
           <div className="detail-main">
-            <div className="detail-section"><h2>项目描述</h2><p>{p.desc}</p></div>
+            <div className="detail-section"><h2>项目描述</h2><p>{p.description || p.desc}</p></div>
 
             {p.status === 'done' && p.contributors && (
               <div className="detail-section contrib-ranking">
@@ -291,13 +321,20 @@ export default function DetailPage() {
               <h2>团队成员</h2>
               <div className="team-list">
                 {p.roles.map(r => {
-                  const filledHtml = r.members.map(m => (
+                  const members = r.members || []
+                  const filledHtml = members.length > 0 ? members.map(m => (
                     <div key={m.name} className="team-member">
                       <div className="tm-avatar" style={{ background: m.color, cursor: 'pointer' }} onClick={() => navigate(`/profile/${m.name}`)}>{m.name[0]}</div>
                       <div className="tm-info"><h4 style={{ cursor: 'pointer' }} onClick={() => navigate(`/profile/${m.name}`)}>{m.name}</h4><p>{r.name}</p></div>
                       <span className="tm-status active">活跃</span>
                     </div>
-                  ))
+                  )) : (r.filled > 0 ? Array(r.filled).fill(0).map((_, idx) => (
+                    <div key={`filled-${idx}`} className="team-member">
+                      <div className="tm-avatar" style={{ background: 'var(--green)', opacity: 0.6 }}>✓</div>
+                      <div className="tm-info"><h4>成员</h4><p>{r.name}</p></div>
+                      <span className="tm-status active">活跃</span>
+                    </div>
+                  )) : null)
                   const openSlots = r.needed - r.filled
                   const openHtml = openSlots > 0 ? Array(openSlots).fill(0).map((_, idx) => (
                     <div key={`open-${idx}`} className="team-member" onClick={() => openJoinModal(p.id, r.name)}>
@@ -305,7 +342,7 @@ export default function DetailPage() {
                       <div className="tm-info"><h4>等待加入</h4><p>{r.name}</p></div>
                       <span className="tm-status open-slot">申请</span>
                     </div>
-                  )) : ''
+                  )) : null
                   return <>{filledHtml}{openHtml}</>
                 })}
               </div>
@@ -352,9 +389,13 @@ export default function DetailPage() {
             </div>
             <div className="sidebar-card">
               <h3>贡献记录</h3>
-              <div className="info-row"><span className="label">总提交</span><span className="value">{p.totalCommits || 47}</span></div>
-              <div className="info-row"><span className="label">本周活跃</span><span className="value">{p.status === 'done' ? '—' : '8 次'}</span></div>
-              <div className="info-row"><span className="label">完成度</span><span className="value" style={{ color: 'var(--red)' }}>{p.status === 'done' ? '100%' : p.status === 'progress' ? '45%' : '15%'}</span></div>
+              <div className="info-row"><span className="label">总提交</span><span className="value">{p.totalCommits || 0}</span></div>
+              <div className="info-row"><span className="label">总工时</span><span className="value">{p.totalHours ? p.totalHours + 'h' : '—'}</span></div>
+              <div className="info-row"><span className="label">完成度</span>
+                <span className="value" style={{ color: p.status === 'done' ? 'var(--green)' : p.status === 'progress' ? 'var(--gold)' : 'var(--warm-gray)' }}>
+                  {p.status === 'done' ? '100%' : p.status === 'progress' ? '进行中' : '招募中'}
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -1,38 +1,86 @@
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { getNotifications, markAsRead, markAllAsRead } from '../api'
 
-const notifications = [
-  { type: '🎉 申请通过', text: '恭喜！你已被接受加入「面向独居青年的社交做饭 App」担任产品经理角色。', time: '2 小时前', link: '/detail/0' },
-  { type: '🤝 新成员加入', text: 'Ming 加入了「AI 驱动的个人知识图谱工具」担任前端开发。', time: '5 小时前', link: '/detail/1' },
-  { type: '📢 项目更新', text: '「像素风农场经营」项目完成了里程碑 M1：核心玩法设计。', time: '1 天前', link: null },
-  { type: '💡 新项目推荐', text: '有一个新项目「老年人健康打卡小程序」正在招募产品经理，与你的技能匹配。', time: '2 天前', link: null },
-  { type: '🏆 成就解锁', text: '你已完成第一个里程碑贡献！获得「初出茅庐」成就徽章。', time: '3 天前', link: null },
-]
+/** 格式化时间为相对时间 */
+function timeAgo(dateStr) {
+  if (!dateStr) return ''
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return '刚刚'
+  if (mins < 60) return `${mins} 分钟前`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} 小时前`
+  const days = Math.floor(hours / 24)
+  return `${days} 天前`
+}
 
 export default function NotificationPanel() {
-  const { notifOpen, toggleNotif } = useApp()
+  const { notifOpen, toggleNotif, isLoggedIn, fetchUnreadCount } = useApp()
   const navigate = useNavigate()
+  const [list, setList] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  // 打开面板时拉取通知 + 全部标已读
+  useEffect(() => {
+    if (!notifOpen || !isLoggedIn) return
+    setLoading(true)
+    getNotifications()
+      .then((data) => setList(data || []))
+      .catch(() => setList([]))
+      .finally(() => setLoading(false))
+
+    // 打开时全部标记已读
+    markAllAsRead().then(() => fetchUnreadCount()).catch(() => {})
+  }, [notifOpen, isLoggedIn])
+
+  const handleClick = useCallback((item) => {
+    if (!item.isRead) {
+      markAsRead(item.id).catch(() => {})
+    }
+    if (item.link) {
+      navigate(item.link)
+      toggleNotif()
+    }
+  }, [navigate, toggleNotif])
+
+  const unreadCount = list.filter(n => !n.isRead).length
 
   return (
     <>
       <div className={`notif-overlay ${notifOpen ? 'active' : ''}`} id="notif-overlay" onClick={toggleNotif}></div>
       <div className={`notif-panel ${notifOpen ? 'active' : ''}`} id="notif-panel">
         <div className="notif-header">
-          <h3>通知</h3>
+          <h3>通知{unreadCount > 0 ? <span style={{ color: 'var(--primary)' }}>({unreadCount}条未读)</span> : ''}</h3>
           <button className="notif-close" onClick={toggleNotif}>✕</button>
         </div>
         <div className="notif-list">
-          {notifications.map((n, i) => (
-            <div
-              key={i}
-              className={`notif-item ${i < 3 ? 'unread' : ''}`}
-              onClick={() => { if (n.link) { navigate(n.link); toggleNotif() } }}
-            >
-              <div className="ni-type">{n.type}</div>
-              <div className="ni-text">{n.text}</div>
-              <div className="ni-time">{n.time}</div>
+          {!isLoggedIn ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+              登录后查看通知
             </div>
-          ))}
+          ) : loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+              加载中...
+            </div>
+          ) : list.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+              暂无通知 🎉
+            </div>
+          ) : (
+            list.map((n) => (
+              <div
+                key={n.id}
+                className={`notif-item ${n.is_read ? '' : 'unread'}`}
+                onClick={() => handleClick(n)}
+              >
+                <div className="ni-type">{n.type_icon || '📢'} {n.title}</div>
+                <div className="ni-text">{n.content}</div>
+                <div className="ni-time">{timeAgo(n.created_at)}</div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </>

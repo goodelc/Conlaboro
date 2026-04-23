@@ -2,7 +2,7 @@ package com.conlaboro.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @TableName("comments")
@@ -14,5 +14,5 @@ public class Comment {
     private String userName;
     private String userColor;
     private String text;
-    private LocalDateTime time;
+    private OffsetDateTime time;
 }

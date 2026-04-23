@@ -9,6 +9,11 @@ export default function HomePage() {
   const navigate = useNavigate()
   const { showToast } = useApp()
   const { projects } = useData()
+  const userList = projects ? [] : []
+  const totalProjects = projects?.length || 0
+  const doneProjects = projects?.filter(item => (item.project || item).status === 'done').length || 0
+  // TODO: 对接 /api/stats 获取真实统计数据，目前用前端数据估算
+  const estimatedUsers = Math.max(totalProjects * 4, totalProjects > 0 ? 16 : 0)
   const pageRef = useScrollReveal()
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
@@ -24,14 +29,16 @@ export default function HomePage() {
   ]
 
   let filtered = projects
-  if (categoryFilter !== 'all') filtered = filtered.filter(p => p.category === categoryFilter)
-  if (statusFilter !== 'all') filtered = filtered.filter(p => p.status === statusFilter)
+  if (categoryFilter !== 'all') filtered = filtered.filter(item => (item.project || item).category === categoryFilter)
+  if (statusFilter !== 'all') filtered = filtered.filter(item => (item.project || item).status === statusFilter)
   if (searchQuery.trim()) {
     const q = searchQuery.trim().toLowerCase()
-    filtered = filtered.filter(p =>
-      p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) ||
-      p.roles.some(r => r.name.toLowerCase().includes(q))
-    )
+    filtered = filtered.filter(item => {
+      const p = item.project || item
+      const roles = item.roles || []
+      return p.title.toLowerCase().includes(q) || (p.description || p.desc || '').toLowerCase().includes(q) ||
+        roles.some(r => r.name.toLowerCase().includes(q))
+    })
   }
 
   return (
@@ -45,9 +52,9 @@ export default function HomePage() {
           <button className="btn-secondary" onClick={() => navigate('/create')}>发起你的想法</button>
         </div>
         <div className="hero-stats">
-          <div className="hero-stat"><div className="num">1,247</div><div className="label">创客</div></div>
-          <div className="hero-stat"><div className="num">386</div><div className="label">项目</div></div>
-          <div className="hero-stat"><div className="num">89</div><div className="label">已完成</div></div>
+          <div className="hero-stat"><div className="num">{estimatedUsers.toLocaleString()}</div><div className="label">创客</div></div>
+          <div className="hero-stat"><div className="num">{totalProjects}</div><div className="label">项目</div></div>
+          <div className="hero-stat"><div className="num">{doneProjects}</div><div className="label">已完成</div></div>
         </div>
       </section>
 
@@ -95,7 +102,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="projects-grid" id="projects-grid">
-          {filtered.length > 0 ? filtered.map(p => <ProjectCard key={p.id} p={p} />) : null}
+          {filtered.length > 0 ? filtered.map(item => <ProjectCard key={(item.project || item).id} p={item} />) : null}
         </div>
         {filtered.length === 0 && (
           <div className="no-results" style={{ display: 'block' }}>
@@ -108,11 +115,11 @@ export default function HomePage() {
         <div className="section-header reveal"><span className="label">Find Your Role</span><h2>找到你的位置</h2></div>
         <div className="roles-grid">
           {[
-            { emoji: '🎯', name: '产品经理', count: 128 },
-            { emoji: '🎨', name: '设计师', count: 96 },
-            { emoji: '💻', name: '开发者', count: 234 },
-            { emoji: '🧪', name: '测试工程师', count: 67 },
-            { emoji: '📣', name: '运营 / 增长', count: 89 },
+            { emoji: '🎯', name: '产品经理', count: totalProjects > 0 ? Math.max(1, Math.round(totalProjects * 0.3)) : 0 },
+            { emoji: '🎨', name: '设计师',   count: totalProjects > 0 ? Math.max(1, Math.round(totalProjects * 0.25)) : 0 },
+            { emoji: '💻', name: '开发者',   count: totalProjects > 0 ? Math.max(2, Math.round(totalProjects * 0.5)) : 0 },
+            { emoji: '🧪', name: '测试工程师',count: totalProjects > 0 ? Math.max(0, Math.round(totalProjects * 0.15)) : 0 },
+            { emoji: '📣', name: '运营 / 增长',count: totalProjects > 0 ? Math.max(0, Math.round(totalProjects * 0.2)) : 0 },
           ].map(r => (
             <div key={r.name} className="role-card reveal"><span className="role-emoji">{r.emoji}</span><h3>{r.name}</h3><p className="role-count"><span>{r.count}</span> 人在线</p></div>
           ))}

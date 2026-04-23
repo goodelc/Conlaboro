@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useCallback } from 'react'
-import { loginApi, registerApi } from '../api'
+import { loginApi, registerApi, getUnreadCount } from '../api'
 
 const AppContext = createContext(null)
 
@@ -41,6 +41,8 @@ function appReducer(state, action) {
       return { ...state, badgeModalOpen: false, selectedBadge: null }
     case 'CLEAR_NOTIF_COUNT':
       return { ...state, notifCount: 0 }
+    case 'SET_NOTIF_COUNT':
+      return { ...state, notifCount: action.count }
     case 'SET_LOADING':
       return { ...state, loading: action.loading }
     case 'LOGIN': {
@@ -131,7 +133,17 @@ export function AppProvider({ children }) {
     dispatch({ type: 'LOGOUT' })
   }, [])
 
-  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal, login, register, logout }
+  // 拉取未读通知数
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const count = await getUnreadCount()
+      dispatch({ type: 'SET_NOTIF_COUNT', count })
+    } catch {
+      // 静默失败
+    }
+  }, [])
+
+  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal, login, register, logout, fetchUnreadCount }
 
   return (
     <AppContext.Provider value={value}>

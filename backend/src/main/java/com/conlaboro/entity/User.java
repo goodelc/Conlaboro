@@ -3,7 +3,7 @@ package com.conlaboro.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @TableName("users")
@@ -27,7 +27,7 @@ public class User {
     @TableField("joined_at")
     private LocalDate joinedAt;
     private String bio;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @TableLogic
     private Integer deleted;
 }

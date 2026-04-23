@@ -2,7 +2,7 @@ package com.conlaboro.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @TableName("user_skills")
@@ -13,5 +13,5 @@ public class UserSkill {
     private Long userId;
     private String name;
     private Integer percentage;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

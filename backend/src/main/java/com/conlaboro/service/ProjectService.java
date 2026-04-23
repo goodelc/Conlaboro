@@ -49,8 +49,15 @@ public class ProjectService {
         return result;
     }
 
-    public List<Project> getAllProjects() {
-        return projectMapper.selectList(new LambdaQueryWrapper<Project>()
+    public List<Map<String, Object>> getAllProjects() {
+        List<Project> projects = projectMapper.selectList(new LambdaQueryWrapper<Project>()
                 .orderByDesc(Project::getCreatedAt));
+        return projects.stream().map(project -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("project", project);
+            item.put("roles", roleMapper.selectList(
+                    new LambdaQueryWrapper<ProjectRole>().eq(ProjectRole::getProjectId, project.getId())));
+            return item;
+        }).toList();
     }
 }

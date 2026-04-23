@@ -3,7 +3,6 @@ package com.conlaboro.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @TableName("projects")

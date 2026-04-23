@@ -14,15 +14,8 @@ function BadgeItem({ badge }) {
   )
 }
 
-/** 默认 timeline 占位 — 后端对接时替换为 API 数据 */
-const DEFAULT_TIMELINE = [
-  { type: 'badge', icon: '🏅', title: '解锁徽章「第一把火」', time: '2 小时前' },
-  { type: 'xp', icon: '+30', title: '完成里程碑任务「用户调研报告」', xpGain: '+30 XP', sub: '社交做饭 App · 5 小时前' },
-  { type: 'project', icon: '🤝', title: '加入「AI 知识图谱工具」担任设计师', xpGain: '+10 XP', time: '1 天前' },
-  { type: 'xp', icon: '+15', title: '提交竞品分析报告', xpGain: '+15 XP', sub: '社交做饭 App · 3 天前' },
-  { type: 'badge', icon: '🏅', title: '解锁徽章「初心者」', time: '2025年3月15日' },
-  { type: 'project', icon: '🔥', title: '发起项目「社交做饭 App」', xpGain: '+50 XP', time: '2025年4月10日' },
-]
+/** TODO: 贡献记录 — 后端对接活动流 API 后替换 */
+const EMPTY_TIMELINE_MSG = '还没有贡献记录，去参加一个项目吧！'
 
 /** 技能 emoji 映射 */
 const SKILL_EMOJIS = {
@@ -73,9 +66,10 @@ export default function DashboardPage() {
     skills: raw.skills || [],
     earnedBadges: raw.earnedBadges || [],
   }
-  const userProjects = projects.filter(p =>
-    p.roles.some(r => r.members.some(m => m.name === currentUser.name))
-  )
+  const userProjects = (projects || []).filter(item => {
+    const p = item.project || item
+    return (item.roles || []).length > 0
+  })
   const nextXp = NEXT_LEVEL_XP[u.level] || 1500
   const xpPct = Math.min(100, Math.round((u.xp / nextXp) * 100))
   const earnedBadgeCount = (u.earnedBadges || []).length
@@ -129,13 +123,15 @@ export default function DashboardPage() {
             <div className="dash-section">
               <div className="dash-section-header"><h3>📋 我的项目</h3><span className="count">{userProjects.length}</span></div>
               <ul className="dash-list">
-                {userProjects.length > 0 ? userProjects.map(p => {
-                  const role = p.roles.find(r => r.members.some(m => m.name === currentUser.name))
+                {userProjects.length > 0 ? userProjects.map(item => {
+                  const p = item.project || item
+                  const roles = item.roles || []
+                  const role = roles[0] || null
                   const rgb = parseInt((u.color || '#D4213d').slice(1), 16)
-                  const r = (rgb >> 16) & 255, g = (rgb >> 8) & 255, b = rgb & 255
+                  const rVal = (rgb >> 16) & 255, gVal = (rgb >> 8) & 255, bVal = rgb & 255
                   return (
                     <li key={p.id} className="dash-list-item" onClick={() => navigate(`/detail/${p.id}`)}>
-                      <div className="dli-icon" style={{ background: `rgba(${r},${g},${b},0.1)` }}>{getProjectEmoji(p.id)}</div>
+                      <div className="dli-icon" style={{ background: `rgba(${rVal},${gVal},${bVal},0.1)` }}>{getProjectEmoji(p.id)}</div>
                       <div className="dli-info"><h4>{p.title}</h4><p>{role ? role.name : '成员'} · {STATUS_MAP[p.status]}</p></div>
                       <span className={`dli-status tag-${p.status}`} style={STATUS_COLORS[p.status]}>{STATUS_MAP[p.status]}</span>
                     </li>
@@ -148,19 +144,15 @@ export default function DashboardPage() {
               </ul>
             </div>
 
-            {/* 贡献记录：暂时用默认数据（后端对接时替换） */}
+            {/* 贡献记录 — TODO: 对接活动流 API */}
             <div className="dash-section">
               <div className="dash-section-header"><h3>📜 贡献记录</h3><span className="count">最近动态</span></div>
-              <div className="timeline">
-                {DEFAULT_TIMELINE.map((t, i) => (
-                  <div key={i} className="timeline-item">
-                    <div className={`timeline-dot ${t.type}`}>{t.icon}</div>
-                    <div className="timeline-content">
-                      <h4>{t.title} {t.xpGain && <span className="xp-gain">{t.xpGain}</span>}</h4>
-                      <p>{t.time || t.sub}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="timeline" style={{ display: userProjects.length === 0 ? 'flex' : undefined, justifyContent: 'center', alignItems: 'center', minHeight: '120px' }}>
+                {userProjects.length > 0 ? (
+                  <p style={{ color: 'var(--warm-gray)', textAlign: 'center', padding: '1rem' }}>{EMPTY_TIMELINE_MSG}</p>
+                ) : (
+                  <p style={{ color: 'var(--warm-gray)', textAlign: 'center', padding: '1rem' }}>先加入项目，贡献记录会在这里显示 ✨</p>
+                )}
               </div>
             </div>
 

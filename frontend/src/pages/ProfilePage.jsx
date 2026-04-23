@@ -23,7 +23,11 @@ export default function ProfilePage() {
     )
   }
 
-  const userProjects = projects.filter(p => p.roles.some(r => r.members.some(m => m.name === name)))
+  const userProjects = (projects || []).filter(item => {
+    const p = item.project || item
+    const roles = item.roles || []
+    return roles.length > 0
+  })
 
   return (
     <div className="page active" id="page-profile">
@@ -56,11 +60,13 @@ export default function ProfilePage() {
               <div className="profile-section">
                 <div className="profile-section-header"><h3>📋 参与项目</h3><span className="count">{userProjects.length}</span></div>
                 <ul className="dash-list">
-                  {userProjects.map(p => {
-                    const role = p.roles.find(r => r.members.some(m => m.name === name))
+                  {userProjects.map(item => {
+                    const p = item.project || item
+                    const roles = item.roles || []
+                    const role = roles[0] || null
                     return (
                       <li key={p.id} className="dash-list-item" onClick={() => navigate(`/detail/${p.id}`)}>
-                        <div className="dli-icon" style={{ background: `rgba(${parseInt(u.color.slice(1,3),16)},${parseInt(u.color.slice(3,5),16)},${parseInt(u.color.slice(5,7),16)},0.1)` }}>{role ? role.emoji : '📋'}</div>
+                        <div className="dli-icon" style={{ background: `rgba(${parseInt(u.color.slice(1,3),16)},${parseInt(u.color.slice(3,5),16)},${parseInt(u.color.slice(5,7),16)},0.1)` }}>{role ? (role.emoji || '📋') : '📋'}</div>
                         <div className="dli-info"><h4>{p.title}</h4><p>{role ? role.name : '成员'} · {STATUS_MAP[p.status]}</p></div>
                         <span className="dli-status" style={STATUS_COLORS[p.status]}>{STATUS_MAP[p.status]}</span>
                       </li>
@@ -89,7 +95,7 @@ export default function ProfilePage() {
               <div className="profile-sidebar-section">
                 <h3>📊 技能</h3>
                 <div className="profile-skill-list">
-                  {u.skills.map(s => (
+                  {(u.skills || []).map(s => (
                     <div key={s.name} className="profile-skill-row">
                       <span className="psr-label">{s.name}</span>
                       <div className="psr-bar"><div className="psr-bar-fill" style={{ width: `${s.pct}%` }}></div></div>

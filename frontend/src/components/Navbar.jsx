@@ -1,9 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const { notifCount, toggleNotif, isLoggedIn, currentUser, logout } = useApp()
+  const { notifCount, toggleNotif, isLoggedIn, currentUser, logout, fetchUnreadCount } = useApp()
+
+  // 登录后自动拉取未读通知数
+  useEffect(() => {
+    if (isLoggedIn) fetchUnreadCount()
+  }, [isLoggedIn])
 
   return (
     <nav>
@@ -20,13 +26,15 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="nav-right">
-        <div className="nav-icon-btn" onClick={toggleNotif} title="通知">
-          🔔
-          <span className="badge" id="notif-badge">{notifCount}</span>
-        </div>
-        <span className="nav-links" style={{ gap: '1rem' }}>
-          <Link to="/showcase" style={{ fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.08em', cursor: 'pointer', color: 'var(--ink-light)', transition: 'color 0.3s' }}>成果展厅</Link>
-        </span>
+        {isLoggedIn && (
+          <div className="nav-icon-btn" onClick={toggleNotif} title="通知">
+            🔔
+            {notifCount > 0 && <span className="badge" id="notif-badge">{notifCount}</span>}
+          </div>
+        )}
+        {isLoggedIn && (
+          <Link to="/showcase" className="nav-showcase-link">🏆 成果展厅</Link>
+        )}
 
         {isLoggedIn ? (
           <>
