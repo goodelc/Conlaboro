@@ -6,6 +6,7 @@ import ToastContainer from './components/ToastContainer'
 import NotificationPanel from './components/NotificationPanel'
 import JoinModal from './components/JoinModal'
 import BadgeModal from './components/BadgeModal'
+import RequireAuth from './components/RequireAuth'
 import ScrollToTop from './components/ScrollToTop'
 import ErrorBoundary from './components/ErrorBoundary'
 import HomePage from './pages/HomePage'
@@ -38,9 +39,9 @@ export default function App() {
                 <Route path="/showcase" element={<ShowcasePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/create" element={<CreatePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/create" element={<RequireAuth><CreatePage /></RequireAuth>} />
+                <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+                <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

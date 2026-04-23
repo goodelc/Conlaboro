@@ -2,6 +2,13 @@ import { createContext, useContext, useReducer, useCallback } from 'react'
 
 const AppContext = createContext(null)
 
+function loadAuth() {
+  try {
+    const saved = localStorage.getItem('conlaboro_auth')
+    return saved ? JSON.parse(saved) : { isLoggedIn: false, currentUser: null }
+  } catch { return { isLoggedIn: false, currentUser: null } }
+}
+
 const initialState = {
   toasts: [],
   notifOpen: false,
@@ -11,6 +18,7 @@ const initialState = {
   preselectedRole: '',
   badgeModalOpen: false,
   selectedBadge: null,
+  ...loadAuth(),
 }
 
 function appReducer(state, action) {
@@ -31,6 +39,10 @@ function appReducer(state, action) {
       return { ...state, badgeModalOpen: false, selectedBadge: null }
     case 'CLEAR_NOTIF_COUNT':
       return { ...state, notifCount: 0 }
+    case 'LOGIN':
+      return { ...state, isLoggedIn: true, currentUser: action.user }
+    case 'LOGOUT':
+      return { ...state, isLoggedIn: false, currentUser: null }
     default:
       return state
   }
@@ -67,7 +79,17 @@ export function AppProvider({ children }) {
     dispatch({ type: 'CLOSE_BADGE_MODAL' })
   }, [])
 
-  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal }
+  const login = useCallback((user) => {
+    dispatch({ type: 'LOGIN', user })
+    localStorage.setItem('conlaboro_auth', JSON.stringify({ isLoggedIn: true, currentUser: user }))
+  }, [])
+
+  const logout = useCallback(() => {
+    dispatch({ type: 'LOGOUT' })
+    localStorage.removeItem('conlaboro_auth')
+  }, [])
+
+  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal, login, logout }
 
   return (
     <AppContext.Provider value={value}>
