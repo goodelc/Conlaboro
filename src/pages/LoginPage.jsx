@@ -1,10 +1,30 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { useData } from '../context/DataContext'
+
+/** 默认新用户数据（users.js 中不存在的用户用此兜底） */
+function defaultUser(name) {
+  return {
+    name,
+    color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'),
+    role: '新社员',
+    level: 1,
+    levelName: '新社员',
+    xp: 50,
+    projects: 0,
+    badges: 0,
+    joined: '刚刚',
+    bio: '还没有填写个人简介',
+    skills: [],
+    earnedBadges: [0],
+  }
+}
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { showToast, login } = useApp()
+  const { users } = useData()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -14,16 +34,19 @@ export default function LoginPage() {
       showToast('请填写邮箱和密码', 'error')
       return
     }
-    // 模拟登录：从 users 数据中查找匹配用户
-    login({ name: email.split('@')[0] || '新用户', email, color: '#D4213d' })
-    showToast(`欢迎回来，${email.split('@')[0]}！`, 'success')
+    const name = email.split('@')[0] || '新用户'
+    // 尝试在 users 数据中匹配，否则用默认值
+    const user = users[name] || defaultUser(name)
+    login({ ...user, email })
+    showToast(`欢迎回来，${user.name}！`, 'success')
     navigate('/dashboard')
   }
 
   function handleOAuth(provider) {
-    // 模拟 OAuth 登录
-    const names = { GitHub: 'GitHub用户', Google: 'Google用户' }
-    login({ name: names[provider] || `${provider}用户`, color: '#4A90D9' })
+    const names = { GitHub: 'Jay', Google: 'Yuki' }   // 映射到已有用户，方便体验完整数据
+    const name = names[provider] || `${provider}用户`
+    const user = users[name] || defaultUser(name)
+    login(user)
     showToast(`${provider} 登录成功！`, 'success')
     navigate('/dashboard')
   }

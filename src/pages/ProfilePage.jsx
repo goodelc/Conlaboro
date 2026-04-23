@@ -105,7 +105,7 @@ export default function ProfilePage() {
                   <span>{u.xp.toLocaleString()} / {NEXT_LEVEL_XP[u.level].toLocaleString()}</span>
                   <span>Lv.{u.level + 1}</span>
                 </div>
-                <div className="xp-bar"><div className="xp-bar-fill" style={{ width: `${Math.min(100, (u.xp / nextLevelXp[u.level]) * 100)}%` }}></div></div>
+                <div className="xp-bar"><div className="xp-bar-fill" style={{ width: `${Math.min(100, (u.xp / NEXT_LEVEL_XP[u.level]) * 100)}%` }}></div></div>
               </div>
             </div>
           </div>

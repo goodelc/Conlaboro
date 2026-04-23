@@ -1,12 +1,32 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { useData } from '../context/DataContext'
 
 const roleOptions = ['🎯 产品经理', '🎨 设计师', '💻 开发者', '🧪 测试', '📣 运营']
+
+/** 新注册用户的默认数据 */
+function defaultNewUser(name) {
+  return {
+    name,
+    color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'),
+    role: '新社员',
+    level: 1,
+    levelName: '新社员',
+    xp: 50,
+    projects: 0,
+    badges: 1,
+    joined: '刚刚',
+    bio: '还没有填写个人简介',
+    skills: [],
+    earnedBadges: [0],
+  }
+}
 
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { showToast, login } = useApp()
+  const { users } = useData()
   const [form, setForm] = useState({ name: '', email: '', password: '', roles: [] })
 
   function updateField(field, value) {
@@ -30,8 +50,10 @@ export default function RegisterPage() {
       showToast('密码至少需要 6 位', 'error')
       return
     }
-    // 模拟注册：直接登录
-    login({ name: form.name, email: form.email, color: '#4A90D9' })
+    // 模拟注册：查找已有用户或创建新用户
+    const existing = users[form.name]
+    const user = existing || defaultNewUser(form.name)
+    login({ ...user, email: form.email })
     showToast(`🎉 注册成功！欢迎加入共创公社，${form.name}`, 'success')
     navigate('/dashboard')
   }
