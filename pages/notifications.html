@@ -1,0 +1,36 @@
+<!-- ==================== NOTIFICATIONS ==================== -->
+<div class="notif-overlay" id="notif-overlay" onclick="toggleNotif()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <h3>通知</h3>
+    <button class="notif-close" onclick="toggleNotif()">✕</button>
+  </div>
+  <div class="notif-list">
+    <div class="notif-item unread" onclick="navigateTo('detail', 0);toggleNotif();">
+      <div class="ni-type">🎉 申请通过</div>
+      <div class="ni-text">恭喜！你已被接受加入「面向独居青年的社交做饭 App」担任产品经理角色。</div>
+      <div class="ni-time">2 小时前</div>
+    </div>
+    <div class="notif-item unread" onclick="navigateTo('detail', 1);toggleNotif();">
+      <div class="ni-type">🤝 新成员加入</div>
+      <div class="ni-text">Ming 加入了「AI 驱动的个人知识图谱工具」担任前端开发。</div>
+      <div class="ni-time">5 小时前</div>
+    </div>
+    <div class="notif-item unread">
+      <div class="ni-type">📢 项目更新</div>
+      <div class="ni-text">「像素风农场经营」项目完成了里程碑 M1：核心玩法设计。</div>
+      <div class="ni-time">1 天前</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-type">💡 新项目推荐</div>
+      <div class="ni-text">有一个新项目「老年人健康打卡小程序」正在招募产品经理，与你的技能匹配。</div>
+      <div class="ni-time">2 天前</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-type">🏆 成就解锁</div>
+      <div class="ni-text">你已完成第一个里程碑贡献！获得「初出茅庐」成就徽章。</div>
+      <div class="ni-time">3 天前</div>
+    </div>
+  </div>
+</div>
+

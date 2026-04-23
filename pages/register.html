@@ -1,0 +1,26 @@
+<!-- ==================== REGISTER PAGE ==================== -->
+<div class="page" id="page-register">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="star" style="width:18px;height:18px;background:var(--red);clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);display:inline-block;"></span> 共创公社</div>
+      <p class="auth-subtitle">创建你的创客身份</p>
+      <div class="auth-form">
+        <div class="form-group"><label>昵称 <span style="color:var(--red);">*</span></label><input type="text" class="form-input" placeholder="你的公社昵称"></div>
+        <div class="form-group"><label>邮箱 <span style="color:var(--red);">*</span></label><input type="email" class="form-input" placeholder="your@email.com"></div>
+        <div class="form-group"><label>密码 <span style="color:var(--red);">*</span></label><input type="password" class="form-input" placeholder="至少8位"></div>
+        <div class="form-group">
+          <label>你的角色</label>
+          <div class="role-tags" style="margin-top:0.3rem;">
+            <span class="role-tag" onclick="selectAuthRole(this)">🎯 产品经理</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">🎨 设计师</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">💻 开发者</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">🧪 测试</span>
+            <span class="role-tag" onclick="selectAuthRole(this)">📣 运营</span>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="navigateTo('home');showToast('🎉 注册成功！欢迎加入共创公社','success')">创建账号</button>
+      </div>
+      <div class="auth-switch">已有账号？<span onclick="navigateTo('login')">立即登录</span></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<!-- ==================== CREATE PROJECT PAGE ==================== -->
+<div class="page" id="page-create">
+  <div class="create-page">
+    <div class="create-inner">
+      <div class="create-header">
+        <h1>💡 发起你的想法</h1>
+        <p>把你的创意变成一个真实的项目，找到志同道合的队友一起实现。</p>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">1</span> 项目基本信息</h2>
+        <div class="form-group">
+          <label>项目名称 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="create-name" placeholder="给你的项目起个名字">
+        </div>
+        <div class="form-group">
+          <label>一句话描述 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="create-tagline" placeholder="用一句话说明这个项目做什么">
+        </div>
+        <div class="form-group">
+          <label>详细描述 <span class="required">*</span></label>
+          <textarea class="form-input" id="create-desc" placeholder="描述你想解决的问题、目标用户、核心功能、你的愿景……越详细越好，这样别人更容易理解并加入。"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>项目类别</label>
+            <select class="form-input" id="create-category">
+              <option value="app">移动应用</option>
+              <option value="web">Web 应用</option>
+              <option value="game">游戏</option>
+              <option value="tool">工具</option>
+              <option value="ai">AI / 机器学习</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>预计周期</label>
+            <select class="form-input" id="create-duration">
+              <option value="2weeks">2 周</option>
+              <option value="1month" selected>1 个月</option>
+              <option value="2months">2 个月</option>
+              <option value="3months">3 个月+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">2</span> 团队角色配置</h2>
+        <p style="font-size:0.8rem;color:var(--warm-gray);margin-bottom:1rem;">设置每个角色需要多少人。你需要先认领一个角色作为发起人。</p>
+        <div class="role-setup" id="role-setup">
+          <div class="role-setup-item">
+            <span class="rs-emoji">🎯</span>
+            <span class="rs-name">产品经理</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">🎨</span>
+            <span class="rs-name">设计师</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">💻</span>
+            <span class="rs-name">前端开发</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">⚙️</span>
+            <span class="rs-name">后端开发</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>1</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+          <div class="role-setup-item">
+            <span class="rs-emoji">🧪</span>
+            <span class="rs-name">测试工程师</span>
+            <div class="rs-count">
+              <button onclick="changeRoleCount(this,-1)">−</button>
+              <span>0</span>
+              <button onclick="changeRoleCount(this,1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2><span class="step-badge">3</span> 里程碑规划</h2>
+        <p style="font-size:0.8rem;color:var(--warm-gray);margin-bottom:1rem;">设定项目的关键节点，让参与者了解整体节奏。</p>
+        <div class="form-group">
+          <label>里程碑 1</label>
+          <input type="text" class="form-input" placeholder="例：完成需求文档和原型设计" id="ms-1">
+        </div>
+        <div class="form-group">
+          <label>里程碑 2</label>
+          <input type="text" class="form-input" placeholder="例：完成核心功能开发" id="ms-2">
+        </div>
+        <div class="form-group">
+          <label>里程碑 3</label>
+          <input type="text" class="form-input" placeholder="例：测试、修复、上线" id="ms-3">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="navigateTo('home')">取消</button>
+        <button class="btn-primary" onclick="submitProject()">🚀 发布项目</button>
+      </div>
+    </div>
+  </div>
+</div>

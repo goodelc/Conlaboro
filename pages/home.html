@@ -1,0 +1,143 @@
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      开放 · 共享 · 协作
+    </div>
+    <h1>每个人都有<br><span class="highlight">创造力</span></h1>
+    <p class="hero-sub">
+      你有一个想法，这里有和你一样的人。<br>
+      不需要公司，不需要投资，不需要简历。<br>
+      一起把想法变成真实的产品。
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="navigateTo('home');setTimeout(()=>document.getElementById('projects').scrollIntoView({behavior:'smooth'}),100)">浏览项目</button>
+      <button class="btn-secondary" onclick="navigateTo('create')">发起你的想法</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">1,247</div><div class="label">创客</div></div>
+      <div class="hero-stat"><div class="num">386</div><div class="label">项目</div></div>
+      <div class="hero-stat"><div class="num">89</div><div class="label">已完成</div></div>
+    </div>
+  </section>
+
+  <section class="manifesto reveal">
+    <div class="manifesto-inner">
+      <div class="manifesto-label">我们的信念</div>
+      <div class="manifesto-quote">
+        "各尽所能，<span class="em">按需协作</span>。<br>每个人的创造力都值得被看见。"
+      </div>
+      <div class="manifesto-divider"></div>
+      <p class="manifesto-text">
+        我们相信，好的想法不应该因为"没有团队"而死掉。<br>
+        我们相信，有能力的人不应该因为"没有经验"而被拒绝。<br>
+        我们相信，当一群陌生人为了同一个目标聚在一起，奇迹就会发生。
+      </p>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="section-header reveal">
+      <span class="label">How it works</span>
+      <h2>四个步骤，从想法到产品</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">💡</div>
+        <h3>发布想法</h3>
+        <p>写下你想做什么，越具体越好。描述问题、用户、愿景。不需要完美，只需要真实。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤝</div>
+        <h3>组建团队</h3>
+        <p>产品、设计、开发、测试……每个角色都有人来认领。志同道合的人自动匹配。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-icon">🔨</div>
+        <h3>协作共建</h3>
+        <p>按里程碑推进，每个阶段有明确交付物。透明协作，贡献实时可见。</p>
+      </div>
+      <div class="how-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-icon">🚀</div>
+        <h3>共享成果</h3>
+        <p>产品上线，所有参与者获得贡献记录。这就是你的作品集，这就是你的经验。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="section-header reveal">
+      <span class="label">Explore Projects</span>
+      <h2>正在招募队友的项目</h2>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="搜索项目名称、描述、角色…" oninput="handleSearch()">
+      </div>
+      <div class="search-filters">
+        <button class="search-filter-chip active" onclick="filterByCategory('all', this)">全部</button>
+        <button class="search-filter-chip" onclick="filterByCategory('app', this)">📱 移动应用</button>
+        <button class="search-filter-chip" onclick="filterByCategory('web', this)">🌐 Web 应用</button>
+        <button class="search-filter-chip" onclick="filterByCategory('game', this)">🎮 游戏</button>
+        <button class="search-filter-chip" onclick="filterByCategory('ai', this)">🤖 AI</button>
+        <button class="search-filter-chip" onclick="filterByCategory('tool', this)">🔧 工具</button>
+        <span class="search-results-info" id="search-results-info"></span>
+      </div>
+    </div>
+    <div class="projects-grid" id="projects-grid">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="no-results" id="no-results" style="display:none;">
+      <div class="nr-icon">🔍</div>
+      <h3>没有找到匹配的项目</h3>
+      <p>试试其他关键词或筛选条件</p>
+    </div>
+  </section>
+
+  <section class="roles-section" id="roles">
+    <div class="section-header reveal">
+      <span class="label">Find Your Role</span>
+      <h2>找到你的位置</h2>
+    </div>
+    <div class="roles-grid">
+      <div class="role-card reveal"><span class="role-emoji">🎯</span><h3>产品经理</h3><p class="role-count"><span>128</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">🎨</span><h3>设计师</h3><p class="role-count"><span>96</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">💻</span><h3>开发者</h3><p class="role-count"><span>234</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">🧪</span><h3>测试工程师</h3><p class="role-count"><span>67</span> 人在线</p></div>
+      <div class="role-card reveal"><span class="role-emoji">📣</span><h3>运营 / 增长</h3><p class="role-count"><span>89</span> 人在线</p></div>
+    </div>
+  </section>
+
+  <section class="principles" id="principles">
+    <div class="section-header reveal">
+      <span class="label">Our Principles</span>
+      <h2>公社原则</h2>
+    </div>
+    <div class="principles-grid">
+      <div class="principle reveal"><div class="p-num">01</div><h3>贡献即权力</h3><p>不靠头衔说话，靠贡献说话。谁做的事情多，谁就有更大的话语权。代码、文档、设计——一切贡献都被记录。</p></div>
+      <div class="principle reveal"><div class="p-num">02</div><h3>成果共享</h3><p>项目成果属于所有参与者。默认采用开源协议，任何人都可以使用、改进、再创造。知识不应该被垄断。</p></div>
+      <div class="principle reveal"><div class="p-num">03</div><h3>透明协作</h3><p>所有讨论、决策、进度都公开可见。没有暗箱操作，没有办公室政治。每个人都能看到项目的全貌。</p></div>
+      <div class="principle reveal"><div class="p-num">04</div><h3>自愿加入</h3><p>没有人被强迫做任何事。你选择感兴趣的项目，你选择适合自己的角色。随时可以退出，没有负担。</p></div>
+      <div class="principle reveal"><div class="p-num">05</div><h3>失败自由</h3><p>项目失败了？没关系。你获得的协作经验、作品集素材、结识的伙伴——这些永远不会消失。</p></div>
+      <div class="principle reveal"><div class="p-num">06</div><h3>多元包容</h3><p>不论你的背景、经验、年龄、地域。只要你愿意创造，你就是公社的一员。零经验也能参与。</p></div>
+    </div>
+  </section>
+
+  <section class="cta" id="cta">
+    <h2>你的想法，值得被实现</h2>
+    <p>不要让好想法烂在脑子里。发出来，找到你的队友，一起做点什么。</p>
+    <button class="btn-white" onclick="navigateTo('create')">免费加入共创公社</button>
+  </section>
+
+  <footer>
+    <p>共创公社 · Where Ideas Find Their Team · <a href="#">GitHub</a> · <a href="#">Twitter</a> · <a href="#">Discord</a></p>
+  </footer>
+</div>
+

@@ -1,0 +1,184 @@
+<!-- ==================== DASHBOARD PAGE ==================== -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-page">
+    <div class="dashboard-inner">
+      <div class="dash-header">
+        <h1>我的公社</h1>
+        <div style="display:flex;gap:0.8rem;">
+          <button class="btn-secondary" onclick="navigateTo('settings')" style="padding:0.7rem 1.5rem;font-size:0.85rem;">⚙️ 设置</button>
+          <button class="btn-primary" onclick="navigateTo('create')">+ 发起新项目</button>
+        </div>
+      </div>
+
+      <!-- Honor Bar -->
+      <div class="honor-bar">
+        <div class="honor-level">
+          <div class="hl-icon">3</div>
+          <div class="hl-text">
+            <h4>建设者</h4>
+            <p>LEVEL 3 · Lv.3</p>
+          </div>
+        </div>
+        <div class="honor-stats">
+          <div class="honor-stat">
+            <div class="hs-num">847</div>
+            <div class="hs-label">贡献值</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">2</div>
+            <div class="hs-label">参与项目</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">12</div>
+            <div class="hs-label">贡献次数</div>
+          </div>
+          <div class="honor-stat">
+            <div class="hs-num">6<span class="hs-plus">/16</span></div>
+            <div class="hs-label">徽章</div>
+          </div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-label">
+            <span>847 / 1500</span>
+            <span>→ 引领者</span>
+          </div>
+          <div class="xp-bar"><div class="xp-bar-fill" style="width:56%"></div></div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <!-- Badge Wall -->
+        <div class="dash-section" style="grid-column: 1 / -1;">
+          <div class="dash-section-header">
+            <h3>🏅 成就徽章墙</h3>
+            <span class="count">6 / 16 已解锁</span>
+          </div>
+          <div class="badge-wall" id="badge-wall">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h3>📋 我的项目</h3>
+            <span class="count">2</span>
+          </div>
+          <ul class="dash-list">
+            <li class="dash-list-item" onclick="navigateTo('detail', 0)">
+              <div class="dli-icon" style="background:rgba(212,33,61,0.1);">🍳</div>
+              <div class="dli-info">
+                <h4>面向独居青年的社交做饭 App</h4>
+                <p>产品经理 · 进行中</p>
+              </div>
+              <span class="dli-status tag-progress" style="background:rgba(212,168,67,0.15);color:#8B6914;">进行中</span>
+            </li>
+            <li class="dash-list-item" onclick="navigateTo('detail', 1)">
+              <div class="dli-icon" style="background:rgba(212,168,67,0.1);">🧠</div>
+              <div class="dli-info">
+                <h4>AI 驱动的个人知识图谱工具</h4>
+                <p>设计师 · 进行中</p>
+              </div>
+              <span class="dli-status tag-progress" style="background:rgba(212,168,67,0.15);color:#8B6914;">进行中</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contribution Timeline -->
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h3>📜 贡献记录</h3>
+            <span class="count">最近动态</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot badge">🏅</div>
+              <div class="timeline-content">
+                <h4>解锁徽章「第一把火」</h4>
+                <p>2 小时前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot xp">+30</div>
+              <div class="timeline-content">
+                <h4>完成里程碑任务「用户调研报告」 <span class="xp-gain">+30 XP</span></h4>
+                <p>社交做饭 App · 5 小时前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot project">🤝</div>
+              <div class="timeline-content">
+                <h4>加入「AI 知识图谱工具」担任设计师 <span class="xp-gain">+10 XP</span></h4>
+                <p>1 天前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot xp">+15</div>
+              <div class="timeline-content">
+                <h4>提交竞品分析报告 <span class="xp-gain">+15 XP</span></h4>
+                <p>社交做饭 App · 3 天前</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot badge">🏅</div>
+              <div class="timeline-content">
+                <h4>解锁徽章「初心者」</h4>
+                <p>2025年3月15日</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot project">🔥</div>
+              <div class="timeline-content">
+                <h4>发起项目「社交做饭 App」 <span class="xp-gain">+50 XP</span></h4>
+                <p>2025年4月10日</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-section" style="grid-column: 1 / -1;">
+          <div class="dash-section-header">
+            <h3>📊 能力图谱</h3>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-item">
+              <div class="skill-emoji">🎯</div>
+              <div class="skill-name">需求分析</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:65%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">📝</div>
+              <div class="skill-name">PRD 撰写</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:55%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🎨</div>
+              <div class="skill-name">UI 设计</div>
+              <div class="skill-level">初级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:35%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🤝</div>
+              <div class="skill-name">团队协作</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:70%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">📊</div>
+              <div class="skill-name">竞品分析</div>
+              <div class="skill-level">中级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:60%"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-emoji">🧪</div>
+              <div class="skill-name">用户调研</div>
+              <div class="skill-level">初级</div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:25%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

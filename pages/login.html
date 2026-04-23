@@ -1,0 +1,20 @@
+<!-- ==================== LOGIN PAGE ==================== -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="star" style="width:18px;height:18px;background:var(--red);clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);display:inline-block;"></span> 共创公社</div>
+      <p class="auth-subtitle">加入公社，和志同道合的人一起创造</p>
+      <div class="auth-oauth">
+        <button class="auth-oauth-btn" onclick="navigateTo('home');showToast('GitHub 登录演示','success')">🐙 使用 GitHub 登录</button>
+        <button class="auth-oauth-btn" onclick="navigateTo('home');showToast('Google 登录演示','success')">📧 使用 Google 登录</button>
+      </div>
+      <div class="auth-divider">或</div>
+      <div class="auth-form">
+        <div class="form-group"><label>邮箱</label><input type="email" class="form-input" placeholder="your@email.com"></div>
+        <div class="form-group"><label>密码</label><input type="password" class="form-input" placeholder="输入密码"></div>
+        <button class="btn-primary" style="width:100%;" onclick="navigateTo('home');showToast('登录成功，欢迎回来！','success')">登录</button>
+      </div>
+      <div class="auth-switch">还没有账号？<span onclick="navigateTo('register')">立即注册</span></div>
+    </div>
+  </div>
+</div>

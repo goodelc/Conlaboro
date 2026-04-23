@@ -1,0 +1,22 @@
+<!-- ==================== JOIN MODAL ==================== -->
+<div class="modal-overlay" id="join-modal">
+  <div class="modal">
+    <h2>🤝 申请加入项目</h2>
+    <p id="join-modal-desc">选择你想担任的角色，向项目发起人发送申请。</p>
+    <div class="form-group">
+      <label>选择角色 <span class="required">*</span></label>
+      <select class="form-input" id="join-role-select">
+        <!-- Populated by JS -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>自我介绍 <span class="required">*</span></label>
+      <textarea class="form-input" id="join-intro" placeholder="简单介绍你自己，为什么想加入这个项目，你能贡献什么……" style="min-height:100px;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeJoinModal()">取消</button>
+      <button class="btn-primary" onclick="submitJoin()">提交申请</button>
+    </div>
+  </div>
+</div>
+

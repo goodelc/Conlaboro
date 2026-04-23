@@ -1,0 +1,99 @@
+<!-- ==================== SETTINGS PAGE ==================== -->
+<div class="page" id="page-settings">
+  <div class="settings-page">
+    <div class="settings-inner">
+      <div class="settings-header">
+        <h1>⚙️ 个人设置</h1>
+        <p>管理你的资料、偏好和通知</p>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">👤 个人资料</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>昵称</h4><p>你在公社的显示名称</p></div>
+          <div class="sr-value"><span>你</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>个人简介</h4><p>让别人了解你</p></div>
+          <div class="sr-value"><span>产品经理 / 设计师</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>技能标签</h4><p>展示你的专业能力</p></div>
+          <div class="sr-value"><span>需求分析、PRD撰写、UI设计</span><button class="edit-btn" onclick="showToast('编辑功能演示','info')">修改</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🎯 角色偏好</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>你想担任的角色</h4><p>项目推荐会优先匹配这些角色</p></div>
+          <div class="sr-value">
+            <div class="role-tags">
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🎯 产品经理</span>
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🎨 设计师</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">💻 开发者</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🧪 测试</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">📣 运营</span>
+            </div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>偏好项目类别</h4><p>你感兴趣的项目类型</p></div>
+          <div class="sr-value">
+            <div class="role-tags">
+              <span class="role-tag active" onclick="this.classList.toggle('active')">📱 App</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🌐 Web</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🎮 游戏</span>
+              <span class="role-tag active" onclick="this.classList.toggle('active')">🤖 AI</span>
+              <span class="role-tag" onclick="this.classList.toggle('active')">🔧 工具</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔔 通知设置</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>申请状态更新</h4><p>你的项目申请被接受或拒绝时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>项目动态</h4><p>你参与的项目有新动态时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>新成员加入</h4><p>有人加入你发起的项目时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>项目推荐</h4><p>有匹配你技能的新项目时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>成就解锁</h4><p>获得新徽章或等级提升时通知</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔒 隐私设置</div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>公开个人主页</h4><p>其他用户可以查看你的资料和贡献</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>显示在线状态</h4><p>其他用户可以看到你是否在线</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="sr-label"><h4>显示贡献值</h4><p>在排行榜和个人主页上展示你的贡献值</p></div>
+          <div class="sr-value"><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:2rem;">
+        <button class="btn-secondary" onclick="navigateTo('dashboard')">← 返回我的公社</button>
+      </div>
+    </div>
+  </div>
+</div>

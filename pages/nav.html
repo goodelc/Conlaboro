@@ -1,0 +1,26 @@
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo" onclick="navigateTo('home')">
+      <span class="star"></span>
+      共创公社
+    </div>
+    <ul class="nav-links">
+      <li><span onclick="navigateTo('home')">首页</span></li>
+      <li><span onclick="navigateTo('home');setTimeout(()=>document.getElementById('projects').scrollIntoView({behavior:'smooth'}),100)">探索项目</span></li>
+      <li><span onclick="navigateTo('leaderboard')">排行榜</span></li>
+      <li><span onclick="navigateTo('dashboard')">我的公社</span></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon-btn" onclick="toggleNotif()" title="通知">
+      🔔
+      <span class="badge" id="notif-badge">3</span>
+    </div>
+    <span class="nav-links" style="gap:1rem;">
+      <span onclick="navigateTo('showcase')" style="font-size:0.75rem;font-weight:500;letter-spacing:0.08em;cursor:pointer;color:var(--ink-light);transition:color 0.3s;">成果展厅</span>
+    </span>
+    <div class="nav-avatar" onclick="navigateTo('dashboard')">你</div>
+    <button class="nav-cta" onclick="navigateTo('create')">+ 发起项目</button>
+  </div>
+</nav>
