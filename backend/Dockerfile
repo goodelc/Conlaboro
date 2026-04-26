@@ -1,5 +1,5 @@
 # 构建阶段
-FROM maven:3.8.8-openjdk-17 as build
+FROM maven:3.9.6-eclipse-temurin-17 as build
 
 # 设置工作目录
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # 运行阶段
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 # 设置工作目录
 WORKDIR /app
