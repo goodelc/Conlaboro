@@ -197,7 +197,7 @@ jobs:
                 networks:
                   - conlaboro-network
                 volumes:
-                  - postgres-/var/lib/postgresql/data
+                  - postgres-data:/var/lib/postgresql/data
                 environment:
                   - POSTGRES_DB=conlaboro
                   - POSTGRES_USER=postgres
@@ -209,7 +209,7 @@ jobs:
                 driver: bridge
 
             volumes:
-              postgres-
+              postgres-data:
             EOF
 
             echo "📦 Pulling latest images..."
