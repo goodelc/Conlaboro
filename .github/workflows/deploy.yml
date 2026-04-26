@@ -195,7 +195,7 @@ jobs:
                 restart: unless-stopped
 
               postgres:
-                image: registry.cn-hangzhou.aliyuncs.com/library/postgres:14-alpine
+                image: anolis-registry.cn-zhangjiakou.cr.aliyuncs.com/openanolis/postgres
                 ports:
                   - "5432:5432"
                 networks:
