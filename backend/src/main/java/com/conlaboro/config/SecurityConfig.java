@@ -39,9 +39,24 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // 公开接口
+                // 认证相关 - 公开
                 .requestMatchers("/api/auth/**").permitAll()
+                // 项目列表和详情 - 允许游客浏览
+                .requestMatchers(HttpMethod.GET, "/api/projects").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/projects/{id:[\\d]+}").permitAll()
+                // 用户相关 - 允许游客查看
+                .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+                // 排行榜 - 公开
+                .requestMatchers(HttpMethod.GET, "/api/leaderboard").permitAll()
+                // 统计数据 - 公开
+                .requestMatchers(HttpMethod.GET, "/api/stats").permitAll()
+                // 徽章列表 - 公开
+                .requestMatchers(HttpMethod.GET, "/api/badges").permitAll()
+                // 项目活动流 - 公开
+                .requestMatchers(HttpMethod.GET, "/api/activities/project/{projectId:[\\d]+}").permitAll()
+                // OPTIONS 预检请求
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // 健康检查
                 .requestMatchers("/actuator/**").permitAll()
                 // 其他需要认证
                 .anyRequest().authenticated()

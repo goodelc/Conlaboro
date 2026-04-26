@@ -58,6 +58,29 @@ public class ApplicationService {
                         .orderByAsc(Application::getCreatedAt));
     }
 
+    /** 验证用户是否为项目发起人 */
+    public void validateProjectOwner(Long projectId, Long userId) {
+        Project project = projectMapper.selectById(projectId);
+        if (project == null) {
+            throw new BizException(ErrorCode.PROJECT_NOT_FOUND);
+        }
+        if (!project.getAuthorId().equals(userId)) {
+            throw new BizException(403, "只有项目发起人可以查看申请列表");
+        }
+    }
+
+    /** 验证审批权限（是否为项目发起人） */
+    public void validateReviewPermission(Long applicationId, Long reviewerId) {
+        Application app = applicationMapper.selectById(applicationId);
+        if (app == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        Project project = projectMapper.selectById(app.getProjectId());
+        if (project == null || !project.getAuthorId().equals(reviewerId)) {
+            throw new BizException(403, "只有项目发起人可以审批申请");
+        }
+    }
+
     /** 审批申请（通过/拒绝） */
     @Transactional
     public void review(Long applicationId, Long reviewerId, String action) {

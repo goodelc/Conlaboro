@@ -58,7 +58,7 @@ public class ProjectController {
     /** 获取项目的申请列表 */
     @GetMapping("/{id}/applications")
     public Result<List<?>> getApplications(@PathVariable Long id, @RequestAttribute("userId") Long userId) {
-        // TODO: 验证当前用户是项目发起人
+        applicationService.validateProjectOwner(id, userId);
         return Result.ok(applicationService.getProjectApplications(id));
     }
 
@@ -68,6 +68,7 @@ public class ProjectController {
             @PathVariable Long appId,
             @PathVariable String action,
             @RequestAttribute("userId") Long userId) {
+        applicationService.validateReviewPermission(appId, userId);
         applicationService.review(appId, userId, action);
         return Result.ok(null);
     }

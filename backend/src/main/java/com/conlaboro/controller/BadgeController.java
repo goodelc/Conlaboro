@@ -21,10 +21,7 @@ public class BadgeController {
     }
 
     @GetMapping("/mine")
-    public Result<List<Badge>> getMyBadges(@RequestParam(required = false) Long userId) {
-        if (userId == null) {
-            return Result.ok(badgeService.getAllBadges());
-        }
+    public Result<List<Badge>> getMyBadges(@RequestAttribute("userId") Long userId) {
         return Result.ok(badgeService.getBadgesWithEarnStatus(userId));
     }
 }
