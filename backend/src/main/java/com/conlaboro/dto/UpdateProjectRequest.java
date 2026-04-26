@@ -8,4 +8,5 @@ public class UpdateProjectRequest {
     private String description;
     private String category;     // app / ai / web / tool / game
     private Integer duration;    // 预计周期（天）
+    private String status;       // open / progress / done
 }

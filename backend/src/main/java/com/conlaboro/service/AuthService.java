@@ -9,10 +9,12 @@ import com.conlaboro.entity.User;
 import com.conlaboro.exception.BizException;
 import com.conlaboro.mapper.UserMapper;
 import com.conlaboro.security.JwtTokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -20,9 +22,9 @@ public class AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BadgeAutoService badgeAutoService;
 
     public AuthResponse register(RegisterRequest req) {
-        // 检查邮箱是否已注册
         Long count = userMapper.selectCount(
                 new LambdaQueryWrapper<User>().eq(User::getEmail, req.getEmail()));
         if (count > 0) {
@@ -43,6 +45,12 @@ public class AuthService {
         user.setDeleted(0);
 
         userMapper.insert(user);
+
+        try {
+            badgeAutoService.checkAndGrant(user.getId(), "first_login");
+        } catch (Exception e) {
+            log.warn("首次登录徽章授予失败（不影响注册流程）: {}", e.getMessage());
+        }
 
         String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId());
         return new AuthResponse(user.getId(), user.getName(), user.getEmail(), token);

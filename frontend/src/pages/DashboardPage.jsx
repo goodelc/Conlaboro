@@ -1,6 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
+import { getMyBadges } from '../api/badge'
 import { STATUS_MAP, STATUS_COLORS, NEXT_LEVEL_XP, getProjectEmoji, LEVEL_COLORS } from '../constants'
 
 function BadgeItem({ badge }) {
@@ -35,6 +37,7 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const { isLoggedIn, currentUser } = useApp()
   const { badges, projects, users } = useData()
+  const [userBadges, setUserBadges] = useState([])
 
   /* ── 未登录保护（RequireAuth 已拦截，双重保险）── */
   if (!isLoggedIn || !currentUser) {
@@ -49,6 +52,18 @@ export default function DashboardPage() {
       </div>
     )
   }
+
+  /* ── 从 API 获取用户徽章数据 ── */
+  useEffect(() => {
+    if (isLoggedIn && currentUser?.id) {
+      getMyBadges(currentUser.id)
+        .then(data => {
+          const earnedBadges = (data || []).filter(b => b.condition === 'true')
+          setUserBadges(earnedBadges)
+        })
+        .catch(err => console.error('Failed to fetch user badges:', err))
+    }
+  }, [isLoggedIn, currentUser?.id])
 
   /* ── 从 users 数据补全 currentUser 的完整字段 ── */
   const raw = users[currentUser.name] || currentUser
@@ -68,11 +83,13 @@ export default function DashboardPage() {
   }
   const userProjects = (projects || []).filter(item => {
     const p = item.project || item
-    return (item.roles || []).length > 0
+    const roles = item.roles || []
+    // 检查是否有角色属于当前用户
+    return roles.some(role => role.members && role.members.includes(u.name))
   })
   const nextXp = NEXT_LEVEL_XP[u.level] || 1500
   const xpPct = Math.min(100, Math.round((u.xp / nextXp) * 100))
-  const earnedBadgeCount = (u.earnedBadges || []).length
+  const earnedBadgeCount = userBadges.length
 
   /** 下一个等级名称 */
   const nextLevelNames = { 1:'创客', 2:'建设者', 3:'骨干', 4:'引领者', 5:'先驱', 6:'传奇' }
@@ -113,7 +130,7 @@ export default function DashboardPage() {
               <div className="dash-section-header"><h3>🏅 成就徽章墙</h3><span className="count">{earnedBadgeCount} / {badges.length} 已解锁</span></div>
               <div className="badge-wall" id="badge-wall">
                 {badges.map(b => {
-                  const isEarned = u.earnedBadges && u.earnedBadges.includes(b.id)
+                  const isEarned = userBadges.some(ub => ub.badgeId === b.id || ub.id === b.id)
                   return <BadgeItem key={b.id} badge={{ ...b, earned: isEarned }} />
                 })}
               </div>
@@ -126,7 +143,9 @@ export default function DashboardPage() {
                 {userProjects.length > 0 ? userProjects.map(item => {
                   const p = item.project || item
                   const roles = item.roles || []
-                  const role = roles[0] || null
+                  // 找到当前用户的角色
+                  const userRole = roles.find(role => role.members && role.members.includes(u.name))
+                  const role = userRole || null
                   const rgb = parseInt((u.color || '#D4213d').slice(1), 16)
                   const rVal = (rgb >> 16) & 255, gVal = (rgb >> 8) & 255, bVal = rgb & 255
                   return (

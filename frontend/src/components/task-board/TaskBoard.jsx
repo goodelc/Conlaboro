@@ -9,14 +9,8 @@ function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showTo
     return <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)' }}>该项目尚未创建里程碑。请先在下方添加里程碑。</p>
   }
 
-  // 检查是否有任务
-  const hasTasks = ms.some(m => m.tasks && Array.isArray(m.tasks) && m.tasks.length > 0 && typeof m.tasks[0] === 'object')
-  if (!hasTasks) {
-    return <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)' }}>该项目尚未创建详细任务。请在任务看板中添加任务。</p>
-  }
-
-  const allTasks = ms.flatMap(m => m.tasks.map(t => ({ ...t, msStatus: m.status })))
-  const openTasks = allTasks.filter(t => t.status === 'open')
+  const allTasks = ms.flatMap(m => (m.tasks || []).map(t => ({ ...t, msStatus: m.status })))
+  const openTasks = allTasks.filter(t => t.status === 'open' || t.status === undefined)
   const progressTasks = allTasks.filter(t => t.status === 'progress')
   const doneTasks = allTasks.filter(t => t.status === 'done')
 
@@ -42,12 +36,15 @@ function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showTo
                   showToast={showToast}
                 />
               ))}
-              <AddCard 
-                projectId={projectId}
-                milestones={milestones}
-                onTaskCreated={onTaskCreated}
-                showToast={showToast}
-              />
+              {/* 只在"待认领"列显示添加按钮 */}
+              {col.key === 'open' && (
+                <AddCard 
+                  projectId={projectId}
+                  milestones={milestones}
+                  onTaskCreated={onTaskCreated}
+                  showToast={showToast}
+                />
+              )}
             </div>
           </div>
         ))}

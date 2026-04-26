@@ -9,18 +9,21 @@ import com.conlaboro.exception.BizException;
 import com.conlaboro.mapper.ApplicationMapper;
 import com.conlaboro.mapper.ProjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApplicationService {
 
     private final ApplicationMapper applicationMapper;
     private final ProjectMapper projectMapper;
+    private final BadgeAutoService badgeAutoService;
 
     /** 申请加入项目 */
     @Transactional
@@ -99,6 +102,12 @@ public class ApplicationService {
         if ("approved".equals(newStatus)) {
             // 通过后，更新项目角色的 filled 计数（简化处理，实际可关联到具体角色）
             // 这里仅标记通过，角色成员管理在后续接口中处理
+
+            try {
+                badgeAutoService.checkAndGrant(app.getApplicantId(), "project_joined");
+            } catch (Exception e) {
+                log.warn("徽章自动授予失败（不影响主流程）: {}", e.getMessage());
+            }
         }
     }
 }

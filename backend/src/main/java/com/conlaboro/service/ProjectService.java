@@ -10,6 +10,7 @@ import com.conlaboro.entity.*;
 import com.conlaboro.exception.BizException;
 import com.conlaboro.mapper.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
@@ -29,6 +31,7 @@ public class ProjectService {
     private final CommentMapper commentMapper;
     private final FileMapper fileMapper;
     private final UserMapper userMapper;
+    private final BadgeAutoService badgeAutoService;
 
     /** 创建项目（含角色和里程碑），事务操作 */
     @Transactional
@@ -131,6 +134,14 @@ public class ProjectService {
         comment.setUserColor(userColor);
         comment.setText(text);
         commentMapper.insert(comment);
+        try {
+            User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, userName));
+            if (user != null) {
+                badgeAutoService.checkAndGrant(user.getId(), "comment_posted");
+            }
+        } catch (Exception e) {
+            log.warn("徽章自动授予失败: {}", e.getMessage());
+        }
         return comment;
     }
 
@@ -169,6 +180,17 @@ public class ProjectService {
         if (task == null) throw new BizException(ErrorCode.NOT_FOUND);
         task.setStatus(status);
         if ("done".equals(status)) {
+            try {
+                String assigneeName = task.getAssignee();
+                if (assigneeName != null) {
+                    User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, assigneeName));
+                    if (user != null) {
+                        badgeAutoService.checkAndGrant(user.getId(), "task_completed");
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("徽章自动授予失败: {}", e.getMessage());
+            }
             task.setAssignee(null); // 完成后清除负责人
         }
         taskMapper.updateById(task);
@@ -204,6 +226,14 @@ public class ProjectService {
         if (req.getDescription() != null) project.setDescription(req.getDescription());
         if (req.getCategory() != null) project.setCategory(req.getCategory());
         if (req.getDuration() != null) project.setDuration(req.getDuration());
+        if ("done".equals(req.getStatus()) && !"done".equals(project.getStatus())) {
+            try {
+                badgeAutoService.checkAndGrant(project.getAuthorId(), "project_done");
+            } catch (Exception e) {
+                log.warn("徽章自动授予失败: {}", e.getMessage());
+            }
+        }
+        if (req.getStatus() != null) project.setStatus(req.getStatus());
         projectMapper.updateById(project);
     }
 
