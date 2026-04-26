@@ -102,7 +102,6 @@ export default function DetailPage() {
 
   const p = detail.project || {}
   p.roles = detail.roles || []
-  p.milestones = detail.milestones || []
   p.tasks = detail.tasks || []
   p.comments = (detail.comments || []).map(c => ({
     user: c.authorName || c.author || c.userName || '匿名',
@@ -115,6 +114,19 @@ export default function DetailPage() {
     icon: '📄',
     uploader: f.uploaderName || f.uploader || '未知',
     time: f.time || f.createdAt || '',
+  }))
+
+  // 将任务嵌套到对应的里程碑下
+  const tasksByMilestone = {}
+  ;(detail.tasks || []).forEach(t => {
+    if (!tasksByMilestone[t.milestoneId]) {
+      tasksByMilestone[t.milestoneId] = []
+    }
+    tasksByMilestone[t.milestoneId].push(t)
+  })
+  p.milestones = (detail.milestones || []).map(ms => ({
+    ...ms,
+    tasks: tasksByMilestone[ms.id] || []
   }))
 
   return (
