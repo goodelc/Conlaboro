@@ -19,6 +19,7 @@ import RegisterPage from './pages/RegisterPage'
 import CreatePage from './pages/CreatePage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
+import RecruitingProjectsPage from './pages/RecruitingProjectsPage'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/detail/:id" element={<DetailPage />} />
+                <Route path="/recruiting" element={<RecruitingProjectsPage />} />
                 <Route path="/profile/:name" element={<ProfilePage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage />} />
                 <Route path="/showcase" element={<ShowcasePage />} />
