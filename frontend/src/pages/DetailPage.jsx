@@ -4,9 +4,11 @@ import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
 import { STATUS_MAP, TAG_CLASS } from '../constants'
 import { getProjectDetail, createMilestone, updateMilestone, deleteMilestone } from '../api'
+import { getProjectActivities } from '../api/activity'
 import TaskBoard from '../components/task-board/TaskBoard'
 import CollabSpace from '../components/collab-space/CollabSpace'
 import ProjectEditModal from '../components/modals/ProjectEditModal'
+import ContributionHeatmap from '../components/ContributionHeatmap'
 
 
 
@@ -17,6 +19,7 @@ export default function DetailPage() {
   const { users } = useData()
   const [detail, setDetail] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [activities, setActivities] = useState([])
 
   // 项目编辑弹窗状态
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -31,15 +34,44 @@ export default function DetailPage() {
   // 任务操作回调
   function handleTaskCreated() {
     getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    getProjectActivities(id).then(data => {
+      const transformedActivities = (data || []).map(activity => ({
+        user: activity.userName,
+        color: activity.userColor,
+        time: activity.createdAt,
+        text: activity.text
+      }))
+      setActivities(transformedActivities)
+    }).catch(() => {})
   }
 
   function handleTaskClaimed() {
     getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    getProjectActivities(id).then(data => {
+      const transformedActivities = (data || []).map(activity => ({
+        user: activity.userName,
+        color: activity.userColor,
+        time: activity.createdAt,
+        text: activity.text
+      }))
+      setActivities(transformedActivities)
+    }).catch(() => {})
   }
 
   useEffect(() => {
-    getProjectDetail(id).then(data => {
-      setDetail(data)
+    Promise.all([
+      getProjectDetail(id),
+      getProjectActivities(id)
+    ]).then(([detailRes, activitiesRes]) => {
+      setDetail(detailRes)
+      // 转换活动数据字段名，适配前端组件
+      const transformedActivities = (activitiesRes || []).map(activity => ({
+        user: activity.userName,
+        color: activity.userColor,
+        time: activity.createdAt,
+        text: activity.text
+      }))
+      setActivities(transformedActivities)
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [id])
@@ -170,14 +202,16 @@ export default function DetailPage() {
               <div className="detail-section contrib-ranking">
                 <h2>🏆 贡献者排行</h2>
                 <div className="contrib-summary">
-                  {[
-                    [p.totalHours || 0, '总用时（小时）'],
-                    [p.totalCommits || 0, '总提交次数'],
-                    [p.contributors?.length || 0, '贡献者人数'],
-                    ['100%', '完成度'],
-                  ].map(([val, label]) => (
-                    <div key={label} className="contrib-summary-item"><div className="csi-num">{val}</div><div className="csi-label">{label}</div></div>
-                  ))}
+                  {
+                    [
+                      [p.totalHours || 0, '总用时（小时）'],
+                      [p.totalCommits || 0, '总提交次数'],
+                      [p.contributors?.length || 0, '贡献者人数'],
+                      ['100%', '完成度'],
+                    ].map(([val, label]) => (
+                      <div key={label} className="contrib-summary-item"><div className="csi-num">{val}</div><div className="csi-label">{label}</div></div>
+                    ))
+                  }
                 </div>
                 <div className="contrib-list">
                   {p.contributors.map((c, i) => {
@@ -202,6 +236,9 @@ export default function DetailPage() {
                 </div>
               </div>
             )}
+
+            {/* 贡献热点图 - 独立显示，不依赖项目状态 */}
+            <ContributionHeatmap activities={activities || []} showToast={showToast} />
 
             {p.status === 'done' && p.deliverables && (
               <div className="detail-section">
@@ -276,11 +313,11 @@ export default function DetailPage() {
               </div>
             </div>
 
-            {p.activities && (
+            {activities && activities.length > 0 && (
               <div className="detail-section">
                 <h2>📋 项目动态</h2>
                 <div className="activity-feed">
-                  {p.activities.map((a, i) => (
+                  {activities.map((a, i) => (
                     <div key={i} className="activity-item">
                       <div className="act-avatar" style={{ background: a.color }}>{a.user[0]}</div>
                       <div><strong onClick={() => navigate(`/profile/${a.user}`)}>{a.user}</strong> {a.text}<span className="act-time">{a.time}</span></div>

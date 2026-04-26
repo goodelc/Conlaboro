@@ -58,9 +58,41 @@ public class UserService {
         return dto;
     }
 
-    public List<User> getAllUsers() {
-        return userMapper.selectList(new LambdaQueryWrapper<User>()
+    public List<UserProfileDTO> getAllUsers() {
+        List<User> users = userMapper.selectList(new LambdaQueryWrapper<User>()
                 .orderByAsc(User::getId));
+        
+        return users.stream().map(user -> {
+            List<UserSkill> skills = skillMapper.selectList(
+                    new LambdaQueryWrapper<UserSkill>().eq(UserSkill::getUserId, user.getId()));
+
+            List<UserBadge> earnedBadges = badgeMapper.selectList(
+                    new LambdaQueryWrapper<UserBadge>().eq(UserBadge::getUserId, user.getId()));
+
+            UserProfileDTO dto = new UserProfileDTO();
+            dto.setId(user.getId());
+            dto.setName(user.getName());
+            dto.setEmail(user.getEmail());
+            dto.setColor(user.getColor());
+            dto.setRole(user.getRole());
+            dto.setLevel(user.getLevel());
+            dto.setLevelName(user.getLevelName());
+            dto.setXp(user.getXp());
+            dto.setProjectCount(user.getProjectCount());
+            dto.setBadgeCount(user.getBadgeCount());
+            dto.setJoinedAt(user.getJoinedAt());
+            dto.setBio(user.getBio());
+
+            dto.setSkills(skills.stream()
+                    .map(s -> new SkillDTO(s.getName(), s.getPercentage()))
+                    .collect(Collectors.toList()));
+
+            dto.setEarnedBadgeIds(earnedBadges.stream()
+                    .map(UserBadge::getBadgeId)
+                    .collect(Collectors.toList()));
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     /** 更新个人资料 */

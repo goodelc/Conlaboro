@@ -254,6 +254,11 @@ public class ProjectService {
         return ms;
     }
 
+    /** 获取里程碑 */
+    public Milestone getMilestone(Long milestoneId) {
+        return milestoneMapper.selectById(milestoneId);
+    }
+
     /** 更新里程碑 */
     @Transactional
     public void updateMilestone(Long milestoneId, MilestoneRequest req, Long userId) {

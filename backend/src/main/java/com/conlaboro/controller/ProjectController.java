@@ -101,10 +101,23 @@ public class ProjectController {
     @PutMapping("/tasks/{taskId}/claim")
     public Result<?> claimTask(
             @PathVariable Long taskId,
-            @RequestAttribute("userId") Long userId) {
-        var user = userService.getUserProfile(userId);
-        String userName = (user != null) ? user.getName() : "用户" + userId;
-        return Result.ok(projectService.claimTask(taskId, userName));
+            @RequestAttribute("userId") Long userId,
+            @RequestAttribute("userName") String userName,
+            @RequestAttribute("userColor") String userColor) {
+        var task = projectService.claimTask(taskId, userName);
+        // 通过里程碑获取项目 ID
+        var milestone = projectService.getMilestone(task.getMilestoneId());
+        Long projectId = milestone != null ? milestone.getProjectId() : null;
+        // 记录活动
+        Activity activity = new Activity();
+        activity.setProjectId(projectId);
+        activity.setUserId(userId);
+        activity.setUserName(userName);
+        activity.setUserColor(userColor);
+        activity.setActionType("claimed_task");
+        activity.setText("认领了任务: " + task.getName());
+        activityService.record(activity);
+        return Result.ok(task);
     }
 
     /** 释放/退回任务 */
@@ -122,8 +135,20 @@ public class ProjectController {
     public Result<?> createTask(
             @PathVariable Long projectId,
             @RequestBody CreateTaskRequest req,
-            @RequestAttribute("userId") Long userId) {
-        return Result.ok(projectService.createTask(projectId, req));
+            @RequestAttribute("userId") Long userId,
+            @RequestAttribute("userName") String userName,
+            @RequestAttribute("userColor") String userColor) {
+        var task = projectService.createTask(projectId, req);
+        // 记录活动
+        Activity activity = new Activity();
+        activity.setProjectId(projectId);
+        activity.setUserId(userId);
+        activity.setUserName(userName);
+        activity.setUserColor(userColor);
+        activity.setActionType("created_task");
+        activity.setText("创建了任务: " + req.getName());
+        activityService.record(activity);
+        return Result.ok(task);
     }
 
     /** 编辑项目信息 */

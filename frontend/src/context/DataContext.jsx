@@ -16,7 +16,10 @@ export function DataProvider({ children }) {
       const [usersRes, projectsRes, badgesRes, lbRes] = await Promise.allSettled([
         getAllUsers(), getAllProjects(), getAllBadges(), getLeaderboard()
       ])
-      if (usersRes.status === 'fulfilled') setUsers(usersRes.value)
+      if (usersRes.status === 'fulfilled') {
+        console.log('Users data:', usersRes.value)
+        setUsers(usersRes.value)
+      }
       if (projectsRes.status === 'fulfilled') setProjects(projectsRes.value)
       if (badgesRes.status === 'fulfilled') setBadges(badgesRes.value)
       if (lbRes.status === 'fulfilled') setLeaderboard(lbRes.value)
@@ -31,7 +34,17 @@ export function DataProvider({ children }) {
 
   // 转换 users 数组为 name-keyed 对象（兼容旧代码用 users[name] 访问）
   const userMap = {}
-  users.forEach(u => { userMap[u.name] = u })
+  users.forEach(u => {
+    // 转换字段名称以兼容前端代码
+    const userData = {
+      ...u,
+      joined: u.joinedAt, // 转换 joinedAt 为 joined
+      badges: u.badgeCount, // 转换 badgeCount 为 badges
+      projects: u.projectCount, // 转换 projectCount 为 projects
+      earnedBadges: u.earnedBadgeIds // 转换 earnedBadgeIds 为 earnedBadges
+    }
+    userMap[u.name] = userData
+  })
 
   const value = { badges, projects, users: userMap, userList: users, leaderboard, dataLoading, refetch: fetchData }
 
