@@ -22,6 +22,7 @@ export default function Navbar() {
           <li><Link to="/home">首页</Link></li>
           <li><span onClick={() => { navigate('/home'); setTimeout(() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }), 100) }}>探索项目</span></li>
           <li><Link to="/leaderboard">排行榜</Link></li>
+          <li><Link to="/idea-wall">想法墙</Link></li>
           <li><Link to="/dashboard">我的公社</Link></li>
         </ul>
       </div>

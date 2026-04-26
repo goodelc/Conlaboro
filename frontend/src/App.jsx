@@ -20,6 +20,7 @@ import CreatePage from './pages/CreatePage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
 import RecruitingProjectsPage from './pages/RecruitingProjectsPage'
+import IdeaWallPage from './pages/IdeaWallPage'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
                 <Route path="/create" element={<RequireAuth><CreatePage /></RequireAuth>} />
                 <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
                 <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
+                <Route path="/idea-wall" element={<IdeaWallPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

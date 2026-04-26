@@ -63,7 +63,20 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /path/to/project
-            docker-compose pull
-            docker-compose up -d
-            docker-compose ps
+            # 确保项目目录存在（CentOS专业路径）
+            mkdir -p /opt/conlaboro
+            cd /opt/conlaboro
+            
+            # 下载最新的docker-compose.yml文件
+            if [ ! -f docker-compose.yml ]; then
+              echo "Downloading docker-compose.yml..."
+              curl -O https://raw.githubusercontent.com/your-username/Conlaboro/master/docker-compose.yml
+            else
+              echo "Updating docker-compose.yml..."
+              curl -O https://raw.githubusercontent.com/your-username/Conlaboro/master/docker-compose.yml
+            fi
+            
+            # 拉取最新镜像并启动服务
+            docker compose pull
+            docker compose up -d
+            docker compose ps
