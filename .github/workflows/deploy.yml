@@ -170,7 +170,7 @@ jobs:
 
             services:
               frontend:
-                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest
                 ports:
                   - "80:80"
                 networks:
@@ -180,7 +180,7 @@ jobs:
                 restart: unless-stopped
 
               backend:
-                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest
                 ports:
                   - "8080:8080"
                 networks:
