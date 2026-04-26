@@ -7,7 +7,16 @@ on:
     branches:
       - master
 
+env:
+  # 统一配置，便于维护
+  REGISTRY: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com
+  NAMESPACE: ubuntu20_dock
+  FRONTEND_IMAGE: conlaboro-frontend
+  BACKEND_IMAGE: conlaboro-backend
+  SERVER_PATH: /opt/conlaboro
+
 jobs:
+  # ========== 1. 检测变更 ==========
   detect-changes:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
@@ -23,20 +32,25 @@ jobs:
       - name: Detect changes
         id: detect
         run: |
-          # 检查前端目录是否有变化
-          if git diff HEAD~1 HEAD --name-only | grep -E '^frontend/'; then
+          echo "🔍 Checking changes between HEAD~1 and HEAD..."
+          
+          if git diff HEAD~1 HEAD --name-only | grep -qE '^frontend/'; then
+            echo "✅ Frontend changes detected"
             echo "frontend=true" >> $GITHUB_OUTPUT
           else
+            echo "ℹ️  No frontend changes"
             echo "frontend=false" >> $GITHUB_OUTPUT
           fi
           
-          # 检查后端目录是否有变化
-          if git diff HEAD~1 HEAD --name-only | grep -E '^backend/'; then
+          if git diff HEAD~1 HEAD --name-only | grep -qE '^backend/'; then
+            echo "✅ Backend changes detected"
             echo "backend=true" >> $GITHUB_OUTPUT
           else
+            echo "ℹ️  No backend changes"
             echo "backend=false" >> $GITHUB_OUTPUT
           fi
 
+  # ========== 2. 构建前端（仅当有变更时）==========
   build-frontend:
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend-changed == 'true'
@@ -49,26 +63,37 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --prefer-offline
 
       - name: Build frontend
         run: |
           cd frontend
-          npm install
           npm run build
 
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v2
         with:
-          registry: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.ALIYUN_DOCKER_USERNAME }}
           password: ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
 
       - name: Build and push frontend image
         run: |
           cd frontend
-          docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest .
-          docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
+          IMAGE_TAG="${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}"
+          docker build -t "$IMAGE_TAG" .
+          docker push "$IMAGE_TAG"
+          # 同步更新 latest 标签
+          docker tag "$IMAGE_TAG" "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest"
+          docker push "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest"
 
+  # ========== 3. 构建后端（仅当有变更时）==========
   build-backend:
     needs: detect-changes
     if: needs.detect-changes.outputs.backend-changed == 'true'
@@ -82,91 +107,121 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+          cache: 'maven'
 
-      - name: Build backend
+      - name: Build backend with Maven
         run: |
           cd backend
-          mvn clean package -DskipTests
+          mvn clean package -DskipTests -B
 
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v2
         with:
-          registry: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.ALIYUN_DOCKER_USERNAME }}
           password: ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
 
       - name: Build and push backend image
         run: |
           cd backend
-          docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest .
-          docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
+          IMAGE_TAG="${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}"
+          docker build -t "$IMAGE_TAG" .
+          docker push "$IMAGE_TAG"
+          # 同步更新 latest 标签
+          docker tag "$IMAGE_TAG" "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest"
+          docker push "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest"
 
+  # ========== 4. 部署到服务器 ==========
   deploy:
     needs: [detect-changes, build-frontend, build-backend]
-    if: github.event.pull_request.merged == true
+    # 核心：依赖任务被 skip 时也继续执行
+    if: >
+      always() && 
+      github.event.pull_request.merged == true &&
+      needs.detect-changes.result == 'success' &&
+      (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped') &&
+      (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped')
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - name: Deploy to server
+      - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
           script: |
-            # 确保项目目录存在（CentOS专业路径）
-            mkdir -p /opt/conlaboro
-            cd /opt/conlaboro
+            #!/bin/bash
+            set -e
             
-            # 创建docker-compose.yml文件
-            cat > docker-compose.yml << 'EOF'
-version: '3.8'
-
-services:
-  frontend:
-    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
-    ports:
-      - "80:80"
-    networks:
-      - conlaboro-network
-    depends_on:
-      - backend
-
-  backend:
-    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
-    ports:
-      - "8080:8080"
-    networks:
-      - conlaboro-network
-    depends_on:
-      - postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/conlaboro
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
-  postgres:
-    image: postgres:14-alpine
-    ports:
-      - "5432:5432"
-    networks:
-      - conlaboro-network
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=conlaboro
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
-networks:
-  conlaboro-network:
-    driver: bridge
-
-volumes:
-  postgres-data:
-EOF
+            echo "🚀 Starting deployment..."
+            PROJECT_DIR="${{ env.SERVER_PATH }}"
+            mkdir -p "$PROJECT_DIR"
+            cd "$PROJECT_DIR"
             
-            # 拉取最新镜像并启动服务
+            # 生成 docker-compose.yml
+            cat > docker-compose.yml << EOF
+            version: '3.8'
+
+            services:
+              frontend:
+                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+                ports:
+                  - "80:80"
+                networks:
+                  - conlaboro-network
+                depends_on:
+                  - backend
+                restart: unless-stopped
+
+              backend:
+                image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+                ports:
+                  - "8080:8080"
+                networks:
+                  - conlaboro-network
+                depends_on:
+                  - postgres
+                environment:
+                  - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/conlaboro
+                  - SPRING_DATASOURCE_USERNAME=postgres
+                  - SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }}
+                  - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+                restart: unless-stopped
+
+              postgres:
+                image: postgres:14-alpine
+                ports:
+                  - "5432:5432"
+                networks:
+                  - conlaboro-network
+                volumes:
+                  - postgres-/var/lib/postgresql/data
+                environment:
+                  - POSTGRES_DB=conlaboro
+                  - POSTGRES_USER=postgres
+                  - POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+                restart: unless-stopped
+
+            networks:
+              conlaboro-network:
+                driver: bridge
+
+            volumes:
+              postgres-
+            EOF
+
+            echo "📦 Pulling latest images..."
             docker compose pull
+            
+            echo "🔄 Starting services..."
             docker compose up -d
+            
+            echo "⏳ Waiting 10s for services to start..."
+            sleep 10
+            
+            echo "📊 Service status:"
             docker compose ps
+            
+            echo "✅ Deployment completed!"
