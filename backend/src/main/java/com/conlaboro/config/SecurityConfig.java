@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 健康检查
                 .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/api/health").permitAll()
                 // 其他需要认证
                 .anyRequest().authenticated()
             )
