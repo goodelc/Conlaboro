@@ -1,0 +1,37 @@
+# ===========================================
+# Conlaboro Backend - Development Environment
+# ===========================================
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+debug: true
+
+logging:
+  level:
+    root: DEBUG
+    com.conlaboro: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+  group:
+    conlaboro: com.conlaboro
+
+devtools:
+  restart:
+    enabled: true
+  livereload:
+    enabled: true
+
+server:
+  port: 8080
+  shutdown: graceful
+
+spring.lifecycle:
+  timeout-per-shutdown-phase: 30s

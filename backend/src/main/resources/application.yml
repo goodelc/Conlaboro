@@ -8,6 +8,8 @@ server:
 spring:
   application:
     name: conlaboro-backend
+  profiles:
+    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/conlaboro
     username: conlaboro
