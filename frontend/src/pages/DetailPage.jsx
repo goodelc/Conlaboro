@@ -21,17 +21,14 @@ export default function DetailPage() {
   const [loading, setLoading] = useState(true)
   const [activities, setActivities] = useState([])
 
-  // 项目编辑弹窗状态
   const [editModalOpen, setEditModalOpen] = useState(false)
 
-  // 里程碑管理状态
   const [msCreating, setMsCreating] = useState(false)
   const [msNewTitle, setMsNewTitle] = useState('')
   const [msSaving, setMsSaving] = useState(false)
   const [editingMsId, setEditingMsId] = useState(null)
   const [msEditTitle, setMsEditTitle] = useState('')
 
-  // 任务操作回调
   function handleTaskCreated() {
     getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
     getProjectActivities(id).then(data => {
@@ -64,7 +61,6 @@ export default function DetailPage() {
       getProjectActivities(id)
     ]).then(([detailRes, activitiesRes]) => {
       setDetail(detailRes)
-      // 转换活动数据字段名，适配前端组件
       const transformedActivities = (activitiesRes || []).map(activity => ({
         user: activity.userName,
         color: activity.userColor,
@@ -76,12 +72,9 @@ export default function DetailPage() {
     }).catch(() => setLoading(false))
   }, [id])
 
-  // 项目编辑保存后的回调
   function handleProjectSaved() {
     getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
   }
-
-  /* ── 里程碑操作 ── */
 
   async function handleCreateMs() {
     if (!msNewTitle.trim()) return
@@ -148,7 +141,6 @@ export default function DetailPage() {
     time: f.time || f.createdAt || '',
   }))
 
-  // 将任务嵌套到对应的里程碑下
   const tasksByMilestone = {}
   ;(detail.tasks || []).forEach(t => {
     if (!tasksByMilestone[t.milestoneId]) {
@@ -174,7 +166,7 @@ export default function DetailPage() {
               <div className="detail-actions">
                 <button className="btn-secondary" onClick={() => setEditModalOpen(true)} title="编辑项目信息">✏️ 编辑</button>
                 {p.status === 'done' ? <button className="btn-secondary" onClick={() => showToast('已 Fork 该项目', 'success')}>🍴 Fork 项目</button> : <button className="btn-secondary" onClick={() => showToast('已收藏该项目', 'info')}>♡ 收藏</button>}
-                {p.status !== 'done' && <button className="btn-primary" onClick={() => openJoinModal(p.id)}>🤝 加入项目</button>}
+                {p.status !== 'done' && <button className="btn-primary" onClick={() => openJoinModal(Number(p.id), '', p)}>🤝 加入项目</button>}
               </div>
             </div>
             <div className="detail-meta">
@@ -237,7 +229,6 @@ export default function DetailPage() {
               </div>
             )}
 
-            {/* 贡献热点图 - 独立显示，不依赖项目状态 */}
             <ContributionHeatmap activities={activities || []} showToast={showToast} />
 
             {p.status === 'done' && p.deliverables && (
@@ -330,7 +321,7 @@ export default function DetailPage() {
             <div className="detail-section">
               <h2>团队成员</h2>
               <div className="team-list">
-                {p.roles.map(r => {
+                {p.roles.map((r, roleIndex) => {
                   const members = r.members || []
                   const filledHtml = members.length > 0 ? members.map(m => (
                     <div key={m.name} className="team-member">
@@ -347,13 +338,13 @@ export default function DetailPage() {
                   )) : null)
                   const openSlots = r.needed - r.filled
                   const openHtml = openSlots > 0 ? Array(openSlots).fill(0).map((_, idx) => (
-                    <div key={`open-${idx}`} className="team-member" onClick={() => openJoinModal(p.id, r.name)}>
+                    <div key={`open-${idx}`} className="team-member" onClick={() => openJoinModal(Number(p.id), r.name, p)}>
                       <div className="tm-avatar" style={{ background: 'var(--cream)', color: 'var(--warm-gray)', border: '1px dashed var(--border)' }}>?</div>
                       <div className="tm-info"><h4>等待加入</h4><p>{r.name}</p></div>
                       <span className="tm-status open-slot">申请</span>
                     </div>
                   )) : null
-                  return <>{filledHtml}{openHtml}</>
+                  return <div key={roleIndex}>{filledHtml}{openHtml}</div>
                 })}
               </div>
             </div>
@@ -374,15 +365,15 @@ export default function DetailPage() {
             <div className="sidebar-card">
               <h3>角色招募</h3>
               <div className="role-slots">
-                {p.roles.map(r => {
+                {p.roles.map((r, roleIndex) => {
                   const openSlots = r.needed - r.filled
                   return openSlots > 0 ? (
-                    <div key={r.name} className="role-slot open">
+                    <div key={`${r.name}-${roleIndex}`} className="role-slot open">
                       <div className="slot-left"><span>{r.emoji}</span><span>{r.name}</span></div>
-                      <button className="slot-btn" onClick={() => openJoinModal(p.id, r.name)}>申请</button>
+                      <button className="slot-btn" onClick={() => openJoinModal(Number(p.id), r.name, p)}>申请</button>
                     </div>
                   ) : (
-                    <div key={r.name} className="role-slot filled">
+                    <div key={`${r.name}-${roleIndex}`} className="role-slot filled">
                       <div className="slot-left"><span>{r.emoji}</span><span>{r.name}</span></div>
                       <span style={{ fontSize: '0.7rem', color: 'var(--success)', fontWeight: 700 }}>已满</span>
                     </div>

@@ -6,7 +6,6 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
   const [heatmapData, setHeatmapData] = useState({})
   const [tooltip, setTooltip] = useState({ visible: false, date: '', count: 0, x: 0, y: 0 })
 
-  // 时间范围配置
   const timeRanges = [
     { value: '1month', label: '1个月' },
     { value: '3months', label: '3个月' },
@@ -14,24 +13,19 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
     { value: '1year', label: '1年' }
   ]
 
-  // 处理活动数据
   useEffect(() => {
     if (!activities || activities.length === 0) {
       setHeatmapData({})
       return
     }
-
-    // 解析活动数据，按日期和用户聚合
     const processedData = processActivities(activities, timeRange, selectedUser)
     setHeatmapData(processedData)
   }, [activities, timeRange, selectedUser])
 
-  // 处理活动数据
   function processActivities(activities, range, user) {
     const now = new Date()
     const startDate = new Date(now)
-    
-    // 根据时间范围设置起始日期
+
     switch (range) {
       case '1month':
         startDate.setMonth(now.getMonth() - 1)
@@ -47,7 +41,6 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
         break
     }
 
-    // 过滤活动
     const filteredActivities = activities.filter(activity => {
       const activityDate = parseActivityDate(activity.time)
       const isInRange = activityDate >= startDate
@@ -55,7 +48,6 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
       return isInRange && isSelectedUser
     })
 
-    // 按日期聚合
     const dataByDate = {}
     filteredActivities.forEach(activity => {
       const date = formatDate(parseActivityDate(activity.time))
@@ -68,14 +60,10 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
     return dataByDate
   }
 
-  // 解析活动时间
   function parseActivityDate(timeString) {
-    // 处理不同格式的时间字符串
     if (timeString.includes('T')) {
-      // ISO 格式
       return new Date(timeString)
     } else if (timeString.includes('月') || timeString.includes('日')) {
-      // 中文格式：3月15日
       const parts = timeString.match(/(\d+)月(\d+)日/)
       if (parts) {
         const month = parseInt(parts[1]) - 1
@@ -84,7 +72,6 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
         return new Date(year, month, day)
       }
     } else if (timeString.includes('天前') || timeString.includes('小时前')) {
-      // 相对时间：2天前
       const now = new Date()
       const parts = timeString.match(/(\d+)天前/)
       if (parts) {
@@ -97,16 +84,14 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
     return new Date()
   }
 
-  // 格式化日期为 YYYY-MM-DD
   function formatDate(date) {
     return date.toISOString().split('T')[0]
   }
 
-  // 生成日期网格
   function generateDateGrid() {
     const now = new Date()
     const startDate = new Date(now)
-    
+
     switch (timeRange) {
       case '1month':
         startDate.setMonth(now.getMonth() - 1)
@@ -124,13 +109,11 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
 
     const grid = []
     const currentDate = new Date(startDate)
-    
-    // 调整到周一开始
+
     const dayOfWeek = currentDate.getDay()
     const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
     currentDate.setDate(currentDate.getDate() - daysToMonday)
 
-    // 生成 53 周 × 7 天的网格
     for (let week = 0; week < 53; week++) {
       const weekData = []
       for (let day = 0; day < 7; day++) {
@@ -147,16 +130,14 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
     return grid
   }
 
-  // 获取颜色强度
   function getColorIntensity(count) {
-    if (count === 0) return 'var(--background)' // 无贡献
-    if (count === 1) return 'var(--green-light)' // 低
-    if (count === 2) return 'var(--green)' // 中
-    if (count === 3) return 'var(--green-dark)' // 高
-    return 'var(--green-darker)' // 很高
+    if (count === 0) return 'var(--background)'
+    if (count === 1) return 'var(--green-light)'
+    if (count === 2) return 'var(--green)'
+    if (count === 3) return 'var(--green-dark)'
+    return 'var(--green-darker)'
   }
 
-  // 处理悬停
   function handleCellHover(date, count, e) {
     const rect = e.target.getBoundingClientRect()
     setTooltip({
@@ -172,10 +153,7 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
     setTooltip({ ...tooltip, visible: false })
   }
 
-  // 获取所有贡献者
   const contributors = ['all', ...Array.from(new Set(activities.map(a => a.user)))]
-
-  // 日期网格
   const dateGrid = generateDateGrid()
 
   return (
@@ -183,8 +161,8 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
       <div className="heatmap-header">
         <h3>📊 贡献热点图</h3>
         <div className="heatmap-controls">
-          <select 
-            value={timeRange} 
+          <select
+            value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
             className="heatmap-select"
           >
@@ -194,8 +172,8 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
               </option>
             ))}
           </select>
-          <select 
-            value={selectedUser} 
+          <select
+            value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
             className="heatmap-select"
           >
@@ -243,9 +221,8 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
         </div>
       </div>
 
-      {/* 悬停提示 */}
       {tooltip.visible && (
-        <div 
+        <div
           className="heatmap-tooltip"
           style={{
             left: `${tooltip.x}px`,
@@ -258,7 +235,7 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .contribution-heatmap {
           margin: 2rem 0;
           padding: 1.5rem;

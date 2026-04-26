@@ -9,16 +9,20 @@ public class UserPrincipal implements UserDetails {
 
     private final Long id;
     private final String username;
+    private final String color;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String username,
+    public UserPrincipal(Long id, String username, String color,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
+        this.color = color;
         this.authorities = authorities;
     }
 
     public Long getId() { return id; }
+
+    public String getColor() { return color; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }

@@ -14,7 +14,7 @@ function useEscClose(isOpen, onClose) {
 }
 
 export default function JoinModal() {
-  const { joinModalOpen, closeJoinModal, currentJoinProject, preselectedRole, showToast } = useApp()
+  const { joinModalOpen, closeJoinModal, currentJoinProject, currentJoinProjectInfo, preselectedRole, showToast } = useApp()
   useEscClose(joinModalOpen, closeJoinModal)
   const { projects } = useData()
   const navigate = useNavigate()
@@ -22,14 +22,22 @@ export default function JoinModal() {
   const [intro, setIntro] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const project = currentJoinProject !== null ? projects[currentJoinProject] : null
-  const openRoles = project ? project.roles.filter(r => r.filled < r.needed) : []
+  const projectId = currentJoinProject
+  const project = currentJoinProjectInfo || projects.find(p => p.id === projectId) || { id: projectId, title: '项目' }
+  const openRoles = project.roles ? project.roles.filter(r => r.filled < r.needed) : []
+
+  useEffect(() => {
+    if (joinModalOpen) {
+      setIntro('')
+    }
+  }, [joinModalOpen])
 
   useEffect(() => {
     if (joinModalOpen && openRoles.length > 0) {
       setSelectedRole(preselectedRole || openRoles[0].name)
+    } else if (joinModalOpen) {
+      setSelectedRole(preselectedRole || '')
     }
-    setIntro('')
   }, [joinModalOpen, preselectedRole, openRoles])
 
   async function handleSubmit() {
@@ -37,9 +45,13 @@ export default function JoinModal() {
       showToast('请填写自我介绍', 'info')
       return
     }
+    if (!selectedRole) {
+      showToast('请选择角色', 'info')
+      return
+    }
     setSubmitting(true)
     try {
-      await applyJoin(project.id, { roleName: selectedRole, introduction: intro.trim() })
+      await applyJoin(projectId, { roleName: selectedRole, introduction: intro.trim() })
       showToast(`已申请「${selectedRole}」角色，等待审核`, 'success')
       closeJoinModal()
     } catch (err) {
@@ -49,7 +61,7 @@ export default function JoinModal() {
     }
   }
 
-  if (!joinModalOpen || !project) return null
+  if (!joinModalOpen) return null
 
   return (
     <div className={`modal-overlay ${joinModalOpen ? 'active' : ''}`} id="join-modal" onClick={(e) => { if (e.target === e.currentTarget) closeJoinModal() }}>
@@ -63,9 +75,11 @@ export default function JoinModal() {
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
           >
-            {openRoles.map((r) => (
+            {openRoles.length > 0 ? openRoles.map((r) => (
               <option key={r.name} value={r.name}>{r.emoji} {r.name}</option>
-            ))}
+            )) : (
+              <option value="">请选择角色</option>
+            )}
           </select>
         </div>
         <div className="form-group">

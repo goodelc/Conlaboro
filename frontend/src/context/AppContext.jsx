@@ -16,6 +16,7 @@ const initialState = {
   notifCount: 3,
   joinModalOpen: false,
   currentJoinProject: null,
+  currentJoinProjectInfo: null,
   preselectedRole: '',
   badgeModalOpen: false,
   selectedBadge: null,
@@ -32,9 +33,9 @@ function appReducer(state, action) {
     case 'TOGGLE_NOTIF':
       return { ...state, notifOpen: !state.notifOpen, notifCount: state.notifOpen ? 0 : state.notifCount }
     case 'OPEN_JOIN_MODAL':
-      return { ...state, joinModalOpen: true, currentJoinProject: action.projectId, preselectedRole: action.role || '' }
+      return { ...state, joinModalOpen: true, currentJoinProject: action.projectId, preselectedRole: action.role || '', currentJoinProjectInfo: action.projectInfo || null }
     case 'CLOSE_JOIN_MODAL':
-      return { ...state, joinModalOpen: false }
+      return { ...state, joinModalOpen: false, currentJoinProjectInfo: null }
     case 'OPEN_BADGE_MODAL':
       return { ...state, badgeModalOpen: true, selectedBadge: action.badge }
     case 'CLOSE_BADGE_MODAL':
@@ -86,8 +87,8 @@ export function AppProvider({ children }) {
     dispatch({ type: 'TOGGLE_NOTIF' })
   }, [])
 
-  const openJoinModal = useCallback((projectId, role) => {
-    dispatch({ type: 'OPEN_JOIN_MODAL', projectId, role })
+  const openJoinModal = useCallback((projectId, role, projectInfo) => {
+    dispatch({ type: 'OPEN_JOIN_MODAL', projectId, role, projectInfo })
   }, [])
 
   const closeJoinModal = useCallback(() => {

@@ -52,7 +52,7 @@ public class AuthService {
             log.warn("首次登录徽章授予失败（不影响注册流程）: {}", e.getMessage());
         }
 
-        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId());
+        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId(), user.getColor());
         return new AuthResponse(user.getId(), user.getName(), user.getEmail(), token);
     }
 
@@ -63,7 +63,7 @@ public class AuthService {
             throw new BizException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId());
+        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId(), user.getColor());
         return new AuthResponse(user.getId(), user.getName(), user.getEmail(), token);
     }
 

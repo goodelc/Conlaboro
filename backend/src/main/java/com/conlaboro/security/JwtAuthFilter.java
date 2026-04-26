@@ -38,14 +38,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
             Long userId = jwtTokenProvider.getUserId(token);
+            String color = jwtTokenProvider.getColor(token);
             List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                     new SimpleGrantedAuthority("ROLE_USER"));
-            UserPrincipal principal = new UserPrincipal(userId, username, authorities);
+            UserPrincipal principal = new UserPrincipal(userId, username, color, authorities);
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(principal, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            // 将 userId 设置到 request 属性，供 @RequestAttribute 使用
             request.setAttribute("userId", userId);
+            request.setAttribute("userName", username);
+            request.setAttribute("userColor", color);
         }
         chain.doFilter(request, response);
     }

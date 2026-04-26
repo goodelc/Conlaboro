@@ -1202,6 +1202,8 @@
     padding: 3rem 2rem;
     border-bottom: 1px solid var(--border);
     background: white;
+    position: relative;
+    z-index: 10;
   }
 
   .detail-hero-inner {
@@ -1236,7 +1238,7 @@
     flex: 1;
   }
 
-  .detail-actions { display: flex; gap: 0.8rem; flex-shrink: 0; }
+  .detail-actions { display: flex; gap: 0.8rem; flex-shrink: 0; position: relative; z-index: 10; }
 
   .detail-actions .btn-primary { padding: 0.7rem 1.8rem; font-size: 0.85rem; }
   .detail-actions .btn-secondary { padding: 0.7rem 1.8rem; font-size: 0.85rem; }
@@ -1408,7 +1410,7 @@
   }
 
   /* Sidebar */
-  .detail-sidebar {}
+  .detail-sidebar { position: relative; z-index: 10; }
 
   .sidebar-card {
     border: 1px solid var(--border);
@@ -1436,7 +1438,7 @@
   .sidebar-card .info-row .label { color: var(--warm-gray); }
   .sidebar-card .info-row .value { font-weight: 700; }
 
-  .role-slots { display: flex; flex-direction: column; gap: 0.6rem; }
+  .role-slots { display: flex; flex-direction: column; gap: 0.6rem; position: relative; z-index: 10; }
 
   .role-slot {
     display: flex;

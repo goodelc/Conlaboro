@@ -26,12 +26,13 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username, Long userId) {
+    public String generateToken(String username, Long userId, String color) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expiration);
         return Jwts.builder()
                 .subject(username)
                 .claim("userId", userId)
+                .claim("color", color)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(getSigningKey())
@@ -57,6 +58,10 @@ public class JwtTokenProvider {
 
     public Long getUserId(String token) {
         return parseToken(token).get("userId", Long.class);
+    }
+
+    public String getColor(String token) {
+        return parseToken(token).get("color", String.class);
     }
 
     public <T> T getClaim(String token, Function<Claims, T> resolver) {
