@@ -324,6 +324,26 @@
 
   .btn-secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
 
+  .btn-outline {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    color: var(--red);
+    border: 1px solid var(--red);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+  }
+
+  .btn-outline:hover {
+    background: var(--red);
+    color: white;
+    transform: translateY(-1px);
+  }
+
   .hero-stats {
     display: flex;
     gap: 4rem;
@@ -416,6 +436,20 @@
     margin-bottom: 5rem;
     position: relative;
     z-index: 1;
+  }
+
+  .section-header-with-actions {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .section-header-content {
+    margin-bottom: 1rem;
+  }
+
+  .section-header-actions {
+    display: flex;
+    justify-content: center;
   }
 
   .section-header .label {
@@ -911,6 +945,13 @@
     .settings-row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
   }
 
+  .projects-header-actions {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+  }
+
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1191,6 +1232,45 @@
   }
 
   footer a { color: var(--red); text-decoration: none; }
+
+  /* === QUICK NAVIGATION BUTTONS === */
+  .quick-nav-buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 999;
+  }
+
+  .nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--red);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .nav-btn:hover {
+    background: var(--red);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 33, 61, 0.2);
+  }
+
+  .top-btn {
+    margin-bottom: 0.5rem;
+  }
 
   /* === PROJECT DETAIL PAGE === */
   .detail-page {
@@ -2086,6 +2166,94 @@
   .badge-detail-modal .badge-earned-date {
     font-size: 0.75rem;
     color: var(--warm-gray);
+  }
+
+  /* === RECRUITING PROJECTS PAGE === */
+  .recruiting-page {
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+
+  .recruiting-header {
+    padding: 3rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  .recruiting-breadcrumb {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb-separator {
+    color: var(--border);
+  }
+
+  .recruiting-breadcrumb span {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .recruiting-breadcrumb span:hover {
+    color: var(--red);
+  }
+
+  .recruiting-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .recruiting-sub {
+    font-size: 0.9rem;
+    color: var(--warm-gray);
+  }
+
+  .recruiting-content {
+    padding: 3rem 2rem;
+  }
+
+  .recruiting-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: white;
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 2rem 0;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .stat-number {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: var(--red);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
   }
 
   /* Achievement Unlock Animation */
