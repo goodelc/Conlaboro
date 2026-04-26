@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 import { useData } from '../context/DataContext'
 import { useNavigate } from 'react-router-dom'
+import { applyJoin } from '../api'
 
 function useEscClose(isOpen, onClose) {
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function JoinModal() {
   const navigate = useNavigate()
   const [selectedRole, setSelectedRole] = useState('')
   const [intro, setIntro] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const project = currentJoinProject !== null ? projects[currentJoinProject] : null
   const openRoles = project ? project.roles.filter(r => r.filled < r.needed) : []
@@ -30,13 +32,21 @@ export default function JoinModal() {
     setIntro('')
   }, [joinModalOpen, preselectedRole, openRoles])
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!intro.trim()) {
       showToast('请填写自我介绍', 'info')
       return
     }
-    showToast(`已申请「${selectedRole}」角色，等待审核`, 'success')
-    closeJoinModal()
+    setSubmitting(true)
+    try {
+      await applyJoin(project.id, { roleName: selectedRole, introduction: intro.trim() })
+      showToast(`已申请「${selectedRole}」角色，等待审核`, 'success')
+      closeJoinModal()
+    } catch (err) {
+      showToast(err.message || '申请失败，请重试', 'error')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (!joinModalOpen || !project) return null
@@ -69,8 +79,10 @@ export default function JoinModal() {
           ></textarea>
         </div>
         <div className="modal-actions">
-          <button className="btn-secondary" onClick={closeJoinModal}>取消</button>
-          <button className="btn-primary" onClick={handleSubmit}>提交申请</button>
+          <button className="btn-secondary" onClick={closeJoinModal} disabled={submitting}>取消</button>
+          <button className="btn-primary" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? '提交中...' : '提交申请'}
+          </button>
         </div>
       </div>
     </div>

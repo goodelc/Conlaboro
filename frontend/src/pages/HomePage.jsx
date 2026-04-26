@@ -1,19 +1,23 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useData } from '../context/DataContext'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import ProjectCard from '../components/ProjectCard'
+import { getStats } from '../api'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { showToast } = useApp()
   const { projects } = useData()
-  const userList = projects ? [] : []
   const totalProjects = projects?.length || 0
   const doneProjects = projects?.filter(item => (item.project || item).status === 'done').length || 0
-  // TODO: 对接 /api/stats 获取真实统计数据，目前用前端数据估算
-  const estimatedUsers = Math.max(totalProjects * 4, totalProjects > 0 ? 16 : 0)
+  // 从后端获取真实统计数据，失败时回退到前端估算
+  const [statsData, setStatsData] = useState(null)
+  useEffect(() => {
+    getStats().then(data => setStatsData(data)).catch(() => {})
+  }, [])
+  const estimatedUsers = statsData?.totalUsers || Math.max(totalProjects * 4, totalProjects > 0 ? 16 : 0)
   const pageRef = useScrollReveal()
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')

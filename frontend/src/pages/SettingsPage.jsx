@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useData } from '../context/DataContext'
+import { updateProfile } from '../api'
 
 /* ── 复用 Toggle / RoleTag ── */
 function ToggleSwitch({ defaultActive, onChange }) {
@@ -83,12 +84,18 @@ export default function SettingsPage() {
     if (field === 'bio') setBioVal(u.bio)
   }
 
-  /* ── 保存并更新用户数据 ── */
-  function saveUser(partial) {
-    const updated = { ...u, ...partial }
-    login(updated)           // 更新 AppContext + localStorage
-    showToast('已保存 ✅', 'success')
-    setEditField(null)
+  /* ── 保存并调用后端 API 更新资料 ── */
+  async function saveUser(partial) {
+    try {
+      await updateProfile(partial)
+      // 同步更新本地状态
+      const updated = { ...u, ...partial }
+      login(updated)
+      showToast('已保存 ✅', 'success')
+      setEditField(null)
+    } catch (err) {
+      showToast(err.message || '保存失败', 'error')
+    }
   }
 
   /* ── 可选技能池 ── */
@@ -263,11 +270,8 @@ export default function SettingsPage() {
         desc="点击添加或移除技能，最多选6个"
         onClose={() => setEditField(null)}
         onSave={() => {
-          const skills = Array.from(selectedSkills).slice(0, 6).map(n => ({
-            name: n,
-            pct: ALL_SKILLS.find(s => s.name === n)?.pct || 50,
-          }))
-          saveUser({ skills })
+          const skillNames = Array.from(selectedSkills).slice(0, 6)
+          saveUser({ skillNames })
         }}
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>

@@ -18,7 +18,11 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(1003, "用户名或密码错误"),
     PROJECT_NOT_FOUND(2001, "项目不存在"),
     BADGE_NOT_FOUND(3001, "徽章不存在"),
-    BADGE_ALREADY_EARNED(3002, "徽章已获得");
+    BADGE_ALREADY_EARNED(3002, "徽章已获得"),
+    APPLICATION_ALREADY_EXISTS(4001, "已申请过该项目"),
+    APPLICATION_NOT_FOUND(4002, "申请不存在"),
+    TASK_ALREADY_CLAIMED(5001, "任务已被认领"),
+    FAVORITE_NOT_FOUND(6001, "收藏记录不存在");
 
     private final int code;
     private final String message;

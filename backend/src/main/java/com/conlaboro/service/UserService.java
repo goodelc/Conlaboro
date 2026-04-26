@@ -2,6 +2,7 @@ package com.conlaboro.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.conlaboro.dto.SkillDTO;
+import com.conlaboro.dto.UpdateProfileRequest;
 import com.conlaboro.dto.UserProfileDTO;
 import com.conlaboro.entity.User;
 import com.conlaboro.entity.UserSkill;
@@ -9,6 +10,7 @@ import com.conlaboro.entity.UserBadge;
 import com.conlaboro.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,5 +61,32 @@ public class UserService {
     public List<User> getAllUsers() {
         return userMapper.selectList(new LambdaQueryWrapper<User>()
                 .orderByAsc(User::getId));
+    }
+
+    /** 更新个人资料 */
+    @Transactional
+    public void updateProfile(Long userId, UpdateProfileRequest req) {
+        User user = userMapper.selectById(userId);
+        if (user == null) return;
+
+        if (req.getName() != null && !req.getName().isBlank()) {
+            user.setName(req.getName().trim());
+        }
+        if (req.getBio() != null) {
+            user.setBio(req.getBio().trim());
+        }
+        userMapper.updateById(user);
+
+        // 更新技能标签：先删后重建
+        if (req.getSkillNames() != null) {
+            skillMapper.delete(new LambdaQueryWrapper<UserSkill>().eq(UserSkill::getUserId, userId));
+            for (String name : req.getSkillNames()) {
+                UserSkill skill = new UserSkill();
+                skill.setUserId(userId);
+                skill.setName(name);
+                skill.setPercentage(50); // 默认中级，后续可调整
+                skillMapper.insert(skill);
+            }
+        }
     }
 }

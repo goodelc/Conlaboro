@@ -2,30 +2,42 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
-import { STATUS_MAP, TAG_CLASS, STATUS_COLORS, getProjectEmoji } from '../constants'
-import { getProjectDetail } from '../api'
+import { STATUS_MAP, TAG_CLASS } from '../constants'
+import { getProjectDetail, claimTask, addComment, createTask, updateProject, createMilestone, updateMilestone, deleteMilestone } from '../api'
 
-function TaskBoard({ milestones }) {
+function TaskBoard({ milestones, projectId }) {
   const ms = milestones
-  if (!ms || !ms[0].tasks || typeof ms[0].tasks[0] === 'string') {
-    return <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)' }}>该项目尚未创建详细任务。</p>
+  const { showToast: appToast } = useApp()
+  const { users } = useData()
+
+  // 防御性检查
+  if (!ms || ms.length === 0 || !ms[0] || !ms[0].tasks || typeof ms[0].tasks[0] === 'string') {
+    return <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)' }}>该项目尚未创建详细任务。请先在下方添加里程碑。</p>
   }
 
   const allTasks = ms.flatMap(m => m.tasks.map(t => ({ ...t, msStatus: m.status })))
   const openTasks = allTasks.filter(t => t.status === 'open')
   const progressTasks = allTasks.filter(t => t.status === 'progress')
   const doneTasks = allTasks.filter(t => t.status === 'done')
-  const { users, showToast } = useData()
-  const { showToast: appToast } = useApp()
 
   function TaskCard({ t }) {
     const isDone = t.status === 'done'
-    const [claimed, setClaimed] = useState(false)
+    const [claimed, setClaimed] = useState(!!t.assignee)
+    const [loading, setLoading] = useState(false)
 
-    function handleClaim(e) {
+    async function handleClaim(e) {
       e.stopPropagation()
-      setClaimed(true)
-      appToast(`已认领「${t.name}」· +${t.xp} XP`, 'success')
+      if (loading) return
+      setLoading(true)
+      try {
+        await claimTask(t.id)
+        setClaimed(true)
+        appToast(`已认领「${t.name}」· +${t.xp} XP`, 'success')
+      } catch (err) {
+        appToast(err.message || '认领失败', 'error')
+      } finally {
+        setLoading(false)
+      }
     }
 
     return (
@@ -40,11 +52,72 @@ function TaskBoard({ milestones }) {
           <span className="tc-xp">+{t.xp} XP</span>
         </div>
         {!t.assignee && !isDone && !claimed && (
-          <button className="tc-claim-btn" onClick={handleClaim}>认领此任务 · +{t.xp} XP</button>
+          <button className="tc-claim-btn" onClick={handleClaim} disabled={loading}>
+            {loading ? '处理中...' : `认领 · +${t.xp} XP`}
+          </button>
         )}
         {!t.assignee && !isDone && claimed && (
           <button className="tc-claim-btn claimed">✓ 已认领</button>
         )}
+      </div>
+    )
+  }
+
+  /** 看板列底部的添加卡片 */
+  function AddCard() {
+    const [expanded, setExpanded] = useState(false)
+    const [name, setName] = useState('')
+    const [selMsId, setSelMsId] = useState(ms[0]?.id?.toString() || '')
+    const [xp, setXp] = useState(10)
+    const [creating, setCreating] = useState(false)
+
+    async function handleCreate() {
+      if (!name.trim()) { appToast('请输入任务名称', 'info'); return }
+      setCreating(true)
+      try {
+        await createTask(projectId, { name: name.trim(), milestoneId: Number(selMsId), xp })
+        appToast('任务已创建', 'success')
+        setExpanded(false); setName(''); setXp(10)
+        window.location.reload()
+      } catch (err) {
+        appToast(err.message || '创建失败', 'error')
+      } finally { setCreating(false) }
+    }
+
+    if (!expanded) {
+      return (
+        <div className="add-task-card" onClick={() => setExpanded(true)}>
+          <span className="add-task-plus">＋</span> 添加任务
+        </div>
+      )
+    }
+
+    return (
+      <div className="add-task-form" onClick={e => e.stopPropagation()}>
+        <input
+          className="add-task-input"
+          placeholder="输入任务名称…"
+          autoFocus
+          value={name}
+          onChange={e => setName(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleCreate(); if (e.key === 'Escape') { setExpanded(false); setName('') } }}
+        />
+        <div className="add-task-options">
+          <select className="add-task-select" value={selMsId} onChange={e => setSelMsId(e.target.value)}>
+            {ms.map(m => <option key={m.id} value={m.id}>{m.title}</option>)}
+          </select>
+          <label className="add-task-xp-label">
+            <span>+{xp} XP</span>
+            <input type="range" min="5" max="50" step="5" value={xp}
+              onChange={e => setXp(Number(e.target.value))} />
+          </label>
+        </div>
+        <div className="add-task-actions">
+          <button className="add-task-submit" onClick={handleCreate} disabled={creating || !name.trim()}>
+            {creating ? '创建中…' : '添加'}
+          </button>
+          <button className="add-task-cancel" onClick={() => { setExpanded(false);setName('') }}>取消</button>
+        </div>
       </div>
     )
   }
@@ -61,7 +134,10 @@ function TaskBoard({ milestones }) {
         {columns.map(col => (
           <div key={col.key} className={`task-column ${col.key}-col`}>
             <div className="task-column-header">{col.label} <span className="tch-count">{col.tasks.length}</span></div>
-            <div className="task-column-body">{col.tasks.map(t => <TaskCard key={t.name} t={t} />)}</div>
+            <div className="task-column-body">
+              {col.tasks.map(t => <TaskCard key={t.id || t.name} t={t} />)}
+              <AddCard />
+            </div>
           </div>
         ))}
       </div>
@@ -72,17 +148,27 @@ function TaskBoard({ milestones }) {
 function CollabSpace({ p }) {
   const [activeTab, setActiveTab] = useState('comments')
   const [commentText, setCommentText] = useState('')
+  const [sending, setSending] = useState(false)
   const hasComments = p.comments && p.comments.length > 0
   const hasFiles = p.files && p.files.length > 0
   const { showToast } = useApp()
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!commentText.trim()) {
       showToast('请输入评论内容', 'info')
       return
     }
-    setCommentText('')
-    showToast('评论已发送', 'success')
+    setSending(true)
+    try {
+      await addComment(p.id, commentText.trim())
+      setCommentText('')
+      showToast('评论已发送', 'success')
+      // TODO: 刷新评论列表（可从详情页重新获取或乐观更新）
+    } catch (err) {
+      showToast(err.message || '发送失败', 'error')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -114,7 +200,9 @@ function CollabSpace({ p }) {
         <div className="comment-input-wrap">
           <div className="ci-avatar">你</div>
           <textarea className="comment-input" rows={2} placeholder="写下你的想法…" value={commentText} onChange={(e) => setCommentText(e.target.value)}></textarea>
-          <button className="comment-submit" onClick={handleSubmit}>发送</button>
+          <button className="comment-submit" onClick={handleSubmit} disabled={sending}>
+            {sending ? '发送中...' : '发送'}
+          </button>
         </div>
       </div>
 
@@ -151,10 +239,21 @@ function CollabSpace({ p }) {
 export default function DetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { users } = useData()
   const { showToast, openJoinModal } = useApp()
   const [detail, setDetail] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  // 项目编辑状态
+  const [editing, setEditing] = useState(false)
+  const [editForm, setEditForm] = useState({ title: '', description: '', category: '', duration: '' })
+  const [saving, setSaving] = useState(false)
+
+  // 里程碑管理状态
+  const [msCreating, setMsCreating] = useState(false)
+  const [msNewTitle, setMsNewTitle] = useState('')
+  const [msSaving, setMsSaving] = useState(false)
+  const [editingMsId, setEditingMsId] = useState(null)
+  const [msEditTitle, setMsEditTitle] = useState('')
 
   useEffect(() => {
     getProjectDetail(id).then(data => {
@@ -162,6 +261,78 @@ export default function DetailPage() {
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [id])
+
+  async function handleSaveProject() {
+    if (!editForm.title.trim()) {
+      showToast('项目名称不能为空', 'info')
+      return
+    }
+    setSaving(true)
+    try {
+      await updateProject(id, {
+        title: editForm.title,
+        description: editForm.description,
+        category: editForm.category,
+        duration: editForm.duration ? Number(editForm.duration) : null,
+      })
+      showToast('项目信息已更新', 'success')
+      setEditing(false)
+      // 刷新数据
+      getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    } catch (err) {
+      showToast(err.message || '保存失败', 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function openEdit() {
+    const p = detail?.project || {}
+    setEditForm({
+      title: p.title || '',
+      description: p.description || '',
+      category: p.category || 'other',
+      duration: p.duration?.toString() || '',
+    })
+    setEditing(true)
+  }
+
+  /* ── 里程碑操作 ── */
+
+  async function handleCreateMs() {
+    if (!msNewTitle.trim()) return
+    setMsSaving(true)
+    try {
+      await createMilestone(id, { title: msNewTitle.trim() })
+      showToast('里程碑已创建', 'success')
+      setMsCreating(false); setMsNewTitle('')
+      getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    } catch (err) {
+      showToast(err.message || '创建失败', 'error')
+    } finally { setMsSaving(false) }
+  }
+
+  async function handleSaveMs(msId) {
+    if (!msEditTitle.trim()) { setEditingMsId(null); return }
+    try {
+      await updateMilestone(msId, { title: msEditTitle.trim() })
+      showToast('里程碑已更新', 'success')
+      setEditingMsId(null); setMsEditTitle('')
+      getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    } catch (err) {
+      showToast(err.message || '更新失败', 'error')
+    }
+  }
+
+  async function handleDeleteMs(msId) {
+    try {
+      await deleteMilestone(msId)
+      showToast('里程碑已删除', 'warning')
+      getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
+    } catch (err) {
+      showToast(err.message || '删除失败', 'error')
+    }
+  }
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '5rem' }}>加载中...</div>
@@ -182,10 +353,10 @@ export default function DetailPage() {
   p.milestones = detail.milestones || []
   p.tasks = detail.tasks || []
   p.comments = (detail.comments || []).map(c => ({
-    user: c.authorName || c.author || '匿名',
+    user: c.authorName || c.author || c.userName || '匿名',
     text: c.content || c.text || '',
     time: c.time || c.createdAt || '',
-    color: c.authorColor || c.color || '#999',
+    color: c.authorColor || c.color || c.userColor || '#999',
   }))
   p.files = (detail.files || []).map(f => ({
     name: f.fileName || f.name || '文件',
@@ -205,6 +376,7 @@ export default function DetailPage() {
             <div className="detail-title-row">
               <h1><span className={`card-tag ${TAG_CLASS[p.status]}`} style={{ marginRight: '0.8rem' }}>{STATUS_MAP[p.status]}</span>{p.title}</h1>
               <div className="detail-actions">
+                {!editing && <button className="btn-secondary" onClick={openEdit} title="编辑项目信息">✏️ 编辑</button>}
                 {p.status === 'done' ? <button className="btn-secondary" onClick={() => showToast('已 Fork 该项目', 'success')}>🍴 Fork 项目</button> : <button className="btn-secondary" onClick={() => showToast('已收藏该项目', 'info')}>♡ 收藏</button>}
                 {p.status !== 'done' && <button className="btn-primary" onClick={() => openJoinModal(p.id)}>🤝 加入项目</button>}
               </div>
@@ -222,7 +394,45 @@ export default function DetailPage() {
 
         <div className="detail-body">
           <div className="detail-main">
-            <div className="detail-section"><h2>项目描述</h2><p>{p.description || p.desc}</p></div>
+            <div className="detail-section"><h2>项目描述</h2>
+              {editing ? (
+                <div style={{ border: '1px solid var(--border)', borderRadius: '12px', padding: '1.2rem', background: 'var(--card-bg)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div>
+                      <label style={{ fontSize: '0.85rem', color: 'var(--ink-light)', display: 'block', marginBottom: '0.25rem' }}>项目名称</label>
+                      <input className="auth-input" value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '0.85rem', color: 'var(--ink-light)', display: 'block', marginBottom: '0.25rem' }}>项目描述</label>
+                      <textarea className="auth-input" rows={3} value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.8rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--ink-light)', display: 'block', marginBottom: '0.25rem' }}>类别</label>
+                        <select className="auth-input" value={editForm.category} onChange={e => setEditForm({ ...editForm, category: e.target.value })}>
+                          <option value="app">应用</option>
+                          <option value="web">网页</option>
+                          <option value="ai">AI</option>
+                          <option value="tool">工具</option>
+                          <option value="game">游戏</option>
+                          <option value="other">其他</option>
+                        </select>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--ink-light)', display: 'block', marginBottom: '0.25rem' }}>周期（天）</label>
+                        <input type="number" className="auth-input" value={editForm.duration} onChange={e => setEditForm({ ...editForm, duration: e.target.value })} placeholder="30" />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'flex-end', marginTop: '0.3rem' }}>
+                      <button className="btn-secondary" onClick={() => setEditing(false)}>取消</button>
+                      <button className="btn-primary" onClick={handleSaveProject} disabled={saving}>{saving ? '保存中...' : '保存修改'}</button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p>{p.description || p.desc || '暂无描述'}</p>
+              )}
+            </div>
 
             {p.status === 'done' && p.contributors && (
               <div className="detail-section contrib-ranking">
@@ -276,26 +486,57 @@ export default function DetailPage() {
               </div>
             )}
 
-            <div className="detail-section"><h2>📋 任务看板</h2><TaskBoard milestones={p.milestones} /></div>
+            <div className="detail-section"><h2>📋 任务看板</h2><TaskBoard milestones={p.milestones} projectId={Number(id)} /></div>
 
             <div className="detail-section"><h2>💬 协作空间</h2><CollabSpace p={p} /></div>
 
             <div className="detail-section">
-              <h2>📍 里程碑</h2>
+              <div className="ms-header-row">
+                <h2>📍 里程碑</h2>
+                <button className="ms-add-btn" onClick={() => setMsCreating(true)}>＋ 新建里程碑</button>
+              </div>
+              {msCreating && (
+                <div style={{ border: '1px solid var(--border)', borderRadius: '12px', padding: '1rem 1.2rem', marginBottom: '1rem', background: 'var(--card-bg)', display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                  <input className="ms-edit-input" placeholder="输入里程碑名称…" value={msNewTitle}
+                    onChange={e => setMsNewTitle(e.target.value)} autoFocus
+                    onKeyDown={e => { if (e.key === 'Enter') handleCreateMs(); if (e.key === 'Escape') { setMsCreating(false); setMsNewTitle('') } }} />
+                  <button className="btn-primary" onClick={handleCreateMs} disabled={!msNewTitle.trim() || msSaving}
+                    style={{ fontSize: '0.78rem', padding: '0.35rem 0.9rem', whiteSpace: 'nowrap' }}>
+                    {msSaving ? '创建中…' : '创建'}
+                  </button>
+                  <button className="btn-secondary" onClick={() => { setMsCreating(false); setMsNewTitle('') }}
+                    style={{ fontSize: '0.78rem', padding: '0.35rem 0.6rem' }}>取消</button>
+                </div>
+              )}
               <div className="milestone-list">
                 {p.milestones.map((ms, mi) => {
                   const iconClass = ms.status === 'done' ? 'done' : ms.status === 'current' ? 'current' : 'pending'
                   const icon = ms.status === 'done' ? '✓' : ms.status === 'current' ? '→' : '○'
                   const tasksHtml = Array.isArray(ms.tasks) && typeof ms.tasks[0] === 'object'
-                    ? ms.tasks.map(t => <span key={t.name} className={`ms-task ${ms.status === 'done' ? 'done' : ''}`}>{t.name}</span>)
+                    ? ms.tasks.map(t => <span key={t.id || t.name} className={`ms-task ${ms.status === 'done' ? 'done' : ''}`}>{t.name}</span>)
                     : (Array.isArray(ms.tasks) ? ms.tasks.map((t, ti) => <span key={ti} className={`ms-task ${ms.status === 'done' ? 'done' : ''}`}>{t}</span>) : null)
+
+                  const isEditing = editingMsId === ms.id
+
                   return (
-                    <div key={mi} className="milestone">
+                    <div key={mi} className="milestone-item-wrap">
                       <div className={`milestone-icon ${iconClass}`}>{icon}</div>
                       <div className="milestone-content">
-                        <h3>{ms.title}</h3>
+                        {isEditing ? (
+                          <input className="ms-edit-input" value={msEditTitle} autoFocus
+                            onChange={e => setMsEditTitle(e.target.value)}
+                            onBlur={() => handleSaveMs(ms.id)}
+                            onKeyDown={e => { if (e.key === 'Enter') handleSaveMs(ms.id); if (e.key === 'Escape') { setEditingMsId(null) } }}
+                          />
+                        ) : (
+                          <h3>{ms.title}</h3>
+                        )}
                         <div className="ms-date">{ms.date}</div>
                         <div className="ms-tasks">{tasksHtml}</div>
+                      </div>
+                      <div className="milestone-actions">
+                        <button className="ms-action-btn" onClick={() => { setEditingMsId(ms.id); setMsEditTitle(ms.title) }}>编辑</button>
+                        <button className="ms-action-btn danger" onClick={() => handleDeleteMs(ms.id)}>删除</button>
                       </div>
                     </div>
                   )

@@ -2827,8 +2827,230 @@
     pointer-events: none;
   }
 
-  .task-card.done-card { opacity: 0.6; }
-  .task-card.done-card .tc-name { text-decoration: line-through; }
+.task-card.done-card { opacity: 0.6; }
+.task-card.done-card .tc-name { text-decoration: line-through; }
+
+/* === ADD TASK CARD (inline in column) === */
+.add-task-card {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  cursor: pointer;
+  transition: all 0.25s;
+  background: transparent;
+}
+
+.add-task-card:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(212,33,61,0.03);
+}
+
+.add-task-plus {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* 展开的表单 */
+.add-task-form {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.add-task-input {
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
+
+.add-task-input:focus { border-color: var(--red); }
+
+.add-task-options {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-task-select {
+  flex: 1;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  background: white;
+  color: var(--ink-light);
+}
+
+.add-task-xp-label {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--red);
+  background: rgba(212,33,61,0.07);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.add-task-xp-label input[type="range"] {
+  width: 50px;
+  height: 4px;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+.add-task-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.add-task-submit {
+  padding: 0.3rem 0.8rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-task-submit:hover:not(:disabled) { background: var(--red-dark); }
+.add-task-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.add-task-cancel {
+  padding: 0.3rem 0.6rem;
+  background: transparent;
+  color: var(--warm-gray);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-task-cancel:hover { border-color: var(--warm-gray); color: var(--ink); }
+
+/* === MILESTONE MANAGEMENT === */
+.ms-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ms-header-row h2 { margin: 0 !important; }
+
+.ms-add-btn {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.85rem;
+  border: 1.5px dashed var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--warm-gray);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+  font-weight: 500;
+}
+
+.ms-add-btn:hover {
+  border-color: var(--gold);
+  color: #8B6914;
+  background: rgba(212,168,67,0.05);
+}
+
+.milestone-item-wrap {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.milestone-item-wrap::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 38px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--border);
+}
+
+.milestone-item-wrap:last-child::before { display: none; }
+
+.milestone-actions {
+  position: absolute;
+  right: 0;
+  top: 1.2rem;
+  display: flex;
+  gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.milestone-item-wrap:hover .milestone-actions { opacity: 1; }
+
+.ms-action-btn {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  color: var(--warm-gray);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.ms-action-btn:hover { border-color: var(--ink-light); color: var(--ink); }
+.ms-action-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+.ms-edit-input {
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid var(--red);
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-family: inherit;
+  outline: none;
+  width: auto;
+  min-width: 200px;
+}
 
   /* === COLLABORATION SPACE === */
   .collab-tabs {
