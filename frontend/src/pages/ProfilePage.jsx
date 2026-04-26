@@ -6,8 +6,18 @@ import { STATUS_MAP, STATUS_COLORS, LEVEL_COLORS, NEXT_LEVEL_XP } from '../const
 export default function ProfilePage() {
   const { name } = useParams()
   const navigate = useNavigate()
-  const { users: userData, projects, badges } = useData()
+  const { users: userData, projects, badges, dataLoading } = useData()
   const { openBadgeModal } = useApp()
+
+  if (dataLoading) {
+    return (
+      <div className="page active" id="page-profile">
+        <div style={{ textAlign: 'center', padding: '5rem' }}>
+          <p>加载中...</p>
+        </div>
+      </div>
+    )
+  }
 
   const u = userData[name]
   if (!u) {
