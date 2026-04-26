@@ -160,6 +160,10 @@ jobs:
             mkdir -p "$PROJECT_DIR"
             cd "$PROJECT_DIR"
             
+            # 登录阿里云容器镜像服务
+            echo "🔐 Logging in to Aliyun Container Registry..."
+            echo "${{ secrets.ALIYUN_DOCKER_PASSWORD }}" | docker login ${{ env.REGISTRY }} -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} --password-stdin
+            
             # 生成 docker-compose.yml
             cat > docker-compose.yml << EOF
             version: '3.8'
