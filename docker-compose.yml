@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
     ports:
       - "80:80"
     networks:
@@ -13,9 +11,7 @@ services:
       - backend
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
     ports:
       - "8080:8080"
     networks:
