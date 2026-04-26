@@ -40,21 +40,21 @@ jobs:
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v2
         with:
-          registry: registry.cn-hangzhou.aliyuncs.com
+          registry: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com
           username: ${{ secrets.ALIYUN_DOCKER_USERNAME }}
           password: ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
 
       - name: Build and push frontend image
         run: |
           cd frontend
-          docker build -t registry.cn-hangzhou.aliyuncs.com/conlaboro/frontend:latest .
-          docker push registry.cn-hangzhou.aliyuncs.com/conlaboro/frontend:latest
+          docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest .
+          docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
 
       - name: Build and push backend image
         run: |
           cd backend
-          docker build -t registry.cn-hangzhou.aliyuncs.com/conlaboro/backend:latest .
-          docker push registry.cn-hangzhou.aliyuncs.com/conlaboro/backend:latest
+          docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest .
+          docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v0.1.7
