@@ -8,18 +8,42 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  detect-changes:
     if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-changed: ${{ steps.detect.outputs.frontend }}
+      backend-changed: ${{ steps.detect.outputs.backend }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: detect
+        run: |
+          # 检查前端目录是否有变化
+          if git diff HEAD~1 HEAD --name-only | grep -E '^frontend/'; then
+            echo "frontend=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # 检查后端目录是否有变化
+          if git diff HEAD~1 HEAD --name-only | grep -E '^backend/'; then
+            echo "backend=true" >> $GITHUB_OUTPUT
+          else
+            echo "backend=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend-changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'adopt'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -31,11 +55,6 @@ jobs:
           cd frontend
           npm install
           npm run build
-
-      - name: Build backend
-        run: |
-          cd backend
-          mvn clean package -DskipTests
 
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v2
@@ -50,12 +69,43 @@ jobs:
           docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest .
           docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
 
+  build-backend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build backend
+        run: |
+          cd backend
+          mvn clean package -DskipTests
+
+      - name: Login to Aliyun Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com
+          username: ${{ secrets.ALIYUN_DOCKER_USERNAME }}
+          password: ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
+
       - name: Build and push backend image
         run: |
           cd backend
           docker build -t crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest .
           docker push crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
 
+  deploy:
+    needs: [detect-changes, build-frontend, build-backend]
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -67,14 +117,54 @@ jobs:
             mkdir -p /opt/conlaboro
             cd /opt/conlaboro
             
-            # 下载最新的docker-compose.yml文件
-            if [ ! -f docker-compose.yml ]; then
-              echo "Downloading docker-compose.yml..."
-              curl -O https://raw.githubusercontent.com/your-username/Conlaboro/master/docker-compose.yml
-            else
-              echo "Updating docker-compose.yml..."
-              curl -O https://raw.githubusercontent.com/your-username/Conlaboro/master/docker-compose.yml
-            fi
+            # 创建docker-compose.yml文件
+            cat > docker-compose.yml << 'EOF'
+version: '3.8'
+
+services:
+  frontend:
+    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-frontend:latest
+    ports:
+      - "80:80"
+    networks:
+      - conlaboro-network
+    depends_on:
+      - backend
+
+  backend:
+    image: crpi-mybfxaei46yf37zf.cn-hangzhou.personal.cr.aliyuncs.com/ubuntu20_dock/conlaboro-backend:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - conlaboro-network
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/conlaboro
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    networks:
+      - conlaboro-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=conlaboro
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+networks:
+  conlaboro-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+EOF
             
             # 拉取最新镜像并启动服务
             docker compose pull
