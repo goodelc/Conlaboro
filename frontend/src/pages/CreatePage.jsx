@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { createProject } from '../api'
 
@@ -81,11 +81,12 @@ function analyzeProjectDescription(description) {
 
 export default function CreatePage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { showToast } = useApp()
 
   // 版本切换
   const [version, setVersion] = useState('manual') // 'manual' 或 'ai'
-  
+
   // 手动版本状态
   const [name, setName] = useState('')
   const [tagline, setTagline] = useState('')
@@ -94,14 +95,23 @@ export default function CreatePage() {
   const [duration, setDuration] = useState('1个月')
   const [roleCounts, setRoleCounts] = useState(roleSetupData.map(r => r.defaultCount))
   const [msTitles, setMsTitles] = useState(['', '', ''])
-  
+
   // AI版本状态
   const [aiDescription, setAiDescription] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [aiGenerated, setAiGenerated] = useState(false)
-  
+
   // 提交状态
   const [submitting, setSubmitting] = useState(false)
+
+  // 接收从想法墙传入的内容
+  useEffect(() => {
+    if (location.state?.ideaContent) {
+      setDesc(location.state.ideaContent)
+      setName(location.state.ideaContent.length > 20 ? location.state.ideaContent.substring(0, 20) + '...' : location.state.ideaContent)
+      setTagline(location.state.ideaContent.length > 50 ? location.state.ideaContent.substring(0, 50) + '...' : location.state.ideaContent)
+    }
+  }, [])
 
   function changeRoleCount(index, delta) {
     setRoleCounts(prev => prev.map((v, i) => i === index ? Math.max(0, Math.min(5, v + delta)) : v))

@@ -15,6 +15,8 @@ public class Idea {
     private String authorName;
     @TableField("like_count")
     private Integer likeCount;
+    @TableField("comment_count")
+    private Integer commentCount;
     @TableField("created_at")
     private OffsetDateTime createdAt;
     @TableField("updated_at")

@@ -1,5 +1,6 @@
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { useApp } from '../../context/AppContext'
+import { getComments, createComment } from '../../api/idea'
 
 function formatRelativeTime(dateString) {
   const date = new Date(dateString)
@@ -16,20 +17,46 @@ function formatRelativeTime(dateString) {
   return '刚刚'
 }
 
-export default memo(function IdeaCard({ idea, onLike, onUnlike, liked }) {
-  const { isLoggedIn, showToast } = useApp()
+export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvertToProject, isLoggedIn: propIsLoggedIn }) {
+  const { isLoggedIn: ctxIsLoggedIn, showToast } = useApp()
+  const isLoggedIn = propIsLoggedIn ?? ctxIsLoggedIn
+
+  const [comments, setComments] = useState([])
+  const [commentContent, setCommentContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+
+  useEffect(() => {
+    if (showComments) fetchComments()
+  }, [showComments, idea.id])
+
+  const fetchComments = async () => {
+    try {
+      const response = await getComments(idea.id)
+      setComments(response.data || [])
+    } catch (err) { showToast('获取评论失败', 'error') }
+  }
 
   const handleLikeClick = (e) => {
     e.stopPropagation()
-    if (!isLoggedIn) {
-      showToast('请先登录后再点赞', 'warning')
-      return
-    }
-    if (liked) {
-      onUnlike(idea.id)
-    } else {
-      onLike(idea.id)
-    }
+    if (!isLoggedIn) { showToast('请先登录后再点赞', 'warning'); return }
+    if (liked) onUnlike(idea.id)
+    else onLike(idea.id)
+  }
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault()
+    if (!isLoggedIn) { showToast('请先登录后再评论', 'warning'); return }
+    if (!commentContent.trim()) { showToast('请输入评论内容', 'warning'); return }
+    setSubmitting(true)
+    try {
+      await createComment(idea.id, { content: commentContent.trim() })
+      setCommentContent('')
+      await fetchComments()
+      showToast('评论成功！', 'success')
+    } catch (err) {
+      showToast(err.response?.data?.message || '评论失败，请重试', 'error')
+    } finally { setSubmitting(false) }
   }
 
   return (
@@ -40,15 +67,62 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked }) {
           <span className="idea-author">{idea.authorName}</span>
           <span className="idea-time">{formatRelativeTime(idea.createdAt)}</span>
         </div>
-        <button
-          className={`idea-like-btn ${liked ? 'liked' : ''}`}
-          onClick={handleLikeClick}
-          title={isLoggedIn ? (liked ? '取消点赞' : '点赞') : '登录后点赞'}
-        >
-          <span className="heart-icon">{liked ? '❤️' : '🤍'}</span>
-          <span className="like-count">{idea.likeCount || 0}</span>
-        </button>
+        <div className="idea-actions">
+          <button
+            className={`idea-like-btn ${liked ? 'liked' : ''}`}
+            onClick={handleLikeClick}
+            title={isLoggedIn ? (liked ? '取消点赞' : '点赞') : '登录后点赞'}
+          >
+            <span className="heart-icon">{liked ? '❤️' : '🤍'}</span>
+            <span className="like-count">{idea.likeCount || 0}</span>
+          </button>
+          <button
+            className="idea-comment-btn"
+            onClick={() => setShowComments(!showComments)}
+            title="查看评论"
+          >
+            <span className="comment-icon">💬</span>
+            <span className="comment-count">{idea.commentCount || 0}</span>
+          </button>
+        </div>
       </div>
+
+      {/* 转为项目按钮 */}
+      {onConvertToProject && (
+        <button className="idea-convert-btn" onClick={onConvertToProject} title="将此想法发起为项目">
+          🚀 转为项目
+        </button>
+      )}
+
+      {showComments && (
+        <div className="idea-comments">
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">还没有评论，快来发表第一条评论吧</p>
+            ) : comments.map(comment => (
+              <div key={comment.id} className="comment-item">
+                <div className="comment-content">{comment.content}</div>
+                <div className="comment-meta">
+                  <span className="comment-time">{formatRelativeTime(comment.createdAt)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <form className="comment-form" onSubmit={handleCommentSubmit}>
+            <textarea
+              className="comment-textarea"
+              placeholder={isLoggedIn ? '写下你的评论...' : '登录后可发表评论'}
+              value={commentContent}
+              onChange={(e) => setCommentContent(e.target.value)}
+              rows={2}
+              disabled={!isLoggedIn}
+            />
+            <button type="submit" className="btn-primary btn-small" disabled={submitting || !isLoggedIn}>
+              {submitting ? '发布中...' : '发布'}
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   )
 })
