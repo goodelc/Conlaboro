@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.conlaboro.common.ErrorCode;
 import com.conlaboro.entity.Idea;
 import com.conlaboro.entity.IdeaLike;
+import com.conlaboro.entity.IdeaComment;
+import com.conlaboro.entity.User;
 import com.conlaboro.exception.BizException;
 import com.conlaboro.mapper.IdeaLikeMapper;
 import com.conlaboro.mapper.IdeaMapper;
 import com.conlaboro.mapper.IdeaCommentMapper;
-import com.conlaboro.entity.IdeaComment;
+import com.conlaboro.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class IdeaService {
     private final IdeaMapper ideaMapper;
     private final IdeaLikeMapper ideaLikeMapper;
     private final IdeaCommentMapper ideaCommentMapper;
+    private final UserMapper userMapper;
 
     public Page<Idea> getIdeasPage(int page, int size, String keyword, String sortBy) {
         Page<Idea> pager = new Page<>(page, size);
@@ -43,8 +46,7 @@ public class IdeaService {
                 queryWrapper.orderByDesc(Idea::getLikeCount).orderByDesc(Idea::getCreatedAt);
                 break;
             case "mostComments":
-                // 使用创建时间排序（由于comment_count字段不存在）
-                queryWrapper.orderByDesc(Idea::getCreatedAt);
+                queryWrapper.orderByDesc(Idea::getCommentCount).orderByDesc(Idea::getCreatedAt);
                 break;
             case "latest":
             default:
@@ -53,6 +55,14 @@ public class IdeaService {
         }
         
         return ideaMapper.selectPage(pager, queryWrapper);
+    }
+
+    public Idea getIdeaById(Long id) {
+        Idea idea = ideaMapper.selectById(id);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        return idea;
     }
 
     @Transactional
@@ -126,10 +136,20 @@ public class IdeaService {
         if (idea == null) {
             throw new BizException(ErrorCode.NOT_FOUND);
         }
-        return ideaCommentMapper.selectList(
+        List<IdeaComment> comments = ideaCommentMapper.selectList(
                 new LambdaQueryWrapper<IdeaComment>()
                         .eq(IdeaComment::getIdeaId, ideaId)
                         .orderByDesc(IdeaComment::getCreatedAt));
+        // 填充每条评论的作者名
+        for (IdeaComment comment : comments) {
+            if (comment.getUserId() != null) {
+                User user = userMapper.selectById(comment.getUserId());
+                comment.setAuthorName(user != null ? user.getUsername() : "匿名用户");
+            } else {
+                comment.setAuthorName("匿名用户");
+            }
+        }
+        return comments;
     }
 
     @Transactional
@@ -144,9 +164,9 @@ public class IdeaService {
         comment.setContent(content);
         comment.setCreatedAt(OffsetDateTime.now());
         ideaCommentMapper.insert(comment);
-        // 由于comment_count字段不存在，跳过更新评论数
+        // 更新评论计数
+        idea.setCommentCount((idea.getCommentCount() != null ? idea.getCommentCount() : 0) + 1);
         idea.setUpdatedAt(OffsetDateTime.now());
-        // 只更新updated_at字段，避免更新不存在的comment_count字段
         ideaMapper.updateById(idea);
         return comment;
     }

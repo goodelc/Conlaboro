@@ -4,6 +4,10 @@ export function getIdeas(page, size, keyword, sortBy) {
   return request.get('/ideas', { params: { page, size, keyword, sortBy } })
 }
 
+export function getIdeaById(id) {
+  return request.get(`/ideas/${id}`)
+}
+
 export function createIdea(data) {
   return request.post('/ideas', data)
 }

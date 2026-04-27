@@ -1,4 +1,5 @@
 import { memo, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import { getComments, createComment } from '../../api/idea'
 
@@ -18,6 +19,7 @@ function formatRelativeTime(dateString) {
 }
 
 export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvertToProject, isLoggedIn: propIsLoggedIn }) {
+  const navigate = useNavigate()
   const { isLoggedIn: ctxIsLoggedIn, showToast } = useApp()
   const isLoggedIn = propIsLoggedIn ?? ctxIsLoggedIn
 
@@ -37,6 +39,13 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
     } catch (err) { showToast('获取评论失败', 'error') }
   }
 
+  // 点击卡片 → 跳转到详情页
+  const handleCardClick = (e) => {
+    // 排除按钮和交互区域的点击
+    if (e.target.closest('.idea-footer') || e.target.closest('.idea-convert-btn') || e.target.closest('.idea-comments')) return
+    navigate(`/idea/${idea.id}`)
+  }
+
   const handleLikeClick = (e) => {
     e.stopPropagation()
     if (!isLoggedIn) { showToast('请先登录后再点赞', 'warning'); return }
@@ -44,8 +53,14 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
     else onLike(idea.id)
   }
 
+  const handleCommentClick = (e) => {
+    e.stopPropagation()
+    // 点击评论按钮 → 跳转到详情页
+    navigate(`/idea/${idea.id}`)
+  }
+
   const handleCommentSubmit = async (e) => {
-    e.preventDefault()
+    e.stopPropagation()
     if (!isLoggedIn) { showToast('请先登录后再评论', 'warning'); return }
     if (!commentContent.trim()) { showToast('请输入评论内容', 'warning'); return }
     setSubmitting(true)
@@ -60,7 +75,7 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
   }
 
   return (
-    <div className="idea-card reveal">
+    <div className="idea-card" onClick={handleCardClick}>
       <p className="idea-content">{idea.content}</p>
       <div className="idea-footer">
         <div className="idea-meta">
@@ -78,8 +93,8 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
           </button>
           <button
             className="idea-comment-btn"
-            onClick={() => setShowComments(!showComments)}
-            title="查看评论"
+            onClick={handleCommentClick}
+            title="查看详情和评论"
           >
             <span className="comment-icon">💬</span>
             <span className="comment-count">{idea.commentCount || 0}</span>
@@ -89,39 +104,9 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
 
       {/* 转为项目按钮 */}
       {onConvertToProject && (
-        <button className="idea-convert-btn" onClick={onConvertToProject} title="将此想法发起为项目">
-          🚀 转为项目
+        <button className="idea-convert-btn" onClick={(e) => { e.stopPropagation(); onConvertToProject(); }} title="将此想法发起为项目">
+          ✦ 发起项目
         </button>
-      )}
-
-      {showComments && (
-        <div className="idea-comments">
-          <div className="comments-list">
-            {comments.length === 0 ? (
-              <p className="no-comments">还没有评论，快来发表第一条评论吧</p>
-            ) : comments.map(comment => (
-              <div key={comment.id} className="comment-item">
-                <div className="comment-content">{comment.content}</div>
-                <div className="comment-meta">
-                  <span className="comment-time">{formatRelativeTime(comment.createdAt)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <form className="comment-form" onSubmit={handleCommentSubmit}>
-            <textarea
-              className="comment-textarea"
-              placeholder={isLoggedIn ? '写下你的评论...' : '登录后可发表评论'}
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              rows={2}
-              disabled={!isLoggedIn}
-            />
-            <button type="submit" className="btn-primary btn-small" disabled={submitting || !isLoggedIn}>
-              {submitting ? '发布中...' : '发布'}
-            </button>
-          </form>
-        </div>
       )}
     </div>
   )

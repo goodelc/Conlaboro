@@ -1,14 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { useScrollReveal } from '../hooks/useScrollReveal'
 import IdeaCard from '../components/idea-wall/IdeaCard'
 import { getIdeas, createIdea, likeIdea, unlikeIdea } from '../api/idea'
 
 export default function IdeaWallPage() {
   const navigate = useNavigate()
   const { isLoggedIn, showToast } = useApp()
-  const pageRef = useScrollReveal()
 
   const [ideas, setIdeas] = useState([])
   const [page, setPage] = useState(0)
@@ -25,12 +23,13 @@ export default function IdeaWallPage() {
   const [sortBy, setSortBy] = useState('latest')
   const loadingRef = useRef(false)
 
-  const fetchIdeas = useCallback(async (pageNum) => {
+  // 搜索/排序变化后重新加载（显式传参，避免闭包循环依赖）
+  const fetchIdeas = useCallback(async (pageNum, keyword, sort) => {
     if (loadingRef.current) return
     loadingRef.current = true
     setLoading(true)
     try {
-      const data = await getIdeas(pageNum + 1, 20, searchKeyword, sortBy)
+      const data = await getIdeas(pageNum + 1, 20, keyword || '', sort || 'latest')
       const newIdeas = data.records || data.content || data.ideas || data || []
       setIdeas(prev => pageNum === 0 ? newIdeas : [...prev, ...newIdeas])
       const totalPages = data.pages || data.totalPages || 1
@@ -41,10 +40,12 @@ export default function IdeaWallPage() {
       setLoading(false)
       loadingRef.current = false
     }
-  }, [showToast, searchKeyword, sortBy])
+  }, [showToast])
 
-  useEffect(() => { fetchIdeas(0) }, [fetchIdeas])
+  // 初始加载
+  useEffect(() => { fetchIdeas(0, searchKeyword, sortBy) }, [])
 
+  // 滚动加载更多
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 200) {
@@ -55,7 +56,32 @@ export default function IdeaWallPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [hasMore, loading])
 
-  useEffect(() => { if (page > 0) fetchIdeas(page) }, [page])
+  // page 变化时加载下一页（使用最新 keyword/sortBy）
+  useEffect(() => { if (page > 0) fetchIdeas(page, searchKeyword, sortBy) }, [page])
+
+  // 搜索处理：回车触发
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      doSearch()
+    }
+  }
+
+  // 排序变化处理
+  const handleSortChange = (e) => {
+    const val = e.target.value
+    setSortBy(val)
+    setPage(0)
+    setHasMore(true)
+    fetchIdeas(0, searchKeyword, val)
+  }
+
+  // 统一执行搜索/刷新
+  const doSearch = useCallback(() => {
+    setPage(0)
+    setHasMore(true)
+    fetchIdeas(0, searchKeyword, sortBy)
+  }, [searchKeyword, sortBy, fetchIdeas])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -66,7 +92,7 @@ export default function IdeaWallPage() {
       setContent('')
       setShowCreateModal(false)
       setPage(0); setHasMore(true)
-      fetchIdeas(0)
+      fetchIdeas(0, searchKeyword, sortBy)
       showToast('发布成功！', 'success')
     } catch (err) {
       showToast('发布失败，请重试', 'error')
@@ -100,7 +126,7 @@ export default function IdeaWallPage() {
   }
 
   return (
-    <div className="page active" ref={pageRef}>
+    <div className="page active">
       {/* Hero 区域 */}
       <section className="hero idea-hero">
         <div className="hero-badge"><span className="dot"></span>想法 · 分享 · 交流</div>
@@ -108,19 +134,19 @@ export default function IdeaWallPage() {
         <p className="hero-sub">分享你的想法，发现有趣的灵魂</p>
 
         {/* 搜索 & 排序 */}
-        <div className="idea-toolbar reveal">
+        <div className="idea-toolbar">
           <input
             type="text"
             className="idea-search-input"
-            placeholder="搜索想法..."
+            placeholder="🔍 搜索想法..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && (() => { setPage(0); setHasMore(true); fetchIdeas(0); })()}
+            onKeyDown={handleSearchKeyDown}
           />
           <select
             className="idea-sort-select"
             value={sortBy}
-            onChange={(e) => { setSortBy(e.target.value); setPage(0); setHasMore(true); fetchIdeas(0); }}
+            onChange={handleSortChange}
           >
             <option value="latest">最新发布</option>
             <option value="mostLikes">最多点赞</option>

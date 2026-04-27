@@ -26,6 +26,11 @@ public class IdeaController {
         return Result.ok(ideaService.getIdeasPage(page, size, keyword, sortBy));
     }
 
+    @GetMapping("/{id}")
+    public Result<Idea> getIdeaById(@PathVariable Long id) {
+        return Result.ok(ideaService.getIdeaById(id));
+    }
+
     @PostMapping
     public Result<Idea> createIdea(@RequestBody Map<String, String> body) {
         String content = body.get("content");
