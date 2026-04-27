@@ -1,15 +1,20 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { notifCount, toggleNotif, isLoggedIn, currentUser, logout, fetchUnreadCount } = useApp()
 
   // 登录后自动拉取未读通知数
   useEffect(() => {
     if (isLoggedIn) fetchUnreadCount()
   }, [isLoggedIn])
+
+  // 登录/注册页隐藏导航栏（必须在所有hooks之后）
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+  if (isAuthPage) return null
 
   return (
     <nav>
