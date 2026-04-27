@@ -144,7 +144,7 @@ public class IdeaService {
         for (IdeaComment comment : comments) {
             if (comment.getUserId() != null) {
                 User user = userMapper.selectById(comment.getUserId());
-                comment.setAuthorName(user != null ? user.getUsername() : "匿名用户");
+                comment.setAuthorName(user != null ? user.getName() : "匿名用户");
             } else {
                 comment.setAuthorName("匿名用户");
             }
