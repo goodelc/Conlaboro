@@ -20,6 +20,7 @@ export default function IdeaWallPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const [likedIds, setLikedIds] = useState(new Set())
+  const [showNavButtons, setShowNavButtons] = useState(false)
   const loadingRef = useRef(false)
 
   const fetchIdeas = useCallback(async (pageNum) => {
@@ -46,6 +47,7 @@ export default function IdeaWallPage() {
 
   useEffect(() => {
     const handleScroll = () => {
+      setShowNavButtons(window.scrollY > 300)
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 200) {
         if (!loadingRef.current && hasMore && !loading) {
           setPage(prev => prev + 1)
@@ -61,6 +63,14 @@ export default function IdeaWallPage() {
       fetchIdeas(page)
     }
   }, [page])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -119,13 +129,17 @@ export default function IdeaWallPage() {
   return (
     <div className="page active" ref={pageRef}>
       <section className="hero">
+        <div className="hero-badge"><span className="dot"></span>想法 · 分享 · 交流</div>
         <h1>想法墙</h1>
         <p className="hero-sub">分享你的想法，发现有趣的灵魂</p>
       </section>
 
       <section className="idea-form-section reveal">
+        <div className="section-header reveal">
+          <span className="label">Share Your Idea</span>
+          <h2>发布想法</h2>
+        </div>
         <form className="idea-form" onSubmit={handleSubmit}>
-          <h3>发布想法</h3>
           <textarea
             className="idea-textarea"
             placeholder="写下你的想法..."
@@ -149,7 +163,12 @@ export default function IdeaWallPage() {
       </section>
 
       <section className="ideas-section">
-        <h2 className="section-title">最新想法</h2>
+        <div className="section-header section-header-with-actions reveal">
+          <div className="section-header-content">
+            <span className="label">Latest Ideas</span>
+            <h2>最新想法</h2>
+          </div>
+        </div>
         <div className="ideas-list">
           {ideas.map(idea => (
             <IdeaCard
@@ -171,6 +190,26 @@ export default function IdeaWallPage() {
           </div>
         )}
       </section>
+
+      <section className="cta" id="cta">
+        <h2>你的想法，值得被看见</h2>
+        <p>不要让好想法烂在脑子里。发出来，找到你的队友，一起做点什么。</p>
+        <button className="btn-white" onClick={() => navigate('/create')}>发起你的项目</button>
+      </section>
+
+      <footer><p>共创公社 · Where Ideas Find Their Team · <a href="#">GitHub</a> · <a href="#">Twitter</a> · <a href="#">Discord</a></p></footer>
+      
+      {/* 快速导航按钮 */}
+      {showNavButtons && (
+        <div className="quick-nav-buttons">
+          <button className="nav-btn top-btn" onClick={scrollToTop} title="回到顶部">
+            ↑
+          </button>
+          <button className="nav-btn bottom-btn" onClick={scrollToBottom} title="到底部">
+            ↓
+          </button>
+        </div>
+      )}
     </div>
   )
 }

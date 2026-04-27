@@ -33,7 +33,7 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked }) {
   }
 
   return (
-    <div className="idea-card reveal visible">
+    <div className="idea-card reveal">
       <p className="idea-content">{idea.content}</p>
       <div className="idea-footer">
         <div className="idea-meta">
