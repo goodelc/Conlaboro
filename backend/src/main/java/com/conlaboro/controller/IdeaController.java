@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ideas")
@@ -19,8 +20,15 @@ public class IdeaController {
     @GetMapping
     public Result<Page<Idea>> getIdeasPage(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return Result.ok(ideaService.getIdeasPage(page, size));
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "latest") String sortBy) {
+        return Result.ok(ideaService.getIdeasPage(page, size, keyword, sortBy));
+    }
+
+    @GetMapping("/{id}")
+    public Result<Idea> getIdeaById(@PathVariable Long id) {
+        return Result.ok(ideaService.getIdeaById(id));
     }
 
     @PostMapping
@@ -51,5 +59,20 @@ public class IdeaController {
             @PathVariable Long id,
             @RequestAttribute("userId") Long userId) {
         return Result.ok(ideaService.hasLiked(id, userId));
+    }
+
+    @GetMapping("/{id}/comments")
+    public Result<List> getComments(
+            @PathVariable Long id) {
+        return Result.ok(ideaService.getCommentsByIdeaId(id));
+    }
+
+    @PostMapping("/{id}/comments")
+    public Result createComment(
+            @PathVariable Long id,
+            @RequestAttribute("userId") Long userId,
+            @RequestBody Map<String, String> body) {
+        String content = body.get("content");
+        return Result.ok(ideaService.createComment(id, userId, content));
     }
 }

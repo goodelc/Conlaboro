@@ -38,7 +38,7 @@ request.interceptors.response.use(
     return res.data  // 返回 data 字段，去掉 code/message 包装
   },
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('conlaboro_auth')
       window.location.href = '/login'
     }

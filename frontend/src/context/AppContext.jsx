@@ -13,7 +13,7 @@ function loadAuth() {
 const initialState = {
   toasts: [],
   notifOpen: false,
-  notifCount: 3,
+  notifCount: 0,
   joinModalOpen: false,
   currentJoinProject: null,
   currentJoinProjectInfo: null,
@@ -140,7 +140,7 @@ export function AppProvider({ children }) {
       const count = await getUnreadCount()
       dispatch({ type: 'SET_NOTIF_COUNT', count })
     } catch {
-      // 静默失败
+      dispatch({ type: 'CLEAR_NOTIF_COUNT' })
     }
   }, [])
 

@@ -1,7 +1,11 @@
 import request from './request'
 
-export function getIdeas(page, size) {
-  return request.get('/ideas', { params: { page, size } })
+export function getIdeas(page, size, keyword, sortBy) {
+  return request.get('/ideas', { params: { page, size, keyword, sortBy } })
+}
+
+export function getIdeaById(id) {
+  return request.get(`/ideas/${id}`)
 }
 
 export function createIdea(data) {
@@ -18,4 +22,12 @@ export function unlikeIdea(id) {
 
 export function checkLiked(id) {
   return request.get(`/ideas/${id}/liked`)
+}
+
+export function getComments(id) {
+  return request.get(`/ideas/${id}/comments`)
+}
+
+export function createComment(id, data) {
+  return request.post(`/ideas/${id}/comments`, data)
 }

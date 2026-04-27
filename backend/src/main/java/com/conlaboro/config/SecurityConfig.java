@@ -54,6 +54,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/badges").permitAll()
                 // 项目活动流 - 公开
                 .requestMatchers(HttpMethod.GET, "/api/activities/project/{projectId:[\\d]+}").permitAll()
+                // 想法墙 - 允许游客查看
+                .requestMatchers(HttpMethod.GET, "/api/ideas").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/ideas/{id:[\\d]+}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/ideas/{id:[\\d]+}/comments").permitAll()
                 // OPTIONS 预检请求
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 健康检查
