@@ -154,22 +154,21 @@ public class UserService {
         int currentLevel = user.getLevel();
         int currentXp = user.getXp();
 
-        // 从当前等级开始检查是否满足升级条件
-        for (int level = currentLevel; level < NEXT_LEVEL_XP.length; level++) {
-            if (level > 0 && currentXp >= NEXT_LEVEL_XP[level - 1]) {
-                if (currentLevel < level + 1 && level + 1 <= LEVEL_NAMES.length) {
-                    user.setLevel(level + 1);
-                    user.setLevelName(LEVEL_NAMES[level]);
-                    userMapper.updateById(user);
-                    log.info("User {} leveled up to Lv.{} ({})", userId, user.getLevel(), user.getLevelName());
-                    
-                    // 触发等级徽章检查
-                    try {
-                        badgeAutoService.checkAndGrant(userId, "level_up");
-                    } catch (Exception e) {
-                        log.warn("等级徽章授予失败: {}", e.getMessage());
-                    }
+        for (int nextLevel = currentLevel + 1; nextLevel < NEXT_LEVEL_XP.length; nextLevel++) {
+            int xpThreshold = NEXT_LEVEL_XP[nextLevel - 1];
+            if (currentXp >= xpThreshold) {
+                user.setLevel(nextLevel);
+                user.setLevelName(LEVEL_NAMES[nextLevel - 1]);
+                userMapper.updateById(user);
+                log.info("User {} leveled up to Lv.{} ({})", userId, user.getLevel(), user.getLevelName());
+
+                try {
+                    badgeAutoService.checkAndGrant(userId, "level_up");
+                } catch (Exception e) {
+                    log.warn("等级徽章授予失败: {}", e.getMessage());
                 }
+            } else {
+                break;
             }
         }
     }
