@@ -36,7 +36,7 @@ export default function IdeaDetailPage() {
     try {
       const data = await getIdeaById(id)
       setIdea(data)
-      setLiked(false) // 后续可接入 checkLiked 接口
+      setLiked(false)
     } catch (err) {
       showToast('加载失败', 'error')
       setIdea(null)
@@ -102,7 +102,7 @@ export default function IdeaDetailPage() {
 
   if (loading) {
     return (
-      <div className="page active" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="idea-detail-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div className="loading-spinner">加载中...</div>
       </div>
     )
@@ -110,36 +110,42 @@ export default function IdeaDetailPage() {
 
   if (!idea) {
     return (
-      <div className="page active">
-        <section style={{ textAlign: 'center', padding: '6rem 2rem' }}>
-          <h2>想法不存在</h2>
-          <p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>该想法可能已被删除</p>
-          <button className="btn-primary" onClick={() => navigate('/idea-wall')} style={{ marginTop: '1.5rem' }}>
-            返回想法墙
-          </button>
+      <div className="idea-detail-page">
+        <section className="idea-detail-section">
+          <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
+            <h2>想法不存在</h2>
+            <p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>该想法可能已被删除</p>
+            <button className="btn-primary" onClick={() => navigate('/idea-wall')} style={{ marginTop: '1.5rem' }}>
+              返回想法墙
+            </button>
+          </div>
         </section>
       </div>
     )
   }
 
   return (
-    <div className="page active">
-      {/* 导航栏 */}
-      <nav className="idea-detail-nav">
-        <Link to="/idea-wall" className="idea-back-link">← 返回想法墙</Link>
-      </nav>
-
-      {/* 详情主体 */}
+    <div className="idea-detail-page">
       <section className="idea-detail-section">
+        {/* 返回导航 */}
+        <div className="idea-detail-nav">
+          <button className="idea-back-btn" onClick={() => navigate('/idea-wall')}>
+            <span>←</span>
+            <span>返回想法墙</span>
+          </button>
+          <time className="idea-detail-time">{formatRelativeTime(idea.createdAt)}</time>
+        </div>
+
+        {/* 想法主体 */}
         <article className="idea-detail-card">
-          {/* 头部信息 */}
-          <header className="idea-detail-header">
-            <div className="idea-detail-author">
-              <span className="author-avatar">{(idea.authorName || '匿').charAt(0)}</span>
+          {/* 作者信息 */}
+          <div className="idea-detail-author">
+            <span className="author-avatar">{(idea.authorName || '匿').charAt(0)}</span>
+            <div className="idea-detail-author-info">
               <span className="author-name">{idea.authorName || '匿名用户'}</span>
+              <span className="author-label">想法发布者</span>
             </div>
-            <time className="idea-detail-time">{formatRelativeTime(idea.createdAt)}</time>
-          </header>
+          </div>
 
           {/* 想法内容 */}
           <div className="idea-detail-content">
@@ -163,26 +169,33 @@ export default function IdeaDetailPage() {
           </div>
         </article>
 
-        {/* 评论区域 */}
+        {/* 评论区 */}
         <aside className="idea-comments-section">
           <h3 className="comments-title">评论 ({comments.length})</h3>
 
-          {/* 评论列表 */}
-          <div className="detail-comments-list">
-            {comments.length === 0 && (
-              <p className="no-comments-hint">还没有评论，来发表第一条吧~</p>
-            )}
-            {comments.map(comment => (
-              <div key={comment.id} className="detail-comment-item">
-                <div className="dci-header">
+          {comments.length === 0 && (
+            <div className="no-comments-hint">
+              <span className="nch-icon">💭</span>
+              <p>还没有评论，来发表第一条吧~</p>
+            </div>
+          )}
+
+          {comments.length > 0 && (
+            <div className="detail-comments-list">
+              {comments.map(comment => (
+                <div key={comment.id} className="detail-comment-item">
                   <span className="dci-avatar">{String(comment.authorName || '匿').charAt(0)}</span>
-                  <span className="dci-author">{comment.authorName || '匿名用户'}</span>
-                  <time className="dci-time">{formatRelativeTime(comment.createdAt)}</time>
+                  <div className="dci-body-wrap">
+                    <div className="dci-header">
+                      <span className="dci-author">{comment.authorName || '匿名用户'}</span>
+                      <time className="dci-time">{formatRelativeTime(comment.createdAt)}</time>
+                    </div>
+                    <p className="dci-body">{comment.content}</p>
+                  </div>
                 </div>
-                <p className="dci-body">{comment.content}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* 评论输入 */}
           <form className="detail-comment-form" onSubmit={handleCommentSubmit}>
@@ -200,7 +213,7 @@ export default function IdeaDetailPage() {
               )}
               <button
                 type="submit"
-                className={`btn-primary ${!isLoggedIn ? 'btn-disabled' : ''}`}
+                className={`btn-primary btn-small ${!isLoggedIn ? 'btn-disabled' : ''}`}
                 disabled={submitting || !isLoggedIn}
               >
                 {submitting ? '发布中...' : '发布评论'}
