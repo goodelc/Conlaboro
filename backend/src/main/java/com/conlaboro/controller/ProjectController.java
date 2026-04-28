@@ -137,7 +137,7 @@ public class ProjectController {
             @RequestAttribute("userId") Long userId) {
         var user = userService.getUserProfile(userId);
         String userName = (user != null) ? user.getName() : "用户" + userId;
-        projectService.updateTaskStatus(taskId, "done");
+        var task = projectService.updateTaskStatus(taskId, "done");
         // 通过任务→里程碑获取项目 ID 记录活动
         Long projectId = projectService.getProjectIdByTaskId(taskId);
         Activity activity = new Activity();

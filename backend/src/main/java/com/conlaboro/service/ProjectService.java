@@ -190,13 +190,13 @@ public class ProjectService {
 
     /** 更新任务状态 */
     @Transactional
-    public void updateTaskStatus(Long taskId, String status) {
+    public Task updateTaskStatus(Long taskId, String status) {
         Task task = taskMapper.selectById(taskId);
         if (task == null) throw new BizException(ErrorCode.NOT_FOUND);
-        
+
         String oldStatus = task.getStatus();
         task.setStatus(status);
-        
+
         if ("done".equals(status) && !"done".equals(oldStatus)) {
             // 完成任务获得XP奖励
             try {
@@ -215,6 +215,7 @@ public class ProjectService {
             task.setAssignee(null);
         }
         taskMapper.updateById(task);
+        return task;
     }
 
     /** 创建任务 */
