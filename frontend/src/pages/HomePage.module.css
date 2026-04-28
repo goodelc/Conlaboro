@@ -1,0 +1,573 @@
+/* ============================================================
+   HomePage.module.css — 首页全量样式
+   包含: Hero / Manifesto / HowItWorks / ProjectsGrid /
+         RolesSection / Principles / CTA / Footer / QuickNav
+   ============================================================ */
+
+/* --- Hero --- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(212, 33, 61, 0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(212, 168, 67, 0.06) 0%, transparent 50%);
+  animation: heroGlow 15s ease-in-out infinite alternate;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.badgeDot {
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.title {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out;
+}
+
+.highlight {
+  color: var(--red);
+  position: relative;
+  display: inline-block;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 0.05em;
+  left: -0.05em; right: -0.05em;
+  height: 0.15em;
+  background: var(--gold);
+  opacity: 0.6;
+  transform: skewX(-5deg);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--ink-light);
+  max-width: 600px;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.stats {
+  display: flex;
+  gap: 4rem;
+  margin-top: 5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.stat { text-align: center; }
+
+.num {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 2.5rem;
+  color: var(--red);
+  line-height: 1;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+/* --- Manifesto --- */
+.manifesto { padding: 8rem 2rem; }
+
+.inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+.quote {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+
+.em { color: var(--red); }
+
+.divider {
+  width: 60px; height: 2px;
+  background: var(--gold);
+  margin: 3rem auto;
+}
+
+.text {
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--ink-light);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* --- How It Works --- */
+.how {
+  padding: 6rem 2rem 8rem;
+  background: var(--ink);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.how::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 100px, rgba(255,255,255,0.02) 100px, rgba(255,255,255,0.02) 101px);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionHeaderWithActions {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionHeaderContent { margin-bottom: 1rem; }
+.sectionHeaderActions { display: flex; justify-content: center; }
+
+.secLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.secH2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.howGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.step {
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.step:hover {
+  border-color: var(--red);
+  background: rgba(212, 33, 61, 0.05);
+  transform: translateY(-4px);
+}
+
+.stepNum {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.06);
+  position: absolute;
+  top: 1rem; right: 1.5rem;
+  line-height: 1;
+}
+
+.stepIcon {
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.step h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.step p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+/* --- Projects Section --- */
+.projects { padding: 8rem 2rem; }
+
+.searchBar {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.searchInputWrap { position: relative; display: flex; align-items: center; }
+
+.searchIcon {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1rem;
+  color: var(--warm-gray);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.08);
+}
+.searchInput::placeholder { color: var(--warm-gray); }
+
+.searchFilters {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.filterChipActive,
+.filterChip:hover {
+  background: var(--red);
+  color: white;
+  border-color: var(--red);
+}
+
+.filterDivider {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  display: flex;
+  align-items: center;
+}
+
+.resultsInfo {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  margin-top: 0.8rem;
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.noResults {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--warm-gray);
+}
+
+.nrIcon { font-size: 3rem; margin-bottom: 1rem; }
+.noResults h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1.2rem; color: var(--ink); margin-bottom: 0.5rem; }
+
+/* --- Roles Section --- */
+.rolesSection { padding: 8rem 2rem; background: var(--cream); }
+
+.rolesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.roleCard {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.roleCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+  border-color: var(--gold);
+}
+
+.roleEmoji { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
+.roleCard h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+.roleCount { font-size: 0.75rem; color: var(--warm-gray); }
+.roleCount span { color: var(--red); font-weight: 700; }
+
+/* --- Principles --- */
+.principles { padding: 8rem 2rem; }
+
+.principlesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.principle {
+  padding: 3rem 2.5rem;
+  border: 1px solid var(--border);
+  position: relative;
+  transition: all 0.4s;
+}
+
+.principle:hover { background: var(--cream); }
+
+.pNum {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(212, 33, 61, 0.08);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.principle h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 0.8rem; }
+.principle p { font-size: 0.85rem; color: var(--warm-gray); line-height: 1.8; }
+
+/* --- CTA --- */
+.cta {
+  padding: 10rem 2rem;
+  text-align: center;
+  background: var(--red);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '共创 共享 共建';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(6rem, 15vw, 14rem);
+  font-weight: 900;
+  color: rgba(255,255,255,0.05);
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+}
+
+.cta h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cta p {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+  position: relative;
+  z-index: 1;
+}
+
+.btnWhite {
+  padding: 1rem 3rem;
+  background: white;
+  color: var(--red);
+  border: none;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.btnWhite:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+/* --- Footer --- */
+.footer {
+  padding: 3rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  letter-spacing: 0.05em;
+}
+
+.footer a { color: var(--red); text-decoration: none; }
+
+/* --- Quick Nav Buttons --- */
+.quickNavButtons {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 999;
+}
+
+.navBtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--red);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.navBtn:hover {
+  background: var(--red);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 33, 61, 0.2);
+}
+
+.topBtn { margin-bottom: 0.5rem; }
+
+/* ========== 响应式 =========== */
+
+@media (max-width: 1024px) {
+  .howGrid { grid-template-columns: repeat(2, 1fr); }
+  .rolesGrid { grid-template-columns: repeat(3, 1fr); }
+  .principlesGrid { grid-template-columns: repeat(2, 1fr); }
+  .projectsGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 7rem 1.5rem 3rem; }
+  .stats { gap: 2rem; flex-wrap: wrap; justify-content: center; }
+  .howGrid { grid-template-columns: 1fr; }
+  .rolesGrid { grid-template-columns: repeat(2, 1fr); }
+  .principlesGrid { grid-template-columns: 1fr; }
+  .projectsGrid { grid-template-columns: 1fr; }
+  .actions { flex-direction: column; width: 100%; max-width: 300px; }
+  .searchFilters { gap: 0.35rem; }
+  .manifesto, .how, .projects, .rolesSection, .principles, .cta { padding: 4rem 1.5rem; }
+  .cta { padding: 5rem 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 6rem 1rem 2rem; }
+  .num { font-size: 1.8rem; }
+  .rolesGrid { grid-template-columns: 1fr; }
+  .step { padding: 1.5rem 1.2rem; }
+  .roleCard { padding: 1.5rem 1rem; }
+  .principle { padding: 2rem 1.5rem; }
+  .quickNavButtons { bottom: 1rem; right: 1rem; }
+  .navBtn { width: 40px; height: 40px; font-size: 1rem; }
+}

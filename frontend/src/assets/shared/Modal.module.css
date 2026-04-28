@@ -1,0 +1,51 @@
+/* ============================================================
+   Modal.module.css — 共享弹窗组件
+   使用: import modal from '../assets/shared/Modal.module.css'
+        className={modal.overlay}
+   ============================================================ */
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 250;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.active { display: flex; }
+
+.content {
+  background: white;
+  max-width: 500px;
+  width: 90%;
+  padding: 2.5rem;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
+
+.title {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.bodyGroup { margin-bottom: 1.2rem; }
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

@@ -1,0 +1,106 @@
+/* ============================================================
+   ProjectCard.module.css — 项目卡片（首页/招募页复用）
+   ============================================================ */
+
+.card {
+  border: 1px solid var(--border);
+  padding: 2rem;
+  position: relative;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  background: white;
+}
+
+.card:hover {
+  border-color: var(--red);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.title {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+.desc {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.roles {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.members { display: flex; align-items: center; }
+
+.memberAvatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -10px;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+}
+.memberAvatar:first-child { margin-left: 0; }
+
+.moreCount {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid white;
+  margin-left: -10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--warm-gray);
+}
+
+.noMembers {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+}
+
+.joinBtn {
+  padding: 0.45rem 1rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+.joinBtn:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+@media (max-width: 768px) {
+  .card { padding: 1.5rem; }
+  .desc { -webkit-line-clamp: 2; }
+}

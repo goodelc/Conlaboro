@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { claimTask } from '../../api'
+import styles from './TaskCard.module.css'
 
 function TaskCard({ t, users, onTaskClaimed, showToast }) {
   const isDone = t.status === 'done'
@@ -25,23 +26,23 @@ function TaskCard({ t, users, onTaskClaimed, showToast }) {
   }
 
   return (
-    <div className={`task-card ${isDone ? 'done-card' : ''}`} onClick={e => e.stopPropagation()}>
-      <div className="tc-name">{t.name}</div>
-      <div className="tc-meta">
-        <span className="tc-assignee" style={{ color: t.assignee ? undefined : 'var(--red)' }}>
+    <div className={`${styles.taskCard} ${isDone ? styles.doneCard : ''}`} onClick={e => e.stopPropagation()}>
+      <div className={styles.tcName}>{t.name}</div>
+      <div className={styles.tcMeta}>
+        <span className={styles.tcAssignee} style={{ color: t.assignee ? undefined : 'var(--red)' }}>
           {t.assignee
-            ? <><span className="ta-avatar" style={{ background: users[t.assignee]?.color || '#999' }}>{t.assignee[0]}</span>{t.assignee}</>
+            ? <><span className={styles.taAvatar} style={{ background: users[t.assignee]?.color || '#999' }}>{t.assignee[0]}</span>{t.assignee}</>
             : '待认领'}
         </span>
-        <span className="tc-xp">+{t.xp} XP</span>
+        <span className={styles.tcXp}>+{t.xp} XP</span>
       </div>
       {!t.assignee && !isDone && !claimed && (
-        <button className="tc-claim-btn" onClick={handleClaim} disabled={loading}>
+        <button className={styles.tcClaimBtn} onClick={handleClaim} disabled={loading}>
           {loading ? '处理中...' : `认领 · +${t.xp} XP`}
         </button>
       )}
       {!t.assignee && !isDone && claimed && (
-        <button className="tc-claim-btn claimed">✓ 已认领</button>
+        <button className={`${styles.tcClaimBtn} ${styles.claimedBtn}`}>✓ 已认领</button>
       )}
     </div>
   )

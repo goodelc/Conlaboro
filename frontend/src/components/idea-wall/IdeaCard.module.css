@@ -1,0 +1,87 @@
+/* ============================================================
+   IdeaCard.module.css — 想法墙卡片
+   ============================================================ */
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  transition: all 0.4s ease;
+}
+
+.card:hover {
+  border-color: var(--red);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.content {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.meta { display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; color: var(--warm-gray); }
+.author { font-weight: 700; color: var(--ink); }
+
+.actions { display: flex; gap: 1rem; }
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.actionBtn:hover,
+.actionBtn.liked {
+  border-color: var(--red);
+  color: var(--red);
+}
+.actionBtn.liked { background: var(--red); color: white; border-color: var(--red); }
+
+.convertBtn {
+  margin-top: 1.25rem;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, var(--gold), #e8b830);
+  color: white;
+  border: none;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 12px rgba(212, 168, 67, 0.25);
+}
+
+.convertBtn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(212, 168, 67, 0.4);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 480px) {
+  .card { padding: 1.5rem; }
+  .footer { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+}

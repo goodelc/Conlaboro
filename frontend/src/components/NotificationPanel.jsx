@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { getNotifications, markAsRead, markAllAsRead } from '../api'
+import styles from './NotificationPanel.module.css'
 
 /** 格式化时间为相对时间 */
 function timeAgo(dateStr) {
@@ -49,35 +50,35 @@ export default function NotificationPanel() {
 
   return (
     <>
-      <div className={`notif-overlay ${notifOpen ? 'active' : ''}`} id="notif-overlay" onClick={toggleNotif}></div>
-      <div className={`notif-panel ${notifOpen ? 'active' : ''}`} id="notif-panel">
-        <div className="notif-header">
-          <h3>通知{unreadCount > 0 ? <span style={{ color: 'var(--primary)' }}>({unreadCount}条未读)</span> : ''}</h3>
-          <button className="notif-close" onClick={toggleNotif}>✕</button>
+      <div className={`${styles.notifOverlay} ${notifOpen ? styles.notifOverlayActive : ''}`} id="notif-overlay" onClick={toggleNotif}></div>
+      <div className={`${styles.notifPanel} ${notifOpen ? styles.notifPanelActive : ''}`} id="notif-panel">
+        <div className={styles.notifHeader}>
+          <h3>通知{unreadCount > 0 ? <span className={styles.unreadCount}>({unreadCount}条未读)</span> : ''}</h3>
+          <button className={styles.notifClose} onClick={toggleNotif}>✕</button>
         </div>
-        <div className="notif-list">
+        <div className={styles.notifList}>
           {!isLoggedIn ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+            <div className={styles.emptyState}>
               登录后查看通知
             </div>
           ) : loading ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+            <div className={styles.emptyState}>
               加载中...
             </div>
           ) : list.length === 0 ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--warm-gray)' }}>
+            <div className={styles.emptyState}>
               暂无通知 🎉
             </div>
           ) : (
             list.map((n) => (
               <div
                 key={n.id}
-                className={`notif-item ${n.is_read ? '' : 'unread'}`}
+                className={`${styles.notifItem} ${!n.is_read ? styles.notifItemUnread : ''}`}
                 onClick={() => handleClick(n)}
               >
-                <div className="ni-type">{n.type_icon || '📢'} {n.title}</div>
-                <div className="ni-text">{n.content}</div>
-                <div className="ni-time">{timeAgo(n.created_at)}</div>
+                <div className={styles.niType}>{n.type_icon || '📢'} {n.title}</div>
+                <div className={styles.niText}>{n.content}</div>
+                <div className={styles.niTime}>{timeAgo(n.created_at)}</div>
               </div>
             ))
           )}

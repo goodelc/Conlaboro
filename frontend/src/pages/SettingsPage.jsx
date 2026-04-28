@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useData } from '../context/DataContext'
 import { updateProfile } from '../api'
+import styles from './SettingsPage.module.css'
 
 /* ── 复用 Toggle / RoleTag ── */
 function ToggleSwitch({ defaultActive, onChange }) {
   const [active, setActive] = useState(defaultActive ?? true)
   return (
-    <div className={`toggle-switch ${active ? 'active' : ''}`}
+    <div className={`${styles.toggleSwitch} ${active ? styles.toggleSwitchActive : ''}`}
       onClick={() => {
         const next = !active
         setActive(next)
@@ -21,7 +22,7 @@ function ToggleSwitch({ defaultActive, onChange }) {
 function RoleTag({ children, defaultActive }) {
   const [active, setActive] = useState(!!defaultActive)
   return <span
-    className={`role-tag ${active ? 'active' : ''}`}
+    className={`${styles.roleTag} ${active ? styles.roleTagActive : ''}`}
     onClick={() => setActive(!active)}
   >{children}</span>
 }
@@ -33,12 +34,12 @@ function EditModal({ open, title, desc, children, onClose, onSave }) {
     <div className="modal-overlay active" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <h2>{title}</h2>
-        <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)', marginBottom: '1.5rem' }}>{desc}</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <p className={styles.editModalDesc}>{desc}</p>
+        <div className={styles.editModalBody}>
           {children}
-          <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button className="btn-secondary" onClick={onClose} style={{ padding: '0.5rem 1.5rem' }}>取消</button>
-            <button className="btn-primary" onClick={onSave} style={{ padding: '0.5rem 1.5rem' }}>保存</button>
+          <div className={styles.editModalActions}>
+            <button className={`btn-secondary ${styles.editModalBtn}`} onClick={onClose}>取消</button>
+            <button className={`btn-primary ${styles.editModalBtn}`} onClick={onSave}>保存</button>
           </div>
         </div>
       </div>
@@ -122,46 +123,46 @@ export default function SettingsPage() {
 
   return (
     <div className="page active" id="page-settings">
-      <div className="settings-page">
-        <div className="settings-inner">
-          <div className="settings-header"><h1>⚙️ 个人设置</h1><p>管理你的资料、偏好和通知</p></div>
+      <div className={styles.settingsPage}>
+        <div className={styles.settingsInner}>
+          <div className={styles.settingsHeader}><h1>⚙️ 个人设置</h1><p>管理你的资料、偏好和通知</p></div>
 
           {/* ═══ 个人资料 ═══ */}
-          <div className="settings-section">
-            <div className="settings-section-title">👤 个人资料</div>
+          <div className={styles.settingsSection}>
+            <div className={styles.settingsSectionTitle}>👤 个人资料</div>
 
-            <div className="settings-row">
-              <div className="sr-label"><h4>昵称</h4><p>你在公社的显示名称</p></div>
-              <div className="sr-value">
+            <div className={styles.settingsRow}>
+              <div className={styles.srLabel}><h4>昵称</h4><p>你在公社的显示名称</p></div>
+              <div className={styles.srValue}>
                 <span>{u.name}</span>
-                <button className="edit-btn" onClick={() => openEdit('name')}>修改</button>
+                <button className={styles.editBtn} onClick={() => openEdit('name')}>修改</button>
               </div>
             </div>
 
-            <div className="settings-row">
-              <div className="sr-label"><h4>个人简介</h4><p>让别人了解你</p></div>
-              <div className="sr-value">
-                <span style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>{u.bio || '(未填写)'}</span>
-                <button className="edit-btn" onClick={() => openEdit('bio')}>修改</button>
+            <div className={styles.settingsRow}>
+              <div className={styles.srLabel}><h4>个人简介</h4><p>让别人了解你</p></div>
+              <div className={styles.srValue}>
+                <span className={styles.bioText}>{u.bio || '(未填写)'}</span>
+                <button className={styles.editBtn} onClick={() => openEdit('bio')}>修改</button>
               </div>
             </div>
 
-            <div className="settings-row">
-              <div className="sr-label"><h4>技能标签</h4><p>展示你的专业能力</p></div>
-              <div className="sr-value">
+            <div className={styles.settingsRow}>
+              <div className={styles.srLabel}><h4>技能标签</h4><p>展示你的专业能力</p></div>
+              <div className={styles.srValue}>
                 <span>{u.skills.map(s => s.name).join('、') || '(未选择)'}</span>
-                <button className="edit-btn" onClick={() => openEdit('skills')}>修改</button>
+                <button className={styles.editBtn} onClick={() => openEdit('skills')}>修改</button>
               </div>
             </div>
           </div>
 
           {/* ═══ 角色偏好 ═══ */}
-          <div className="settings-section">
-            <div className="settings-section-title">🎯 角色偏好</div>
-            <div className="settings-row">
-              <div className="sr-label"><h4>你想担任的角色</h4><p>项目推荐会优先匹配这些角色</p></div>
-              <div className="sr-value">
-                <div className="role-tags">
+          <div className={styles.settingsSection}>
+            <div className={styles.settingsSectionTitle}>🎯 角色偏好</div>
+            <div className={styles.settingsRow}>
+              <div className={styles.srLabel}><h4>你想担任的角色</h4><p>项目推荐会优先匹配这些角色</p></div>
+              <div className={styles.srValue}>
+                <div className={styles.roleTags}>
                   <RoleTag defaultActive>🎯 产品经理</RoleTag>
                   <RoleTag defaultActive>🎨 设计师</RoleTag>
                   <RoleTag>💻 开发者</RoleTag>
@@ -170,10 +171,10 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-            <div className="settings-row">
-              <div className="sr-label"><h4>偏好项目类别</h4><p>你感兴趣的项目类型</p></div>
-              <div className="sr-value">
-                <div className="role-tags">
+            <div className={styles.settingsRow}>
+              <div className={styles.srLabel}><h4>偏好项目类别</h4><p>你感兴趣的项目类型</p></div>
+              <div className={styles.srValue}>
+                <div className={styles.roleTags}>
                   <RoleTag defaultActive>📱 App</RoleTag>
                   <RoleTag defaultActive>🌐 Web</RoleTag>
                   <RoleTag>🎮 游戏</RoleTag>
@@ -185,8 +186,8 @@ export default function SettingsPage() {
           </div>
 
           {/* ═══ 通知设置 ═══ */}
-          <div className="settings-section">
-            <div className="settings-section-title">🔔 通知设置</div>
+          <div className={styles.settingsSection}>
+            <div className={styles.settingsSectionTitle}>🔔 通知设置</div>
             {[
               ['申请状态更新', '你的项目申请被接受或拒绝时通知'],
               ['项目动态', '你参与的项目有新动态时通知'],
@@ -194,29 +195,29 @@ export default function SettingsPage() {
               ['项目推荐', '有匹配你技能的新项目时通知'],
               ['成就解锁', '获得新徽章或等级提升时通知'],
             ].map(([title, desc]) => (
-              <div key={title} className="settings-row">
-                <div className="sr-label"><h4>{title}</h4><p>{desc}</p></div>
-                <div className="sr-value"><ToggleSwitch defaultActive={title !== '项目推荐'} /></div>
+              <div key={title} className={styles.settingsRow}>
+                <div className={styles.srLabel}><h4>{title}</h4><p>{desc}</p></div>
+                <div className={styles.srValue}><ToggleSwitch defaultActive={title !== '项目推荐'} /></div>
               </div>
             ))}
           </div>
 
           {/* ═══ 隐私设置 ═══ */}
-          <div className="settings-section">
-            <div className="settings-section-title">🔒 隐私设置</div>
+          <div className={styles.settingsSection}>
+            <div className={styles.settingsSectionTitle}>🔒 隐私设置</div>
             {[
               ['公开个人主页', '其他用户可以查看你的资料和贡献'],
               ['显示在线状态', '其他用户可以看到你是否在线'],
               ['显示贡献值', '在排行榜和个人主页上展示你的贡献值'],
             ].map(([title, desc]) => (
-              <div key={title} className="settings-row">
-                <div className="sr-label"><h4>{title}</h4><p>{desc}</p></div>
-                <div className="sr-value"><ToggleSwitch defaultActive /></div>
+              <div key={title} className={styles.settingsRow}>
+                <div className={styles.srLabel}><h4>{title}</h4><p>{desc}</p></div>
+                <div className={styles.srValue}><ToggleSwitch defaultActive /></div>
               </div>
             ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <div className={styles.backButton}>
             <button className="btn-secondary" onClick={() => navigate('/dashboard')}>← 返回我的公社</button>
           </div>
         </div>
@@ -258,7 +259,7 @@ export default function SettingsPage() {
           style={{ resize: 'vertical' }}
           autoFocus
         />
-        <div style={{ fontSize: '0.78rem', color: 'var(--warm-gray)', textAlign: 'right' }}>
+        <div className={`${styles.charCount} ${selectedSkills.size > 6 ? styles.charCountError : ''}`}>
           {bioVal.length}/200
         </div>
       </EditModal>
@@ -274,12 +275,11 @@ export default function SettingsPage() {
           saveUser({ skillNames })
         }}
       >
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div className={styles.skillTags}>
           {ALL_SKILLS.map(s => (
             <span
               key={s.name}
-              className={`role-tag ${selectedSkills.has(s.name) ? 'active' : ''}`}
-              style={{ cursor: 'pointer' }}
+              className={`${styles.roleTag} ${selectedSkills.has(s.name) ? styles.roleTagActive : ''}`}
               onClick={() => toggleSkill(s.name)}
             >{s.name}</span>
           ))}

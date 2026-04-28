@@ -1,0 +1,35 @@
+/* ============================================================
+   NotFound.module.css — 404 页面
+   ============================================================ */
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.content {
+  text-align: center;
+}
+
+.code {
+  font-size: 5rem;
+  color: var(--warm-gray);
+  margin: 0;
+}
+
+.title {
+  color: var(--ink-light);
+  margin-top: 0.5rem;
+}
+
+.desc {
+  color: var(--warm-gray);
+  margin: 1rem 0 2rem;
+}
+
+.refreshLink {
+  margin-left: 1rem;
+  color: var(--red);
+}

@@ -9,12 +9,14 @@ import com.conlaboro.entity.UserSkill;
 import com.conlaboro.entity.UserBadge;
 import com.conlaboro.mapper.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,6 +24,11 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserSkillMapper skillMapper;
     private final UserBadgeMapper badgeMapper;
+    private final BadgeAutoService badgeAutoService;
+
+    // 等级XP阈值配置
+    private static final int[] NEXT_LEVEL_XP = {0, 100, 500, 1500, 4000, 10000, 99999};
+    private static final String[] LEVEL_NAMES = {"新社员", "创客", "建设者", "骨干", "引领者", "先驱", "传奇"};
 
     public UserProfileDTO getUserProfile(Long userId) {
         User user = userMapper.selectById(userId);
@@ -116,9 +123,59 @@ public class UserService {
                 UserSkill skill = new UserSkill();
                 skill.setUserId(userId);
                 skill.setName(name);
-                skill.setPercentage(50); // 默认中级，后续可调整
+                skill.setPercentage(50);
                 skillMapper.insert(skill);
             }
         }
+    }
+
+    /** 添加XP奖励 */
+    @Transactional
+    public void addXp(Long userId, int amount) {
+        User user = userMapper.selectById(userId);
+        if (user == null) return;
+
+        int newXp = user.getXp() + amount;
+        user.setXp(newXp);
+        userMapper.updateById(user);
+
+        log.info("User {} earned {} XP, total XP: {}", userId, amount, newXp);
+        
+        // 检查等级升级
+        checkLevelUp(userId);
+    }
+
+    /** 检查并执行等级升级 */
+    @Transactional
+    public void checkLevelUp(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) return;
+
+        int currentLevel = user.getLevel();
+        int currentXp = user.getXp();
+
+        // 从当前等级开始检查是否满足升级条件
+        for (int level = currentLevel; level < NEXT_LEVEL_XP.length; level++) {
+            if (level > 0 && currentXp >= NEXT_LEVEL_XP[level - 1]) {
+                if (currentLevel < level + 1 && level + 1 <= LEVEL_NAMES.length) {
+                    user.setLevel(level + 1);
+                    user.setLevelName(LEVEL_NAMES[level]);
+                    userMapper.updateById(user);
+                    log.info("User {} leveled up to Lv.{} ({})", userId, user.getLevel(), user.getLevelName());
+                    
+                    // 触发等级徽章检查
+                    try {
+                        badgeAutoService.checkAndGrant(userId, "level_up");
+                    } catch (Exception e) {
+                        log.warn("等级徽章授予失败: {}", e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    /** 获取用户信息用于Token生成 */
+    public User getUserById(Long userId) {
+        return userMapper.selectById(userId);
     }
 }

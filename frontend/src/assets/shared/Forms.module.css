@@ -1,0 +1,92 @@
+/* ============================================================
+   Forms.module.css — 共享表单组件
+   使用: import form from '../assets/shared/Forms.module.css'
+        className={form.group}
+   ============================================================ */
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepBadge {
+  width: 24px; height: 24px;
+  background: var(--red);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.group {
+  margin-bottom: 1.5rem;
+}
+
+.group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--ink-light);
+}
+
+.required {
+  color: var(--red);
+  margin-left: 0.2rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.1);
+}
+
+.input::placeholder { color: var(--warm-gray); }
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .row { grid-template-columns: 1fr; }
+}

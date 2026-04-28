@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,11 +38,13 @@ public class AuthService {
         user.setEmail(req.getEmail());
         user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         user.setColor(generateColor());
+        user.setRole("新社员");
         user.setLevel(1);
-        user.setLevelName("Newcomer");
+        user.setLevelName("新社员");
         user.setXp(0);
         user.setProjectCount(0);
         user.setBadgeCount(0);
+        user.setJoinedAt(LocalDate.now());
         user.setBio("");
         user.setDeleted(0);
 
@@ -53,7 +57,7 @@ public class AuthService {
         }
 
         String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId(), user.getColor());
-        return new AuthResponse(user.getId(), user.getName(), user.getEmail(), token);
+        return buildAuthResponse(user, token);
     }
 
     public AuthResponse login(LoginRequest req) {
@@ -64,7 +68,7 @@ public class AuthService {
         }
 
         String token = jwtTokenProvider.generateToken(user.getEmail(), user.getId(), user.getColor());
-        return new AuthResponse(user.getId(), user.getName(), user.getEmail(), token);
+        return buildAuthResponse(user, token);
     }
 
     public User findById(Long userId) {
@@ -73,6 +77,22 @@ public class AuthService {
             throw new BizException(ErrorCode.USER_NOT_FOUND);
         }
         return user;
+    }
+
+    private AuthResponse buildAuthResponse(User user, String token) {
+        return AuthResponse.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .token(token)
+                .color(user.getColor())
+                .role(user.getRole())
+                .level(user.getLevel())
+                .levelName(user.getLevelName())
+                .xp(user.getXp())
+                .projectCount(user.getProjectCount())
+                .badgeCount(user.getBadgeCount())
+                .build();
     }
 
     private String generateColor() {

@@ -1,0 +1,122 @@
+/* ============================================================
+   IdeaDetailPage.module.css — 想法详情页
+   ============================================================ */
+
+.page { min-height: 100vh; background: var(--paper); padding-top: 80px; }
+
+.loadingCenter {
+  display: flex; align-items: center; justify-content: center; min-height: 60vh;
+}
+
+.section {
+  padding: 2.5rem 2rem 6rem;
+  max-width: 780px; margin: 0 auto;
+}
+
+.nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+
+.backBtn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem; border: 1px solid var(--border);
+  background: white; font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.82rem; font-weight: 500; color: var(--ink-light);
+  cursor: pointer; transition: all 0.25s;
+}
+.backBtn:hover { border-color: var(--red); color: var(--red); transform: translateY(-1px); }
+
+.time { font-size: 0.78rem; color: var(--warm-gray); letter-spacing: 0.03em; }
+
+/* 想法卡片 */
+.card {
+  background: white; border: 1px solid var(--border);
+  padding: 2.5rem 2.5rem 2rem; margin-bottom: 2.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.author { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.authorInfo { display: flex; flex-direction: column; gap: 0.15rem; }
+.avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--red); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; font-weight: 700; flex-shrink: 0;
+}
+.name { font-weight: 700; font-size: 0.95rem; color: var(--ink); }
+.label { font-size: 0.72rem; color: var(--warm-gray); letter-spacing: 0.05em; }
+
+.content p { font-size: 1.08rem; line-height: 2; color: var(--ink-light); white-space: pre-wrap; word-break: break-word; margin: 0; }
+
+.actions {
+  display: flex; align-items: center; gap: 1.5rem;
+  margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+
+.likeBtn {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.6rem 1.3rem; border: 1px solid var(--border);
+  background: white; font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.25s;
+  font-weight: 600; color: var(--ink-light);
+}
+.likeBtn:hover { border-color: var(--red); color: var(--red); }
+.likeBtnLiked { background: var(--red); border-color: var(--red); color: white; }
+.likeNum { font-weight: 700; }
+
+.stat { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--warm-gray); }
+
+/* 评论区 */
+.commentsSection { background: white; border: 1px solid var(--border); padding: 2rem 2.5rem; }
+.commentsTitle {
+  font-family: 'Noto Serif SC', serif; font-size: 1.1rem;
+  font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--ink); display: inline-block; color: var(--ink);
+}
+
+.noCommentsHint { text-align: center; padding: 3rem 0; color: var(--warm-gray); }
+.nchIcon { display: block; font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.6; }
+.noCommentsHint p { font-size: 0.9rem; }
+
+.commentList { margin-bottom: 2rem; }
+.commentItem {
+  display: flex; gap: 0.85rem; padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border); transition: background 0.2s;
+}
+.commentItem:first-child { padding-top: 0.3rem; }
+.commentItem:last-child { border-bottom: none; }
+.ciAvatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--cream); color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+}
+.ciBodyWrap { flex: 1; min-width: 0; }
+.ciHeader { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.ciAuthor { font-weight: 600; font-size: 0.85rem; color: var(--ink); }
+.ciTime { font-size: 0.7rem; color: var(--warm-gray); }
+.ciBody { font-size: 0.92rem; line-height: 1.75; color: var(--ink-light); margin: 0; }
+
+.form { padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.input {
+  width: 100%; padding: 1rem; border: 1px solid var(--border);
+  background: var(--paper); font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.9rem; resize: vertical; min-height: 88px;
+  outline: none; line-height: 1.7; color: var(--ink);
+  transition: all 0.25s; box-sizing: border-box;
+}
+.input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.08); background: white; }
+.input::placeholder { color: var(--warm-gray); }
+.inputDisabled { background: var(--cream); color: var(--warm-gray); cursor: not-allowed; }
+
+.footer { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: 0.8rem; }
+.loginLink {
+  margin-right: auto; font-size: 0.82rem; color: var(--red);
+  text-decoration: none; font-weight: 500;
+}
+.loginLink:hover { text-decoration: underline; }
+.btnDisabled { opacity: 0.5; cursor: not-allowed; }
+
+.spinner { font-size: 1rem; color: var(--warm-gray); }
+
+.notFound { text-align: center; padding: 6rem 2rem; }
+.notFoundText { color: var(--warm-gray); margin-top: 1rem; }
+.notFoundBtn { margin-top: 1.5rem; }

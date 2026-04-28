@@ -1,0 +1,39 @@
+/* ============================================================
+   AuthPages.module.css — 登录/注册页独占样式
+   共用样式来自 shared/Auth.module.css, shared/Forms.module.css
+   ============================================================ */
+
+/* 星标图标 */
+.star {
+  width: 18px;
+  height: 18px;
+  background: var(--red);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  display: inline-block;
+}
+
+/* 注册页卡片更宽 */
+.cardWide {
+  max-width: 480px;
+}
+
+/* 必填星号标记 */
+.required {
+  color: var(--red);
+}
+
+/* 角色标签容器 */
+.roleTags {
+  margin-top: 0.3rem;
+}
+
+/* 链接文字样式 */
+.link {
+  cursor: pointer;
+  color: var(--red);
+}
+
+/* 全宽按钮 */
+.btnFullWidth {
+  width: 100%;
+}

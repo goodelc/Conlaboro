@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createTask } from '../../api'
+import styles from './AddCard.module.css'
 
 function AddCard({ projectId, milestones, onTaskCreated, showToast }) {
   const [expanded, setExpanded] = useState(false)
@@ -25,37 +26,38 @@ function AddCard({ projectId, milestones, onTaskCreated, showToast }) {
 
   if (!expanded) {
     return (
-      <div className="add-task-card" onClick={() => setExpanded(true)}>
-        <span className="add-task-plus">＋</span> 添加任务
+      <div className={styles.addTaskCard} data-testid="add-task-card" onClick={() => setExpanded(true)}>
+        <span className={styles.addTaskPlus}>＋</span> 添加任务
       </div>
     )
   }
 
   return (
-    <div className="add-task-form" onClick={e => e.stopPropagation()}>
+    <div className={styles.addTaskForm} data-testid="add-task-form" onClick={e => e.stopPropagation()}>
       <input
-        className="add-task-input"
+        className={styles.addTaskInput}
+        data-testid="add-task-input"
         placeholder="输入任务名称…"
         autoFocus
         value={name}
         onChange={e => setName(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') handleCreate(); if (e.key === 'Escape') { setExpanded(false); setName('') } }}
       />
-      <div className="add-task-options">
-        <select className="add-task-select" value={selMsId} onChange={e => setSelMsId(e.target.value)}>
+      <div className={styles.addTaskOptions}>
+        <select className={styles.addTaskSelect} data-testid="add-task-select" value={selMsId} onChange={e => setSelMsId(e.target.value)}>
           {milestones.map(m => <option key={m.id} value={m.id}>{m.title}</option>)}
         </select>
-        <label className="add-task-xp-label">
+        <label className={styles.addTaskXpLabel}>
           <span>+{xp} XP</span>
           <input type="range" min="5" max="50" step="5" value={xp}
             onChange={e => setXp(Number(e.target.value))} />
         </label>
       </div>
-      <div className="add-task-actions">
-        <button className="add-task-submit" onClick={handleCreate} disabled={creating || !name.trim()}>
+      <div className={styles.addTaskActions}>
+        <button className={styles.addTaskSubmit} data-testid="add-task-submit" onClick={handleCreate} disabled={creating || !name.trim()}>
           {creating ? '创建中…' : '添加'}
         </button>
-        <button className="add-task-cancel" onClick={() => { setExpanded(false);setName('') }}>取消</button>
+        <button className={styles.addTaskCancel} data-testid="add-task-cancel" onClick={() => { setExpanded(false);setName('') }}>取消</button>
       </div>
     </div>
   )

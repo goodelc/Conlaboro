@@ -1,0 +1,96 @@
+/* ============================================================
+   ProfilePage.module.css — 用户主页
+   共用: DashboardPage 的 list 样式
+   ============================================================ */
+
+.page { padding-top: 80px; min-height: 100vh; }
+
+.inner { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+.breadcrumb { margin-bottom: 2rem; font-size: 0.75rem; color: var(--warm-gray); }
+.breadcrumb a { cursor: pointer; }
+
+.hero {
+  display: flex; align-items: flex-start; gap: 2rem;
+  padding: 2rem; background: white; border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  width: 100px; height: 100px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 900; color: white; flex-shrink: 0;
+}
+
+.info { flex: 1; }
+.info h1 { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.6rem; }
+.meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--warm-gray); margin-top: 0.5rem; }
+.levelHighlight { font-weight: 700; }
+.bio { margin-top: 0.8rem; font-size: 0.9rem; color: var(--ink-light); line-height: 1.6; }
+
+.stats { display: flex; gap: 2rem; }
+.stat { text-align: center; }
+.statNum { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.5rem; color: var(--red); }
+.statLabel { font-size: 0.65rem; color: var(--warm-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.body { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+
+.section { border: 1px solid var(--border); background: white; overflow: hidden; }
+.sectionHeader {
+  padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sectionHeader h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1rem; }
+.countBadge { font-size: 0.7rem; background: var(--cream); padding: 0.2rem 0.6rem; font-weight: 700; color: var(--warm-gray); }
+
+.list { list-style: none; }
+.listItem {
+  padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1rem;
+  transition: all 0.3s; cursor: pointer;
+}
+.listItem:hover { background: var(--cream); }
+.listIcon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.listInfo { flex: 1; }
+.listInfo h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.15rem; }
+.listInfo p { font-size: 0.7rem; color: var(--warm-gray); }
+.listStatus { font-size: 0.65rem; padding: 0.2rem 0.6rem; font-weight: 700; flex-shrink: 0; }
+
+/* 侧边栏区域 */
+.sidebarSection { margin-bottom: 1.5rem; }
+.sidebarSection h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+
+.badgeWall { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.badgeItem {
+  width: 56px; text-align: center; cursor: pointer; transition: all 0.3s;
+}
+.badgeItem:hover { transform: translateY(-3px); }
+.pbiIcon {
+  width: 44px; height: 44px; margin: 0 auto 0.3rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  transition: all 0.3s;
+}
+.badgeEarned .pbiIcon { background: linear-gradient(135deg, var(--cream), white); border: 2px solid var(--gold); box-shadow: 0 2px 6px rgba(212,168,67,0.2); }
+.badgeLocked .pbiIcon { background: var(--cream); border: 2px dashed var(--border); filter: grayscale(1); opacity: 0.4; }
+.pbiName { font-size: 0.58rem; font-weight: 700; color: var(--ink-light); line-height: 1.2; }
+.badgeLocked .pbiName { color: var(--warm-gray); }
+
+.skillList { display: flex; flex-direction: column; gap: 0.6rem; }
+.skillRow { display: flex; align-items: center; gap: 0.6rem; }
+.skillLabel { font-size: 0.78rem; font-weight: 500; min-width: 80px; }
+.skillBar { flex: 1; height: 4px; background: var(--cream); border-radius: 2px; overflow: hidden; }
+.skillBarFill { height: 100%; background: var(--red); border-radius: 2px; transition: width 1s ease; }
+.skillVal { font-size: 0.7rem; font-weight: 700; color: var(--ink-light); min-width: 32px; text-align: right; }
+
+.xpLabel { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--warm-gray); margin-bottom: 0.3rem; }
+
+.loadingCenter { text-align: center; padding: 5rem; }
+.notFound { text-align: center; padding: 5rem; }
+.notFoundText { color: var(--warm-gray); margin-top: 1rem; }
+.notFoundBtn { margin-top: 1rem; }
+
+@media (max-width: 768px) {
+  .body { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; text-align: center; }
+  .stats { justify-content: center; }
+  .avatar { margin: 0 auto; }
+}

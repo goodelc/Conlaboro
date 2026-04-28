@@ -1,0 +1,126 @@
+/* === NOTIFICATION PANEL === */
+.notifOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.notifOverlayActive {
+  opacity: 1;
+  visibility: visible;
+}
+
+.notifPanel {
+  position: fixed;
+  top: 0; right: -420px;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background: white;
+  z-index: 999;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+  transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.notifPanelActive {
+  right: 0;
+}
+
+.notifHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.notifHeader h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.unreadCount {
+  color: var(--primary);
+}
+
+.notifClose {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--warm-gray);
+}
+
+.notifClose:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(212, 33, 61, 0.05);
+}
+
+.notifList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.notifItem {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+  border-radius: 4px;
+  background: var(--paper);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notifItem:hover { border-color: var(--red); }
+.notifItemUnread {
+  border-left: 3px solid var(--red);
+  background: white;
+}
+
+.niType {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+
+.niText {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+
+.niTime {
+  font-size: 0.65rem;
+  color: var(--warm-gray);
+}
+
+.emptyState {
+  padding: 2rem;
+  text-align: center;
+  color: var(--warm-gray);
+}
+
+@media (max-width: 768px) {
+  .notifPanel {
+    width: 100vw;
+    max-width: none;
+  }
+}

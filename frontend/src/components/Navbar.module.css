@@ -1,0 +1,141 @@
+/* ============================================================
+   Navbar.module.css — 导航栏
+   ============================================================ */
+
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(250, 247, 240, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.left { display: flex; align-items: center; gap: 2.5rem; }
+
+.logo {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--red);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.star {
+  display: inline-block;
+  width: 20px; height: 20px;
+  background: var(--red);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.links { display: flex; gap: 2rem; list-style: none; }
+
+.link {
+  text-decoration: none;
+  color: var(--ink-light);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.link:hover { color: var(--red); }
+
+.right { display: flex; align-items: center; gap: 1rem; }
+
+.iconBtn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+.iconBtn:hover { border-color: var(--red); }
+.iconBtn .notifBadge {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 16px; height: 16px;
+  background: var(--red);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcaseLink {
+  text-decoration: none;
+  color: var(--ink-light);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+.showcaseLink:hover { color: var(--red); }
+
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+.avatar:hover { border-color: var(--gold); }
+
+.cta {
+  padding: 0.45rem 1.2rem;
+  background: var(--red);
+  color: white;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.cta:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 33, 61, 0.3);
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+  .nav { padding: 1rem 1.5rem; }
+  .links { gap: 1.2rem; }
+  .left { gap: 1.5rem; }
+}
+
+@media (max-width: 768px) {
+  .nav { padding: 0.8rem 1rem; }
+  .links { display: none; } /* 后续可扩展为汉堡菜单 */
+  .showcaseLink { display: none; }
+}

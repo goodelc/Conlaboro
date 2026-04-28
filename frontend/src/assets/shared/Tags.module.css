@@ -1,0 +1,96 @@
+/* ============================================================
+   Tags.module.css — 标签、状态角标、角色徽章
+   使用: import tags from '../assets/shared/Tags.module.css'
+        className={tags.badge}
+   ============================================================ */
+
+/* --- 状态标签 (project-card) --- */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+
+.open { background: rgba(212, 33, 61, 0.1); color: var(--red); }
+.progressTag { background: rgba(212, 168, 67, 0.15); color: #8B6914; }
+.done { background: rgba(34, 139, 34, 0.1); color: #228B22; }
+
+/* --- 角色徽章 --- */
+.badge {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  font-size: 0.68rem;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.filled { background: var(--cream); border-color: var(--cream); }
+.openBadge { border-color: var(--red); color: var(--red); background: rgba(212, 33, 61, 0.03); }
+
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+
+.dotGreen { background: #228B22; }
+.dotRed { background: var(--red); }
+
+/* --- 成员头像堆叠 --- */
+.members { display: flex; align-items: center; }
+.memberAvatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -10px;
+  object-fit: cover;
+}
+
+.memberAvatar:first-child { margin-left: 0; }
+.moreCount {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid white;
+  margin-left: -10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--warm-gray);
+}
+
+.joinBtn {
+  padding: 0.45rem 1rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+
+.joinBtn:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+/* --- filter tab (leaderboard) --- */
+.filterTab {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.filterTab:hover { color: var(--ink); }
+.filterTabActive { color: var(--red); border-bottom-color: var(--red); }

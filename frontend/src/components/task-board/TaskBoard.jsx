@@ -1,12 +1,13 @@
 import TaskCard from './TaskCard'
 import AddCard from './AddCard'
+import styles from './TaskBoard.module.css'
 
 function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showToast, users }) {
   const ms = milestones
 
   // 防御性检查
   if (!ms || ms.length === 0) {
-    return <p style={{ fontSize: '0.85rem', color: 'var(--warm-gray)' }}>该项目尚未创建里程碑。请先在下方添加里程碑。</p>
+    return <p className={styles.emptyState}>该项目尚未创建里程碑。请先在下方添加里程碑。</p>
   }
 
   const allTasks = ms.flatMap(m => (m.tasks || []).map(t => ({ ...t, msStatus: m.status })))
@@ -21,12 +22,12 @@ function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showTo
   ]
 
   return (
-    <div className="task-board">
-      <div className="task-board-columns">
+    <div className={styles.taskBoard}>
+      <div className={styles.boardColumns}>
         {columns.map(col => (
-          <div key={col.key} className={`task-column ${col.key}-col`}>
-            <div className="task-column-header">{col.label} <span className="tch-count">{col.tasks.length}</span></div>
-            <div className="task-column-body">
+          <div key={col.key} className={`${styles.taskColumn} ${styles[`${col.key}Col`]}`}>
+            <div className={styles.columnHeader}>{col.label} <span className={styles.tchCount}>{col.tasks.length}</span></div>
+            <div className={styles.columnBody}>
               {col.tasks.map(t => (
                 <TaskCard 
                   key={t.id || t.name} 
