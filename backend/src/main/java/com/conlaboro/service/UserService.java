@@ -114,6 +114,14 @@ public class UserService {
         if (req.getBio() != null) {
             user.setBio(req.getBio().trim());
         }
+        if (req.getPreferences() != null) {
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                user.setPreferences(mapper.writeValueAsString(req.getPreferences()));
+            } catch (Exception e) {
+                log.warn("序列化 preferences 失败: {}", e.getMessage());
+            }
+        }
         userMapper.updateById(user);
 
         // 更新技能标签：先删后重建
@@ -176,5 +184,15 @@ public class UserService {
     /** 获取用户信息用于Token生成 */
     public User getUserById(Long userId) {
         return userMapper.selectById(userId);
+    }
+
+    /** 更新用户头像 URL */
+    @Transactional
+    public void updateAvatarUrl(Long userId, String avatarUrl) {
+        User user = userMapper.selectById(userId);
+        if (user != null) {
+            user.setAvatarUrl(avatarUrl);
+            userMapper.updateById(user);
+        }
     }
 }

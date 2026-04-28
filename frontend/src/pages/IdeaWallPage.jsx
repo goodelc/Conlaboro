@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import IdeaCard from '../components/idea-wall/IdeaCard'
 import { getIdeas, createIdea, likeIdea, unlikeIdea } from '../api/idea'
+import styles from './IdeaWallPage.module.css'
 
 export default function IdeaWallPage() {
   const navigate = useNavigate()
-  const { isLoggedIn, showToast } = useApp()
+  const { isLoggedIn, showToast, currentUser } = useApp()
 
   const [ideas, setIdeas] = useState([])
   const [page, setPage] = useState(0)
@@ -88,7 +89,10 @@ export default function IdeaWallPage() {
     if (!content.trim()) { showToast('请输入想法内容', 'warning'); return }
     setSubmitting(true)
     try {
-      await createIdea({ content: content.trim(), authorName: isLoggedIn ? '已登录用户' : '匿名用户' })
+      await createIdea({
+        content: content.trim(),
+        authorName: isLoggedIn ? (currentUser?.name || '匿名用户') : '匿名用户'
+      })
       setContent('')
       setShowCreateModal(false)
       setPage(0); setHasMore(true)
@@ -128,23 +132,23 @@ export default function IdeaWallPage() {
   return (
     <div className="page active">
       {/* Hero 区域 */}
-      <section className="hero idea-hero">
+      <section className={styles.hero}>
         <div className="hero-badge"><span className="dot"></span>想法 · 分享 · 交流</div>
         <h1>想法墙</h1>
         <p className="hero-sub">分享你的想法，发现有趣的灵魂</p>
 
         {/* 搜索 & 排序 */}
-        <div className="idea-toolbar">
+        <div className={styles.toolbar}>
           <input
             type="text"
-            className="idea-search-input"
+            className={styles.searchInput}
             placeholder="🔍 搜索想法..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyDown={handleSearchKeyDown}
           />
           <select
-            className="idea-sort-select"
+            className={styles.sortSelect}
             value={sortBy}
             onChange={handleSortChange}
           >
@@ -156,8 +160,8 @@ export default function IdeaWallPage() {
       </section>
 
       {/* 想法列表 */}
-      <section className="ideas-section">
-        <div className="ideas-list">
+      <section className={styles.ideasSection}>
+        <div className={styles.ideasList}>
           {ideas.map(idea => (
             <IdeaCard
               key={idea.id}
@@ -170,10 +174,10 @@ export default function IdeaWallPage() {
             />
           ))}
         </div>
-        {loading && <div className="loading-more">加载中...</div>}
-        {!hasMore && ideas.length > 0 && <div className="no-more">没有更多了</div>}
+        {loading && <div className={styles.loadingMore}>加载中...</div>}
+        {!hasMore && ideas.length > 0 && <div className={styles.noMore}>没有更多了</div>}
         {ideas.length === 0 && !loading && (
-          <div className="no-results" style={{ display: 'block' }}>
+          <div className={styles.noMore} style={{ display: 'block' }}>
             <div className="nr-icon">💡</div>
             <h3>还没有想法</h3>
             <p>做第一个分享想法的人吧</p>
@@ -184,28 +188,28 @@ export default function IdeaWallPage() {
       <footer><p>共创公社 · Where Ideas Find Their Team · <a href="#">GitHub</a> · <a href="#">Twitter</a> · <a href="#">Discord</a></p></footer>
 
       {/* 悬浮发布按钮 */}
-      <button className="fab-create" onClick={() => setShowCreateModal(true)} title="发布新想法">
+      <button className={styles.fab} onClick={() => setShowCreateModal(true)} title="发布新想法">
         ✏️
       </button>
 
       {/* 发布弹窗 */}
       {showCreateModal && (
-        <div className="idea-modal-overlay" onClick={() => setShowCreateModal(false)}>
-          <div className="idea-modal" onClick={e => e.stopPropagation()}>
-            <div className="idea-modal-header">
+        <div className={styles.modalOverlay} onClick={() => setShowCreateModal(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
               <h3>✨ 发布新想法</h3>
-              <button className="idea-modal-close" onClick={() => setShowCreateModal(false)}>✕</button>
+              <button className={styles.closeBtn} onClick={() => setShowCreateModal(false)}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               <textarea
-                className="idea-modal-textarea"
+                className={styles.modalTextarea}
                 placeholder="写下你的想法..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={5}
                 autoFocus
               />
-              <div className="idea-modal-actions">
+              <div className={styles.modalActions}>
                 <button type="button" className="btn-secondary" onClick={() => setShowCreateModal(false)}>取消</button>
                 <button type="submit" className="btn-primary" disabled={submitting || !content.trim()}>
                   {submitting ? '发布中...' : '发布'}

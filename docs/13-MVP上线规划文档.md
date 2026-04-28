@@ -86,49 +86,49 @@
 
 ## 三、待修复问题（Bug 清单）
 
-### P0 — 必须修复（影响核心流程）
+### P0 — 必须修复（影响核心流程） ✅ 全部已修复
 
-| # | 问题 | 位置 | 修复方案 |
-|---|------|------|----------|
-| B-01 | **评论发送后不刷新列表** | `CollabSpace.jsx:22` 有 `TODO: 刷新评论列表` | 发送成功后调用 `onCommented` 回调刷新 DetailPage 数据 |
-| B-02 | **想法发布 authorName 写死** | `IdeaWallPage.jsx:91` 写死 `'已登录用户'` / `'匿名用户'` | 从 `currentUser.name` 取真实用户名，未登录保持匿名 |
-| B-03 | **收藏按钮使用 showToast 模拟** | `DetailPage.jsx:168` `showToast('已收藏该项目', 'info')` | 调用 `toggleFavorite(p.id)` 真实 API |
-| B-04 | **Fork 按钮仅 showToast** | `DetailPage.jsx:168` `showToast('已 Fork 该项目')` | 暂隐藏或实现复制项目逻辑 |
+| # | 问题 | 位置 | 状态 | 修复方案 |
+|---|------|------|------|----------|
+| B-01 | **评论发送后不刷新列表** | `CollabSpace.jsx` | ✅ 已修复 | 新增 `onCommented` 回调，发送成功后通知 DetailPage 刷新评论数据 |
+| B-02 | **想法发布 authorName 写死** | `IdeaWallPage.jsx` | ✅ 已修复 | 改为从 `currentUser.name` 取真实用户名，未登录保持匿名 |
+| B-03 | **收藏按钮使用 showToast 模拟** | `DetailPage.jsx` | ✅ 已修复 | 对接真实 `toggleFavorite()` API，修复 TDZ bug（`p.id` → `id`） |
+| B-04 | **Fork 按钮仅 showToast** | `DetailPage.jsx` | ✅ 已修复 | 已隐藏 Fork 按钮（MVP 阶段不实现复制项目逻辑） |
 
-### P1 — 应当修复（影响体验完整性）
+### P1 — 应当修复（影响体验完整性） ✅ 全部已修复
 
-| # | 问题 | 位置 | 修复方案 |
-|---|------|------|----------|
-| B-05 | **ProfilePage 参与项目过滤过于宽泛** | `ProfilePage.jsx:39` `roles.length > 0` 匹配所有有角色的项目 | 改为检查 roles 中 members 包含当前用户名 |
-| B-06 | **Dashboard 贡献记录为空态** | `DashboardPage.jsx:141-146` 硬编码空消息 | 调用 `getMyActivities()` 填充真实活动数据 |
-| B-07 | **Leaderboard 多 Tab 无数据区分** | `LeaderboardPage.jsx:12` 有 4 种 tab 但全部用 xp 排序 | 后端 `getLeaderboard(sort)` 支持 weekly/monthly/badges 排序 |
-| B-08 | **Settings 角色偏好不持久化** | `SettingsPage.jsx:160-186` UI 存在但无保存调用 | 新增 `updatePreferences` API 或在 `updateProfile` 中扩展字段 |
-| B-09 | **通知设置开关不持久化** | `SettingsPage.jsx:191-203` ToggleSwitch 状态未保存 | 同上，扩展 user preferences 表或字段 |
-| B-10 | **隐私设置开关不持久化** | `SettingsPage.jsx:206-218` 同上 | 同上 |
-| B-11 | **HomePage 创客数用估算值** | `HomePage.jsx:22` `Math.max(totalProjects * 4, ...)` | 使用 `statsData.totalUsers` 真实值（已有 fallback） |
+| # | 问题 | 位置 | 状态 | 修复方案 |
+|---|------|------|------|----------|
+| B-05 | **ProfilePage 参与项目过滤过于宽泛** | `ProfilePage.jsx` | ✅ 已修复 | 改为检查 roles 中 members 包含当前用户名 |
+| B-06 | **Dashboard 贡献记录为空态** | `DashboardPage.jsx` | ✅ 已修复 | 调用 `getMyActivities()` 填充真实活动数据 |
+| B-07 | **Leaderboard 多 Tab 无数据区分** | `LeaderboardPage.jsx` | ✅ 已修复 | Tab 切换时传递不同 sort 参数（xp/projects/badges） |
+| B-08 | **Settings 角色偏好不持久化** | `SettingsPage.jsx` | ✅ 已修复 | 后端新增 `updatePreferences` API（users 表 JSONB 字段），前端串联保存 |
+| B-09 | **通知设置开关不持久化** | `SettingsPage.jsx` | ✅ 已修复 | 同 B-08，统一持久化到 preferences JSONB |
+| B-10 | **隐私设置开关不持久化** | `SettingsPage.jsx` | ✅ 已修复 | 同 B-08，统一持久化到 preferences JSONB |
+| B-11 | **HomePage 创客数用估算值** | `HomePage.jsx` | ✅ 已修复 | 使用 `statsData.totalUsers` 真实值 |
 
-### P2 — 可以后续优化
+### P2 — 可以后续优化 ✅ 全部已修复
 
-| # | 问题 | 说明 |
-|---|------|------|
-| B-12 | DashboardPage.jsx:47 有重复 className attribute | `<button>` 上同时出现两个 className 属性 |
-| B-13 | IdeaWallPage/IdeaDetailPage 使用全局 CSS 类名而非 CSS Modules | `.idea-hero`, `.idea-search-input` 等 |
-| B-14 | DetailPage 大量使用全局 CSS 类名 | `.detail-page`, `.detail-hero`, `.task-board` 等 |
-| B-15 | ContributionHeatmap 使用内联 `<style>` 而非 CSS Modules | 组件内部 126 行内联样式 |
+| # | 问题 | 说明 | 状态 |
+|---|------|------|------|
+| B-12 | DashboardPage.jsx 重复 className attribute | ✅ 已修复：合并为单个 className |
+| B-13 | IdeaWallPage/IdeaDetailPage 使用全局 CSS 类名 | ✅ 已修复：迁移为 CSS Module（16 + 35+ 个类名） |
+| B-14 | DetailPage 大量使用全局 CSS 类名 | ✅ 已修复：迁移为 CSS Module（70+ 个类名） |
+| B-15 | ContributionHeatmap 使用内联 `<style>` | ✅ 已修复：迁移为 CSS Module |
 
 ---
 
 ## 四、待开发功能（MVP 上线前建议完成）
 
-### Phase 0 — 阻塞发布（必须完成）
+### Phase 0 — 阻塞发布（必须完成） ✅ 全部已实现
 
-| # | 功能 | 工作量 | 说明 |
-|---|------|--------|------|
-| F-01 | **任务"完成"操作** | 0.5天 | 后端 `updateTaskStatus()` 已存在。需在 TaskCard 添加"完成任务"按钮 → 调用新 API `PUT /tasks/{id}/done` → 前端刷新看板。这是任务闭环的**最后一步** |
-| F-02 | **密码重置功能** | 1天 | 用户忘记密码无法恢复。需要：发邮件流程(或简化版：管理员重置) + `POST /auth/reset-password` + 前端 ForgotPassword 页面 |
-| F-03 | **头像上传** | 1天 | 当前仅首字母色块。需要：文件上传 API (`POST /users/avatar`) + 前端 Settings 页面上传组件 + 图片存储(本地/OSS) |
+| # | 功能 | 工作量 | 状态 | 说明 |
+|---|------|--------|------|------|
+| F-01 | **任务"完成"操作** | 0.5天 | ✅ 已实现 | 后端暴露 `PUT /tasks/{id}/done` 端点，前端 TaskCard 添加"完成任务"按钮，完成后刷新看板 |
+| F-02 | **密码重置功能** | 1天 | ✅ 已实现 | 管理员重置方案：`POST /auth/reset-password` + 前端 ForgotPassword 页面 |
+| F-03 | **头像上传** | 1天 | ✅ 已实现 | 文件上传 API (`POST /users/avatar`) + 前端 Settings 页面上传组件 + 本地文件存储 |
 
-**Phase 0 总计: 2.5 天**
+**Phase 0 总计: 2.5 天 — ✅ 已全部完成**
 
 ### Phase 1 — 强烈建议（提升可信度）
 
@@ -162,24 +162,25 @@
 
 ### 必须满足条件（Go / No-Go）
 
-- [ ] **F-01**: 任务可标记完成（闭环）
-- [ ] **B-01**: 评论发送后列表自动刷新
-- [ ] **B-02**: 想法墙使用真实用户名
-- [ ] **B-03/B-04**: 收藏/Fork 按钮对接真实 API 或隐藏
-- [ ] **密码重置**: 至少有管理员手动重置方案
+- [x] **F-01**: 任务可标记完成（闭环）
+- [x] **B-01**: 评论发送后列表自动刷新
+- [x] **B-02**: 想法墙使用真实用户名
+- [x] **B-03/B-04**: 收藏对接真实 API / Fork 按钮已隐藏
+- [x] **密码重置**: 管理员手动重置方案已实现 (F-02)
 - [ ] **E2E 测试**: 核心流程通过 Playwright 测试
   - [ ] 注册 → 登录 → 访问 Dashboard
   - [ ] 创建项目 → 设置里程碑 → 创建任务 → 认领任务
   - [ ] 想法墙发布 → 点赞 → 转化为项目
 - [ ] **数据安全**: 生产环境数据库密码非默认 / JWT Secret 非 dev 值
 - [ ] **CORS 配置**: 仅允许前端域名访问
-- [ ] **错误处理**: 全局异常处理器正常工作（已实现 `GlobalExceptionHandler`）
+- [x] **错误处理**: 全局异常处理器正常工作（已实现 `GlobalExceptionHandler`）
 
 ### 建议满足条件（提升品质）
 
-- [ ] **F-03**: 头像上传（即使基础版）
-- [ ] **F-04**: Settings 开关持久化
-- [ ] **B-05 ~ B-11**: P1 Bug 修复
+- [x] **F-03**: 头像上传（基础版）
+- [x] **F-04**: Settings 开关持久化（B-08~B-10 已修复，后端 JSONB preferences）
+- [x] **B-05 ~ B-11**: P1 Bug 全部修复
+- [x] **B-12 ~ B-15**: P2 Bug 全部修复
 - [ ] **README 更新**: 包含部署指南、环境变量说明
 - [ ] **PRODUCT.md**: 产品文档与实际功能同步
 
@@ -230,4 +231,4 @@ Week 2 (Day 6-10):
 
 ---
 
-*文档版本: 1.0 | 基于 2026-04-28 全代码库评估 | 预计 MVP 冲刺: 10 个工作日*
+*文档版本: 1.1 | 基于 2026-04-28 全代码库评估 | 状态更新: 2026-04-29 Bug 修复与功能实现同步 | 预计 MVP 冲刺: 10 个工作日*

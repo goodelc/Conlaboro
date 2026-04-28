@@ -16,6 +16,7 @@ import LeaderboardPage from './pages/LeaderboardPage'
 import ShowcasePage from './pages/ShowcasePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import CreatePage from './pages/CreatePage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
@@ -43,6 +44,7 @@ export default function App() {
                 <Route path="/showcase" element={<ShowcasePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/create" element={<RequireAuth><CreatePage /></RequireAuth>} />
                 <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
                 <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />

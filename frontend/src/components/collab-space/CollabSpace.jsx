@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { addComment } from '../../api'
 import styles from './CollabSpace.module.css'
 
-function CollabSpace({ p, showToast }) {
+function CollabSpace({ p, showToast, onCommented }) {
   const [activeTab, setActiveTab] = useState('comments')
   const [commentText, setCommentText] = useState('')
   const [sending, setSending] = useState(false)
@@ -19,7 +19,7 @@ function CollabSpace({ p, showToast }) {
       await addComment(p.id, commentText.trim())
       setCommentText('')
       showToast('评论已发送', 'success')
-      // TODO: 刷新评论列表（可从详情页重新获取或乐观更新）
+      if (onCommented) onCommented()
     } catch (err) {
       showToast(err.message || '发送失败', 'error')
     } finally {

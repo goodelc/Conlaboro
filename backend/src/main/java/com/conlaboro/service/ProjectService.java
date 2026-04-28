@@ -281,6 +281,14 @@ public class ProjectService {
         return milestoneMapper.selectById(milestoneId);
     }
 
+    /** 通过任务 ID 获取所属项目 ID */
+    public Long getProjectIdByTaskId(Long taskId) {
+        Task task = taskMapper.selectById(taskId);
+        if (task == null) return null;
+        Milestone ms = milestoneMapper.selectById(task.getMilestoneId());
+        return ms != null ? ms.getProjectId() : null;
+    }
+
     /** 更新里程碑 */
     @Transactional
     public void updateMilestone(Long milestoneId, MilestoneRequest req, Long userId) {

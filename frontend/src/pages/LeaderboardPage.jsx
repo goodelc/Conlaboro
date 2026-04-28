@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
+import { getLeaderboard } from '../api/leaderboard'
 
 const medals = ['🥇', '🥈', '🥉']
 
@@ -8,8 +9,29 @@ export default function LeaderboardPage() {
   const navigate = useNavigate()
   const { users: userData } = useData()
   const [tab, setTab] = useState('xp')
+  const [lbData, setLbData] = useState(null)
+  const [lbLoading, setLbLoading] = useState(false)
 
-  const allUsers = Object.values(userData).sort((a, b) => b.xp - a.xp)
+  useEffect(() => {
+    if (tab === 'weekly' || tab === 'monthly') return // 暂不支持时间维度排序
+    setLbLoading(true)
+    getLeaderboard(tab).then(data => {
+      setLbData(data || [])
+    }).catch(() => {
+      // 回退到本地数据
+      const fallback = Object.values(userData).sort((a, b) => {
+        if (tab === 'badges') return (b.badges || 0) - (a.badges || 0)
+        return b.xp - a.xp
+      })
+      setLbData(fallback)
+    }).finally(() => setLbLoading(false))
+  }, [tab])
+
+  const allUsers = (lbData && lbData.length > 0 ? lbData : Object.values(userData)).sort((a, b) => {
+    if (tab === 'badges') return (b.badgeCount || b.badges || 0) - (a.badgeCount || a.badges || 0)
+    if (tab === 'projects') return (b.projectCount || b.projects || 0) - (a.projectCount || a.projects || 0)
+    return (b.xp || 0) - (a.xp || 0)
+  })
   const top3 = allUsers.slice(0, 3)
   const rest = allUsers.slice(3)
 
@@ -42,6 +64,12 @@ export default function LeaderboardPage() {
               </div>
             ))}
           </div>
+          {tab === 'weekly' || tab === 'monthly' ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--warm-gray)' }}>
+              <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>🚀 即将上线</p>
+              <p>{tab === 'weekly' ? '本周活跃排行' : '月度新星'}功能正在开发中，敬请期待！</p>
+            </div>
+          ) : (
           <div className="lb-list">
             {rest.map((u, i) => (
               <div key={u.name} className="lb-list-item" onClick={() => navigate(`/profile/${u.name}`)}>
@@ -52,6 +80,7 @@ export default function LeaderboardPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
       </div>
     </div>

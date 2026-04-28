@@ -67,5 +67,11 @@
   pointer-events: none;
 }
 
+.doneBtn {
+  background: var(--green);
+}
+
+.doneBtn:hover { background: #1a9f4a; }
+
 .doneCard { opacity: 0.6; }
 .doneCard .tcName { text-decoration: line-through; }

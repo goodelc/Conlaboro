@@ -2,7 +2,7 @@ import TaskCard from './TaskCard'
 import AddCard from './AddCard'
 import styles from './TaskBoard.module.css'
 
-function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showToast, users }) {
+function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, onTaskCompleted, showToast, users }) {
   const ms = milestones
 
   // 防御性检查
@@ -29,11 +29,12 @@ function TaskBoard({ milestones, projectId, onTaskCreated, onTaskClaimed, showTo
             <div className={styles.columnHeader}>{col.label} <span className={styles.tchCount}>{col.tasks.length}</span></div>
             <div className={styles.columnBody}>
               {col.tasks.map(t => (
-                <TaskCard 
-                  key={t.id || t.name} 
-                  t={t} 
+                <TaskCard
+                  key={t.id || t.name}
+                  t={t}
                   users={users}
                   onTaskClaimed={onTaskClaimed}
+                  onTaskCompleted={onTaskCompleted}
                   showToast={showToast}
                 />
               ))}

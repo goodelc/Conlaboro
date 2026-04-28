@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { claimTask } from '../../api'
+import { claimTask, completeTask } from '../../api'
 import styles from './TaskCard.module.css'
 
-function TaskCard({ t, users, onTaskClaimed, showToast }) {
+function TaskCard({ t, users, onTaskClaimed, onTaskCompleted, showToast }) {
   const isDone = t.status === 'done'
   const [claimed, setClaimed] = useState(!!t.assignee)
   const [loading, setLoading] = useState(false)
@@ -20,6 +20,21 @@ function TaskCard({ t, users, onTaskClaimed, showToast }) {
       }
     } catch (err) {
       showToast(err.message || '认领失败', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleComplete(e) {
+    e.stopPropagation()
+    if (loading) return
+    setLoading(true)
+    try {
+      await completeTask(t.id)
+      showToast(`已完成「${t.name}」· +${t.xp} XP`, 'success')
+      if (onTaskCompleted) onTaskCompleted()
+    } catch (err) {
+      showToast(err.message || '操作失败', 'error')
     } finally {
       setLoading(false)
     }
@@ -43,6 +58,11 @@ function TaskCard({ t, users, onTaskClaimed, showToast }) {
       )}
       {!t.assignee && !isDone && claimed && (
         <button className={`${styles.tcClaimBtn} ${styles.claimedBtn}`}>✓ 已认领</button>
+      )}
+      {t.assignee && !isDone && (
+        <button className={`${styles.tcClaimBtn} ${styles.doneBtn}`} onClick={handleComplete} disabled={loading}>
+          {loading ? '处理中...' : `✓ 完成任务 · +${t.xp} XP`}
+        </button>
       )}
     </div>
   )

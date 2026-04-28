@@ -52,7 +52,7 @@ export default function LoginPage() {
               {loading ? '登录中...' : '登录'}
             </button>
           </form>
-          <div className={sharedAuth.switchText}>还没有账号？<span onClick={() => navigate('/register')} className={auth.link}>立即注册</span></div>
+          <div className={sharedAuth.switchText}>还没有账号？<span onClick={() => navigate('/register')} className={auth.link}>立即注册</span> · <Link to="/forgot-password" className={auth.link}>忘记密码</Link></div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
 import { getMyBadges } from '../api/badge'
+import { getMyActivities } from '../api/activity'
 import { STATUS_MAP, STATUS_COLORS, NEXT_LEVEL_XP, getProjectEmoji, LEVEL_COLORS } from '../constants'
 import styles from './DashboardPage.module.css'
 import btn from '../assets/shared/Buttons.module.css'
@@ -37,6 +38,7 @@ export default function DashboardPage() {
   const { isLoggedIn, currentUser } = useApp()
   const { badges, projects, users } = useData()
   const [userBadges, setUserBadges] = useState([])
+  const [activities, setActivities] = useState([])
 
   if (!isLoggedIn || !currentUser) {
     return (
@@ -44,7 +46,7 @@ export default function DashboardPage() {
         <div className={styles.loginPrompt}>
           <h2>请先登录</h2>
           <p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>
-            <button className={btn.primary} onClick={() => navigate('/login')} className={styles.loginBtn}>前往登录</button>
+            <button className={`${btn.primary} ${styles.loginBtn}`} onClick={() => navigate('/login')}>前往登录</button>
           </p>
         </div>
       </div>
@@ -57,6 +59,14 @@ export default function DashboardPage() {
         const earnedBadges = (data || []).filter(b => b.condition === 'true')
         setUserBadges(earnedBadges)
       }).catch(err => console.error('Failed to fetch user badges:', err))
+    }
+  }, [isLoggedIn, currentUser?.id])
+
+  useEffect(() => {
+    if (isLoggedIn && currentUser?.id) {
+      getMyActivities(10).then(data => {
+        setActivities(data || [])
+      }).catch(() => {})
     }
   }, [isLoggedIn, currentUser?.id])
 
@@ -137,11 +147,15 @@ export default function DashboardPage() {
 
             <div className={styles.section}>
               <div className={styles.sectionHeader}><h3>📜 贡献记录</h3><span className={styles.countBadge}>最近动态</span></div>
-              <div className={userProjects.length === 0 ? styles.timelineEmpty : styles.timeline}>
-                {userProjects.length > 0 ? (
-                  <p className={styles.timelineText}>{EMPTY_TIMELINE_MSG}</p>
+              <div className={!activities.length ? styles.timelineEmpty : styles.timeline}>
+                {activities.length > 0 ? (
+                  activities.map((a, i) => (
+                    <div key={i} className={styles.timelineItem}>
+                      <span className={styles.timelineAction}>{a.text || a.actionType}</span>
+                      <span className={styles.timelineTime}>{a.createdAt || a.time}</span>
+                    </div>))
                 ) : (
-                  <p className={styles.timelineText}>先加入项目，贡献记录会在这里显示 ✨</p>
+                  <p className={styles.timelineText}>还没有贡献记录，去参加一个项目吧！</p>
                 )}
               </div>
             </div>

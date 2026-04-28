@@ -275,6 +275,17 @@
   min-height: 120px;
 }
 .timelineText { color: var(--warm-gray); text-align: center; padding: 1rem; }
+.timelineItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.timelineItem:last-child { border-bottom: none; }
+.timelineAction { color: var(--ink-light); }
+.timelineTime { color: var(--warm-gray); font-size: 0.7rem; white-space: nowrap; }
 
 /* 技能网格 */
 .skillsGrid {

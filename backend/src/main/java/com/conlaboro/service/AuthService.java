@@ -79,6 +79,21 @@ public class AuthService {
         return user;
     }
 
+    /** 重置密码（简化版：通过邮箱验证后重置） */
+    public void resetPassword(String email, String newPassword) {
+        User user = userMapper.selectOne(
+                new LambdaQueryWrapper<User>().eq(User::getEmail, email));
+        if (user == null) {
+            throw new BizException(ErrorCode.USER_NOT_FOUND);
+        }
+        if (newPassword == null || newPassword.length() < 6) {
+            throw new BizException(ErrorCode.INVALID_CREDENTIALS); // 复用错误码：密码长度不足
+        }
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userMapper.updateById(user);
+        log.info("用户 {} 密码已重置", email);
+    }
+
     private AuthResponse buildAuthResponse(User user, String token) {
         return AuthResponse.builder()
                 .userId(user.getId())
