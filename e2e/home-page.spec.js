@@ -31,7 +31,7 @@ test.describe('首页 HomePage', () => {
   })
 
   test('搜索框存在且可输入', async ({ page }) => {
-    const searchInput = page.locator('.search-input')
+    const searchInput = page.locator('[data-testid="search-input"]')
     if (await searchInput.count() > 0) {
       await searchInput.fill('AI')
       await expect(searchInput).toHaveValue('AI')

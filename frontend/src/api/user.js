@@ -12,3 +12,12 @@ export function getAllUsers() {
 export function updateProfile(data) {
   return request.put('/users/profile', data)
 }
+
+/** 上传头像 */
+export function uploadAvatar(file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request.post('/users/avatar', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}

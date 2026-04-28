@@ -1,0 +1,148 @@
+/* ============================================================
+   ShowcasePage.module.css — 成果展厅页面
+   ============================================================ */
+
+.page {
+  /* 页面容器 */
+}
+
+.inner {
+  /* 内容包裹层 */
+}
+
+.header {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+}
+
+.header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 2.2rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--warm-gray);
+  font-size: 1.05rem;
+}
+
+/* 精选项目大卡 */
+.featured {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid var(--border);
+}
+
+.featured:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+.featured h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+
+.featuredDesc {
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 700px;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--warm-gray);
+  font-size: 0.9rem;
+}
+
+.featuredBtn {
+  font-size: 0.85rem;
+  padding: 0.6rem 1.5rem;
+}
+
+/* 网格列表 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.8rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid var(--border);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.badge {
+  display: inline-block;
+  background: #e8f5e9;
+  color: var(--green);
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+}
+
+.card h3 {
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.cardDesc {
+  color: var(--ink-light);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: var(--warm-gray);
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--warm-gray);
+  padding: 4rem;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .metaRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .featured {
+    padding: 1.8rem;
+  }
+}

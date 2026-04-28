@@ -2,6 +2,7 @@ import { memo, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import { getComments, createComment } from '../../api/idea'
+import styles from './IdeaCard.module.css'
 
 function formatRelativeTime(dateString) {
   const date = new Date(dateString)
@@ -75,36 +76,36 @@ export default memo(function IdeaCard({ idea, onLike, onUnlike, liked, onConvert
   }
 
   return (
-    <div className="idea-card" onClick={handleCardClick}>
-      <p className="idea-content">{idea.content}</p>
-      <div className="idea-footer">
-        <div className="idea-meta">
-          <span className="idea-author">{idea.authorName}</span>
-          <span className="idea-time">{formatRelativeTime(idea.createdAt)}</span>
+    <div className={styles.card} onClick={handleCardClick}>
+      <p className={styles.content}>{idea.content}</p>
+      <div className={styles.footer}>
+        <div className={styles.meta}>
+          <span className={styles.author}>{idea.authorName}</span>
+          <span className={styles.time}>{formatRelativeTime(idea.createdAt)}</span>
         </div>
-        <div className="idea-actions">
+        <div className={styles.actions}>
           <button
-            className={`idea-like-btn ${liked ? 'liked' : ''}`}
+            className={`${styles.actionBtn} ${liked ? styles.liked : ''}`}
             onClick={handleLikeClick}
             title={isLoggedIn ? (liked ? '取消点赞' : '点赞') : '登录后点赞'}
           >
-            <span className="heart-icon">{liked ? '❤️' : '🤍'}</span>
-            <span className="like-count">{idea.likeCount || 0}</span>
+            <span>{liked ? '❤️' : '🤍'}</span>
+            <span>{idea.likeCount || 0}</span>
           </button>
           <button
-            className="idea-comment-btn"
+            className={styles.actionBtn}
             onClick={handleCommentClick}
             title="查看详情和评论"
           >
-            <span className="comment-icon">💬</span>
-            <span className="comment-count">{idea.commentCount || 0}</span>
+            <span>💬</span>
+            <span>{idea.commentCount || 0}</span>
           </button>
         </div>
       </div>
 
       {/* 转为项目按钮 */}
       {onConvertToProject && (
-        <button className="idea-convert-btn" onClick={(e) => { e.stopPropagation(); onConvertToProject(); }} title="将此想法发起为项目">
+        <button className={styles.convertBtn} onClick={(e) => { e.stopPropagation(); onConvertToProject(); }} title="将此想法发起为项目">
           ✦ 发起项目
         </button>
       )}

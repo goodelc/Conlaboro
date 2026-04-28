@@ -1,0 +1,77 @@
+/* === TASK CARD === */
+.taskCard {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.taskCard:hover { border-color: var(--red); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); }
+
+.tcName { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; }
+
+.tcMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tcAssignee {
+  font-size: 0.65rem;
+  color: var(--warm-gray);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.taAvatar {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.4rem;
+  font-weight: 700;
+}
+
+.tcXp {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--red);
+  background: rgba(212, 33, 61, 0.08);
+  padding: 0.15rem 0.5rem;
+  border-radius: 8px;
+}
+
+.tcClaimBtn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.35rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.3s;
+}
+
+.tcClaimBtn:hover { background: var(--red-dark); }
+
+.claimedBtn {
+  background: var(--success);
+  pointer-events: none;
+}
+
+.doneBtn {
+  background: var(--green);
+}
+
+.doneBtn:hover { background: #1a9f4a; }
+
+.doneCard { opacity: 0.6; }
+.doneCard .tcName { text-decoration: line-through; }

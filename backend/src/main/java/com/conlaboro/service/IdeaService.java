@@ -66,10 +66,13 @@ public class IdeaService {
     }
 
     @Transactional
-    public Idea createIdea(String content, String authorName) {
+    public Idea createIdea(String content, String authorName, Long userId) {
         Idea idea = new Idea();
         idea.setContent(content);
         idea.setAuthorName(authorName != null ? authorName : "匿名用户");
+        if (userId != null) {
+            idea.setUserId(userId);
+        }
         idea.setLikeCount(0);
         idea.setCommentCount(0);
         idea.setCreatedAt(OffsetDateTime.now());

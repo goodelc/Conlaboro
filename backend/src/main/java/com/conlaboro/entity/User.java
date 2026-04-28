@@ -27,6 +27,10 @@ public class User {
     @TableField("joined_at")
     private LocalDate joinedAt;
     private String bio;
+    @TableField("preferences")
+    private String preferences;
+    @TableField("avatar_url")
+    private String avatarUrl;
     private OffsetDateTime createdAt;
     @TableLogic
     private Integer deleted;

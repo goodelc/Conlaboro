@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { updateProject } from '../../api'
+import styles from './ProjectEditModal.module.css'
 
 const CATEGORIES = [
   { value: 'app', label: '📱 应用' },
@@ -73,7 +74,7 @@ export default function ProjectEditModal({ project, onClose, onSave, showToast }
     <div className="modal-overlay active" id="project-edit-modal" onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <div className="modal">
         <h2>✏️ 编辑项目信息</h2>
-        <p style={{ color: 'var(--warm-gray)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+        <p className={styles.editDesc}>
           修改「{project.title}」的项目信息
         </p>
 
@@ -90,8 +91,7 @@ export default function ProjectEditModal({ project, onClose, onSave, showToast }
         <div className="form-group">
           <label>项目描述</label>
           <textarea
-            className="form-input"
-            style={{ minHeight: '100px' }}
+            className={`form-input ${styles.textareaLarge}`}
             value={form.description}
             onChange={e => setForm({ ...form, description: e.target.value })}
             placeholder="描述你的项目愿景、目标和核心价值..."

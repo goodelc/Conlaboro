@@ -32,10 +32,12 @@ public class IdeaController {
     }
 
     @PostMapping
-    public Result<Idea> createIdea(@RequestBody Map<String, String> body) {
+    public Result<Idea> createIdea(
+            @RequestBody Map<String, String> body,
+            @RequestAttribute("userId") Long userId) {
         String content = body.get("content");
         String authorName = body.get("authorName");
-        return Result.ok(ideaService.createIdea(content, authorName));
+        return Result.ok(ideaService.createIdea(content, authorName, userId));
     }
 
     @PostMapping("/{id}/like")

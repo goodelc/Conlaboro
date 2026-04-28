@@ -1,0 +1,99 @@
+/* ============================================================
+   IdeaWallPage.module.css — 想法墙页面
+   ============================================================ */
+
+.hero { min-height: auto; padding: 8rem 2rem 3rem; }
+
+.toolbar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.75rem; margin-top: 2rem; max-width: 640px;
+  margin-left: auto; margin-right: auto;
+}
+
+.searchInput {
+  flex: 1; padding: 0.85rem 1.2rem;
+  border: 2px solid var(--border); background: white;
+  font-family: 'Noto Sans SC', sans-serif; font-size: 0.95rem;
+  outline: none; color: var(--ink); transition: all 0.25s;
+}
+.searchInput::placeholder { color: var(--warm-gray); }
+.searchInput:focus { border-color: var(--red); box-shadow: 0 0 0 4px rgba(212, 33, 61, 0.08); }
+
+.sortSelect {
+  padding: 0.85rem 1.4rem;
+  border: 2px solid var(--border); background: white;
+  font-family: 'Noto Sans SC', sans-serif; font-size: 0.95rem;
+  color: var(--ink); outline: none; cursor: pointer;
+  transition: all 0.25s; white-space: nowrap; font-weight: 500;
+}
+.sortSelect:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.08); }
+
+.ideasSection { padding: 6rem 2rem; }
+.ideasList {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.loadingMore { text-align: center; padding: 2rem 0; color: var(--warm-gray); font-size: 0.85rem; }
+.noMore { text-align: center; padding: 2rem 0; color: var(--warm-gray); font-size: 0.85rem; }
+
+/* FAB 按钮 */
+.fab {
+  position: fixed; bottom: 2.5rem; right: 2.5rem;
+  width: 60px; height: 60px; border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--red), #e84a63);
+  color: white; font-size: 1.5rem; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212, 33, 61, 0.35);
+  z-index: 90; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: fabBounce 2s ease-in-out infinite;
+}
+.fab:hover { transform: scale(1.12) translateY(-2px); box-shadow: 0 8px 30px rgba(212, 33, 61, 0.45); }
+
+/* 发布弹窗 */
+.modalOverlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.45); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem; backdrop-filter: blur(4px);
+  animation: modalOverlayIn 0.25s ease-out;
+}
+
+.modal {
+  background: white; border-radius: 16px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modalHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
+}
+.modalHeader h3 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 1.1rem; }
+
+.closeBtn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border); background: white;
+  font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--warm-gray); transition: all 0.2s;
+}
+.closeBtn:hover { border-color: var(--red); color: var(--red); }
+
+.modalTextarea {
+  width: 100%; padding: 1.25rem 2rem; border: none;
+  background: white; font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.95rem; resize: vertical; min-height: 140px;
+  outline: none; line-height: 1.7; color: var(--ink);
+}
+.modalTextarea::placeholder { color: var(--warm-gray); }
+
+.modalActions {
+  display: flex; justify-content: flex-end;
+  gap: 0.75rem; padding: 1rem 2rem 1.5rem;
+}

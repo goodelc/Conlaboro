@@ -36,7 +36,7 @@ export default function ProfilePage() {
   const userProjects = (projects || []).filter(item => {
     const p = item.project || item
     const roles = item.roles || []
-    return roles.length > 0
+    return roles.some(role => role.members && role.members.some(m => m.name === u.name))
   })
 
   return (

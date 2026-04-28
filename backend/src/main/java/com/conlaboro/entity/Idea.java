@@ -13,6 +13,8 @@ public class Idea {
     private String content;
     @TableField("author_name")
     private String authorName;
+    @TableField("user_id")
+    private Long userId;
     @TableField("like_count")
     private Integer likeCount;
     @TableField("comment_count")

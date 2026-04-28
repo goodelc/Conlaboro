@@ -1,6 +1,6 @@
 export { loginApi, registerApi, getCurrentUser } from './auth'
 export { getUserProfile, getAllUsers, updateProfile } from './user'
-export { getAllProjects, getProjectDetail, createProject, applyJoin, getApplications, reviewApplication, addComment, claimTask, releaseTask, createTask, updateProject, createMilestone, updateMilestone, deleteMilestone } from './project'
+export { getAllProjects, getProjectDetail, createProject, applyJoin, getApplications, reviewApplication, addComment, claimTask, releaseTask, createTask, updateProject, createMilestone, updateMilestone, deleteMilestone, completeTask } from './project'
 export { getAllBadges, getMyBadges } from './badge'
 export { getLeaderboard } from './leaderboard'
 export { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from './notification'

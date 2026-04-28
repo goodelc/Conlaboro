@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import styles from './ContributionHeatmap.module.css'
 
 export default function ContributionHeatmap({ activities = [], showToast }) {
   const [timeRange, setTimeRange] = useState('6months')
@@ -157,14 +158,14 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
   const dateGrid = generateDateGrid()
 
   return (
-    <div className="contribution-heatmap">
-      <div className="heatmap-header">
+    <div className={styles.heatmap}>
+      <div className={styles.header}>
         <h3>📊 贡献热点图</h3>
-        <div className="heatmap-controls">
+        <div className={styles.controls}>
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="heatmap-select"
+            className={styles.select}
           >
             {timeRanges.map(range => (
               <option key={range.value} value={range.value}>
@@ -175,7 +176,7 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="heatmap-select"
+            className={styles.select}
           >
             {contributors.map(user => (
               <option key={user} value={user}>
@@ -186,14 +187,14 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
         </div>
       </div>
 
-      <div className="heatmap-container">
-        <div className="heatmap-grid">
+      <div className={styles.container}>
+        <div className={styles.grid}>
           {dateGrid.map((week, weekIndex) => (
-            <div key={weekIndex} className="heatmap-week">
+            <div key={weekIndex} className={styles.week}>
               {week.map((day, dayIndex) => (
                 <div
                   key={`${weekIndex}-${dayIndex}`}
-                  className="heatmap-cell"
+                  className={styles.cell}
                   style={{
                     backgroundColor: getColorIntensity(day.count),
                     border: '1px solid var(--border)'
@@ -206,13 +207,13 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
             </div>
           ))}
         </div>
-        <div className="heatmap-legend">
+        <div className={styles.legend}>
           <span>少</span>
-          <div className="legend-colors">
+          <div className={styles.legendColors}>
             {[0, 1, 2, 3, 4].map(level => (
               <div
                 key={level}
-                className="legend-color"
+                className={styles.legendColor}
                 style={{ backgroundColor: getColorIntensity(level) }}
               />
             ))}
@@ -223,7 +224,7 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
 
       {tooltip.visible && (
         <div
-          className="heatmap-tooltip"
+          className={styles.tooltip}
           style={{
             left: `${tooltip.x}px`,
             top: `${tooltip.y}px`,
@@ -234,134 +235,6 @@ export default function ContributionHeatmap({ activities = [], showToast }) {
           <div>{tooltip.count} 次贡献</div>
         </div>
       )}
-
-      <style>{`
-        .contribution-heatmap {
-          margin: 2rem 0;
-          padding: 1.5rem;
-          background: var(--card-bg);
-          border-radius: 12px;
-          border: 1px solid var(--border);
-        }
-
-        .heatmap-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.5rem;
-        }
-
-        .heatmap-header h3 {
-          margin: 0;
-          font-size: 1.2rem;
-          font-weight: 600;
-        }
-
-        .heatmap-controls {
-          display: flex;
-          gap: 1rem;
-        }
-
-        .heatmap-select {
-          padding: 0.5rem 1rem;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: white;
-          font-size: 0.9rem;
-          cursor: pointer;
-        }
-
-        .heatmap-container {
-          position: relative;
-        }
-
-        .heatmap-grid {
-          display: flex;
-          gap: 4px;
-          overflow-x: auto;
-          padding-bottom: 1rem;
-        }
-
-        .heatmap-week {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .heatmap-cell {
-          width: 12px;
-          height: 12px;
-          border-radius: 2px;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .heatmap-cell:hover {
-          transform: scale(1.2);
-          z-index: 10;
-        }
-
-        .heatmap-legend {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-top: 1rem;
-          font-size: 0.8rem;
-          color: var(--warm-gray);
-        }
-
-        .legend-colors {
-          display: flex;
-          gap: 4px;
-        }
-
-        .legend-color {
-          width: 12px;
-          height: 12px;
-          border-radius: 2px;
-          border: 1px solid var(--border);
-        }
-
-        .heatmap-tooltip {
-          position: fixed;
-          background: var(--ink);
-          color: white;
-          padding: 0.5rem 0.75rem;
-          border-radius: 6px;
-          font-size: 0.8rem;
-          z-index: 1000;
-          pointer-events: none;
-          white-space: nowrap;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        @media (max-width: 768px) {
-          .heatmap-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-          }
-
-          .heatmap-controls {
-            width: 100%;
-            justify-content: space-between;
-          }
-
-          .heatmap-select {
-            flex: 1;
-          }
-
-          .heatmap-grid {
-            overflow-x: auto;
-            padding-bottom: 1rem;
-          }
-
-          .heatmap-cell {
-            width: 10px;
-            height: 10px;
-          }
-        }
-      `}</style>
     </div>
   )
 }

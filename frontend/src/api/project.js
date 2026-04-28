@@ -43,6 +43,11 @@ export function releaseTask(taskId) {
   return request.put(`/projects/tasks/${taskId}/release`)
 }
 
+/** 完成任务 */
+export function completeTask(taskId) {
+  return request.put(`/projects/tasks/${taskId}/done`)
+}
+
 /** 创建任务 */
 export function createTask(projectId, data) {
   return request.post(`/projects/${projectId}/tasks`, data)

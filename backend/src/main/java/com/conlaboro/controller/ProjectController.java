@@ -130,6 +130,27 @@ public class ProjectController {
         return Result.ok(projectService.releaseTask(taskId, userName));
     }
 
+    /** 完成任务 */
+    @PutMapping("/tasks/{taskId}/done")
+    public Result<?> doneTask(
+            @PathVariable Long taskId,
+            @RequestAttribute("userId") Long userId) {
+        var user = userService.getUserProfile(userId);
+        String userName = (user != null) ? user.getName() : "用户" + userId;
+        projectService.updateTaskStatus(taskId, "done");
+        // 通过任务→里程碑获取项目 ID 记录活动
+        Long projectId = projectService.getProjectIdByTaskId(taskId);
+        Activity activity = new Activity();
+        activity.setProjectId(projectId);
+        activity.setUserId(userId);
+        activity.setUserName(userName);
+        activity.setUserColor(user != null ? user.getColor() : "#999");
+        activity.setActionType("completed_task");
+        activity.setText("完成了任务: " + task.getName());
+        activityService.record(activity);
+        return Result.ok(task);
+    }
+
     /** 创建任务 */
     @PostMapping("/{projectId}/tasks")
     public Result<?> createTask(

@@ -1,0 +1,174 @@
+/* ============================================================
+   RecruitingProjectsPage.module.css — 招募项目列表页
+   共用: HomePage 的 projects-grid 样式在 styles.css 中
+   ============================================================ */
+
+.page {
+  padding-top: 80px;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 3rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+
+.breadcrumb {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumbLink {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.breadcrumbLink:hover { color: var(--red); }
+
+.breadcrumbSep { color: var(--border); }
+
+.header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.subTitle {
+  font-size: 0.9rem;
+  color: var(--warm-gray);
+}
+
+.content { padding: 3rem 2rem; }
+
+/* 搜索栏 */
+.searchBar {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.searchInputWrap { position: relative; display: flex; align-items: center; }
+
+.searchIcon {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1rem;
+  color: var(--warm-gray);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.08);
+}
+
+.searchInput::placeholder { color: var(--warm-gray); }
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.filterChipActive,
+.filterChip:hover {
+  background: var(--red);
+  color: white;
+  border-color: var(--red);
+}
+
+.filterDivider {
+  color: var(--border);
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+}
+
+.resultsInfo {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  margin-top: 0.8rem;
+}
+
+/* 统计栏 */
+.statsRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: white;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
+.statItem { display: flex; align-items: baseline; gap: 0.5rem; }
+
+.statNum {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--red);
+}
+
+.statLabel { font-size: 0.8rem; color: var(--warm-gray); }
+
+.statDivider { width: 1px; height: 40px; background: var(--border); }
+
+/* 无结果 */
+.noResults {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--warm-gray);
+}
+
+.nrIcon { font-size: 3rem; margin-bottom: 1rem; }
+.noResults h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .statsRow { flex-wrap: wrap; gap: 1rem; justify-content: center; }
+  .statDivider { display: none; }
+  .filters { gap: 0.3rem; }
+  .filterChip { font-size: 0.68rem; padding: 0.25rem 0.6rem; }
+}

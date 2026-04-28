@@ -32,6 +32,7 @@ public class ProjectService {
     private final FileMapper fileMapper;
     private final UserMapper userMapper;
     private final BadgeAutoService badgeAutoService;
+    private final UserService userService;
 
     /** 创建项目（含角色和里程碑），事务操作 */
     @Transactional
@@ -134,13 +135,16 @@ public class ProjectService {
         comment.setUserColor(userColor);
         comment.setText(text);
         commentMapper.insert(comment);
+        
+        // 评论获得XP
         try {
             User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, userName));
             if (user != null) {
+                userService.addXp(user.getId(), 5);
                 badgeAutoService.checkAndGrant(user.getId(), "comment_posted");
             }
         } catch (Exception e) {
-            log.warn("徽章自动授予失败: {}", e.getMessage());
+            log.warn("评论XP奖励或徽章授予失败: {}", e.getMessage());
         }
         return comment;
     }
@@ -151,11 +155,22 @@ public class ProjectService {
         Task task = taskMapper.selectById(taskId);
         if (task == null) throw new BizException(ErrorCode.NOT_FOUND);
         if (task.getAssignee() != null) {
-            throw new BizException(ErrorCode.CONFLICT); // 已被认领
+            throw new BizException(ErrorCode.CONFLICT);
         }
         task.setAssignee(assigneeName);
         task.setStatus("progress");
         taskMapper.updateById(task);
+        
+        // 认领任务获得基础XP
+        try {
+            User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, assigneeName));
+            if (user != null) {
+                userService.addXp(user.getId(), 5);
+                badgeAutoService.checkAndGrant(user.getId(), "project_joined");
+            }
+        } catch (Exception e) {
+            log.warn("认领任务XP奖励失败: {}", e.getMessage());
+        }
         return task;
     }
 
@@ -178,20 +193,26 @@ public class ProjectService {
     public void updateTaskStatus(Long taskId, String status) {
         Task task = taskMapper.selectById(taskId);
         if (task == null) throw new BizException(ErrorCode.NOT_FOUND);
+        
+        String oldStatus = task.getStatus();
         task.setStatus(status);
-        if ("done".equals(status)) {
+        
+        if ("done".equals(status) && !"done".equals(oldStatus)) {
+            // 完成任务获得XP奖励
             try {
                 String assigneeName = task.getAssignee();
                 if (assigneeName != null) {
                     User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, assigneeName));
                     if (user != null) {
+                        int xpReward = task.getXp() != null ? task.getXp() : 10;
+                        userService.addXp(user.getId(), xpReward);
                         badgeAutoService.checkAndGrant(user.getId(), "task_completed");
                     }
                 }
             } catch (Exception e) {
-                log.warn("徽章自动授予失败: {}", e.getMessage());
+                log.warn("任务完成XP奖励或徽章授予失败: {}", e.getMessage());
             }
-            task.setAssignee(null); // 完成后清除负责人
+            task.setAssignee(null);
         }
         taskMapper.updateById(task);
     }
@@ -199,7 +220,6 @@ public class ProjectService {
     /** 创建任务 */
     @Transactional
     public Task createTask(Long projectId, CreateTaskRequest req) {
-        // 验证里程碑属于该项目
         Milestone ms = milestoneMapper.selectById(req.getMilestoneId());
         if (ms == null || !ms.getProjectId().equals(projectId)) {
             throw new BizException(ErrorCode.NOT_FOUND);
@@ -218,7 +238,6 @@ public class ProjectService {
     public void updateProject(Long projectId, UpdateProjectRequest req, Long userId) {
         Project project = projectMapper.selectById(projectId);
         if (project == null) throw new BizException(ErrorCode.NOT_FOUND);
-        // 只有发起人可以编辑
         if (!project.getAuthorId().equals(userId)) {
             throw new BizException(403, "只有项目发起人可以编辑项目信息");
         }
@@ -226,11 +245,15 @@ public class ProjectService {
         if (req.getDescription() != null) project.setDescription(req.getDescription());
         if (req.getCategory() != null) project.setCategory(req.getCategory());
         if (req.getDuration() != null) project.setDuration(req.getDuration());
-        if ("done".equals(req.getStatus()) && !"done".equals(project.getStatus())) {
+        
+        String oldStatus = project.getStatus();
+        if ("done".equals(req.getStatus()) && !"done".equals(oldStatus)) {
             try {
                 badgeAutoService.checkAndGrant(project.getAuthorId(), "project_done");
+                // 项目完成奖励XP
+                userService.addXp(project.getAuthorId(), 50);
             } catch (Exception e) {
-                log.warn("徽章自动授予失败: {}", e.getMessage());
+                log.warn("项目完成徽章或XP奖励失败: {}", e.getMessage());
             }
         }
         if (req.getStatus() != null) project.setStatus(req.getStatus());
@@ -240,7 +263,6 @@ public class ProjectService {
     /** 创建里程碑 */
     @Transactional
     public Milestone createMilestone(Long projectId, MilestoneRequest req) {
-        // 计算当前最大 sortOrder
         var existing = milestoneMapper.selectList(
                 new LambdaQueryWrapper<Milestone>().eq(Milestone::getProjectId, projectId));
         int nextOrder = existing.stream().mapToInt(m -> m.getSortOrder() != null ? m.getSortOrder() : 0).max().orElse(0) + 1;
@@ -259,17 +281,38 @@ public class ProjectService {
         return milestoneMapper.selectById(milestoneId);
     }
 
+    /** 通过任务 ID 获取所属项目 ID */
+    public Long getProjectIdByTaskId(Long taskId) {
+        Task task = taskMapper.selectById(taskId);
+        if (task == null) return null;
+        Milestone ms = milestoneMapper.selectById(task.getMilestoneId());
+        return ms != null ? ms.getProjectId() : null;
+    }
+
     /** 更新里程碑 */
     @Transactional
     public void updateMilestone(Long milestoneId, MilestoneRequest req, Long userId) {
         Milestone ms = milestoneMapper.selectById(milestoneId);
         if (ms == null) throw new BizException(ErrorCode.NOT_FOUND);
-        // 验证项目发起人
         Project project = projectMapper.selectById(ms.getProjectId());
         if (project == null || !project.getAuthorId().equals(userId)) {
             throw new BizException(403, "只有项目发起人可以编辑里程碑");
         }
         if (req.getTitle() != null) ms.setTitle(req.getTitle());
+        
+        // 里程碑完成检查
+        String oldStatus = ms.getStatus();
+        if ("done".equals(req.getStatus()) && !"done".equals(oldStatus)) {
+            try {
+                User user = userMapper.selectById(project.getAuthorId());
+                if (user != null) {
+                    userService.addXp(user.getId(), 30);
+                }
+            } catch (Exception e) {
+                log.warn("里程碑完成XP奖励失败: {}", e.getMessage());
+            }
+        }
+        if (req.getStatus() != null) ms.setStatus(req.getStatus());
         milestoneMapper.updateById(ms);
     }
 
@@ -283,7 +326,6 @@ public class ProjectService {
             throw new BizException(403, "只有项目发起人可以删除里程碑");
         }
         milestoneMapper.deleteById(milestoneId);
-        // 同时删除关联任务
         taskMapper.delete(new LambdaQueryWrapper<Task>().eq(Task::getMilestoneId, milestoneId));
     }
 }

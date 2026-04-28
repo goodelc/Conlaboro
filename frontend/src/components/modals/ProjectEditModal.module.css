@@ -1,0 +1,10 @@
+/* === PROJECT EDIT MODAL === */
+.editDesc {
+  color: var(--warm-gray);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.textareaLarge {
+  min-height: 100px;
+}

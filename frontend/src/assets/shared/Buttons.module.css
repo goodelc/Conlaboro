@@ -1,0 +1,77 @@
+/* ============================================================
+   Buttons.module.css — 共享按钮系统
+   使用: import btn from '../assets/shared/Buttons.module.css'
+        className={btn.primary}
+   ============================================================ */
+
+.primary {
+  padding: 1rem 2.5rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+
+.primary:hover::before { left: 100%; }
+.primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212, 33, 61, 0.25); }
+
+.secondary {
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--border);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+.outline {
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+
+.outline:hover {
+  background: var(--red);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.small {
+  padding: 0.6rem 1.5rem;
+  font-size: 0.85rem;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .primary, .secondary { padding: 0.8rem 1.8rem; font-size: 0.88rem; }
+}

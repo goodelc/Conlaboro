@@ -1,0 +1,277 @@
+/* ============================================================
+   DetailPage.module.css — 项目详情页
+   ============================================================ */
+
+.page { padding-top: 80px; min-height: 100vh; }
+
+.hero {
+  padding: 3rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: white;
+  position: relative;
+  z-index: 10;
+}
+
+.heroInner { max-width: 1280px; margin: 0 auto; }
+
+.breadcrumb {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumb span { cursor: pointer; transition: color 0.3s; }
+.breadcrumb span:hover { color: var(--red); }
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.titleRow h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.actions { display: flex; gap: 0.8rem; flex-shrink: 0; position: relative; z-index: 10; }
+.tagMargin { margin-right: 0.8rem; }
+.editBtnSmall { font-size: 0.78rem; padding: 0.35rem 0.9rem; }
+
+.meta {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.metaItem { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--warm-gray); }
+.metaItem strong { color: var(--ink); }
+.authorLink { cursor: pointer; color: var(--red); }
+
+.body {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+}
+
+.section { margin-bottom: 3rem; }
+.sectionHeaderRow { display: flex; justifyContent: 'space-between'; alignItems: 'flex-start'; }
+
+.section h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ink);
+  display: inline-block;
+}
+.section p { font-size: 0.9rem; line-height: 1.9; color: var(--ink-light); }
+
+/* 里程碑 */
+.milestoneList { display: flex; flex-direction: column; gap: 0; }
+.milestoneItemWrap {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.milestoneItemWrap:last-child { border-bottom: none; }
+
+.msIcon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; flex-shrink: 0;
+}
+.msIconDone { background: var(--success); color: white; }
+.msIconCurrent { background: var(--gold); color: white; }
+.msIconPending { background: var(--cream); color: var(--warm-gray); border: 1px solid var(--border); }
+
+.msContent { flex: 1; }
+.msContent h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+.msDate { font-size: 0.7rem; color: var(--warm-gray); margin-bottom: 0.5rem; }
+.msTasks { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.msTask {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  color: var(--ink-light);
+}
+.msTaskDone { background: rgba(34,139,34,0.08); border-color: rgba(34,139,34,0.2); color: var(--success); text-decoration: line-through; }
+
+.msActions { display: flex; gap: 0.5rem; align-items: center; }
+.msActionBtn {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.75rem; padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border); background: white; cursor: pointer;
+}
+.msActionBtnDanger { color: var(--red); border-color: rgba(212,33,61,0.3); }
+
+.msCreateForm {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  background: var(--card-bg);
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.msEditInput {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+}
+.msEditInput:focus { border-color: var(--red); }
+.msBtnSm { font-size: 0.78rem; padding: 0.35rem 0.9rem; white-space: nowrap; }
+
+/* 团队 */
+.teamList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.teamMember {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.teamMember:hover { border-color: var(--gold); }
+.tmAvatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+}
+.tmInfo h4 { font-size: 0.85rem; font-weight: 700; }
+.tmInfo p { font-size: 0.7rem; color: var(--warm-gray); }
+.tmStatus { margin-left: auto; font-size: 0.65rem; padding: 0.2rem 0.6rem; font-weight: 700; }
+.tmActive { background: rgba(34,139,34,0.1); color: var(--success); }
+.tmOpenSlot { background: rgba(212,33,61,0.08); color: var(--red); border: 1px dashed var(--red); cursor: pointer; }
+.tmClickable { cursor: pointer; }
+.tmNameClickable { cursor: pointer; }
+
+/* Sidebar */
+.sidebar { position: relative; z-index: 10; }
+.sidebarCard {
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: white;
+}
+.sidebarCard h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700; font-size: 0.95rem;
+  margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+}
+.infoRow { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.8rem; }
+.infoLabel { color: var(--warm-gray); }
+.infoValue { font-weight: 700; }
+
+.achievementCard { borderColor: var(--gold); background: linear-gradient(135deg,rgba(212,168,67,0.05),white); }
+.achievementText { fontSize: 0.85rem; lineHeight: 1.8; color: var(--ink-light); }
+.achievementNote { marginTop: 0.5rem; paddingTop: 0.5rem; borderTop: 1px solid var(--border); fontSize: 0.75rem; color: var(--warm-gray); }
+
+.roleSlots { display: flex; flex-direction: column; gap: 0.6rem; position: relative; z-index: 10; }
+.roleSlot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0.8rem; border: 1px solid var(--border); font-size: 0.8rem; transition: all 0.3s;
+}
+.roleSlotFilled { background: var(--cream); }
+.roleSlotOpen { border-color: var(--red); cursor: pointer; }
+.roleSlotOpen:hover { background: rgba(212,33,61,0.05); }
+.slotLeft { display: flex; align-items: center; gap: 0.5rem; }
+.slotBtn {
+  padding: 0.3rem 0.8rem; background: var(--red); color: white; border: none;
+  font-size: 0.7rem; font-weight: 700; cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif; transition: all 0.3s;
+}
+.filledLabel { font-size: 0.7rem; color: var(--success); font-weight: 700; }
+
+.progressColorDone { color: var(--green); }
+.progressColorProgress { color: var(--gold); }
+.progressColorDefault { color: var(--warm-gray); }
+
+/* 贡献排行 */
+.contribRanking { margin-bottom: 3rem; }
+.contribSummary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.contribSummaryItem { text-align: center; padding: 1.2rem; background: var(--cream); border: 1px solid var(--border); }
+.csiNum { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 1.5rem; color: var(--red); }
+.csiLabel { font-size: 0.7rem; color: var(--warm-gray); margin-top: 0.2rem; }
+
+.contribList { display: flex; flex-direction: column; gap: 0; }
+.contribItem {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.2rem 0; border-bottom: 1px solid var(--border);
+}
+.contribItem:last-child { border-bottom: none; }
+.contribRank {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 0.8rem; flex-shrink: 0;
+}
+.rankGold { background: var(--gold); color: white; }
+.rankSilver { background: #C0C0C0; color: white; }
+.rankBronze { background: #CD7F32; color: white; }
+.rankNormal { background: var(--cream); color: var(--warm-gray); }
+.contribAvatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; cursor: pointer; }
+.contribInfo { flex: 1; }
+.ciTop { display: flex; align-items: center; gap: 0.5rem; }
+.ciName { font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+.ciRole { font-size: 0.75rem; color: var(--warm-gray); }
+.ciStats { font-size: 0.78rem; color: var(--warm-gray); }
+.ciStats > * { margin-right: 0.8rem; }
+.ciDetails { fontSize: 0.65rem; color: var(--warm-gray); marginTop: 0.15rem; }
+.contribBarWrap { min-width: 120px; }
+.contribBarLabel { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--warm-gray); margin-bottom: 0.25rem; }
+.cbValue { font-weight: 700; }
+.contribBar { height: 6px; background: var(--cream); border-radius: 3px; overflow: hidden; }
+.contribBarFillGold { background: var(--gold); height: 100%; border-radius: 3px; }
+.contribBarFillSilver { background: #C0C0C0; height: 100%; border-radius: 3px; }
+.contribBarFillBronze { background: #CD7F32; height: 100%; border-radius: 3px; }
+.contribBarFillNormal { background: var(--border); height: 100%; border-radius: 3px; }
+
+/* Activity Feed */
+.activityFeed { display: flex; flex-direction: column; }
+.activityItem { display: flex; gap: 0.85rem; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+.actAvatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: white; font-weight: 700; }
+.actTime { font-size: 0.7rem; color: var(--warm-gray); margin-left: 0.4rem; }
+
+/* 交付物 */
+.deliverables { display: flex; flex-direction: column; gap: 0.8rem; }
+.deliverableItem {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.deliverableItem:hover { border-color: var(--gold); transform: translateX(4px); }
+.dlIcon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.dlInfo { flex: 1; }
+.dlInfo h4 { font-size: 0.9rem; font-weight: 700; }
+.dlInfo p { font-size: 0.78rem; color: var(--warm-gray); margin: 0; }
+.dlArrow { color: var(--warm-gray); }
+
+/* 通用 */
+.loadingCenter { text-align: center; padding: 5rem; }
+.notFoundCenter { text-align: center; padding: 5rem; }
+.notFoundText { color: var(--warm-gray); margin-top: 1rem; }
+.notFoundBtn { margin-top: 1rem; }
+
+/* 响应式 */
+@media (max-width: 1024px) {
+  .body { grid-template-columns: 1fr; }
+  .sidebar { order: -1; }
+  .teamList { grid-template-columns: 1fr; }
+  .contribSummary { grid-template-columns: repeat(2, 1fr); }
+  .titleRow { flex-direction: column; }
+  .actions { width: 100%; flex-wrap: wrap; }
+}

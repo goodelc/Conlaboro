@@ -21,7 +21,7 @@ async function goToProjectDetail(page) {
   await page.waitForURL('/home')
 
   // 进入第一个项目的详情页
-  const firstCard = page.locator('.project-card').first()
+  const firstCard = page.locator('[data-testid="project-card"]').first()
   if (await firstCard.isVisible()) {
     await firstCard.click()
     await page.waitForURL(/\/project\//)
@@ -81,7 +81,7 @@ test.describe('任务看板 — 新建任务', () => {
   test('每个看板列底部应有「添加任务」卡片', async ({ page }) => {
     await goToProjectDetail(page)
 
-    const addCards = page.locator('.add-task-card')
+    const addCards = page.locator('[data-testid="add-task-card"]')
     const count = await addCards.count()
 
     if (count > 0) {
@@ -97,69 +97,69 @@ test.describe('任务看板 — 新建任务', () => {
   test('点击添加任务卡片应展开内联表单', async ({ page }) => {
     await goToProjectDetail(page)
 
-    const addCard = page.locator('.add-task-card').first()
+    const addCard = page.locator('[data-testid="add-task-card"]').first()
     if (await addCard.isVisible()) {
       await addCard.click()
 
       // 表单元素应出现
-      await expect(page.locator('.add-task-input')).toBeVisible()
-      await expect(page.locator('.add-task-select')).toBeVisible()
-      await expect(page.locator('.add-task-submit')).toBeVisible()
-      await expect(page.locator('.add-task-cancel')).toBeVisible()
+      await expect(page.locator('[data-testid="add-task-input"]')).toBeVisible()
+      await expect(page.locator('[data-testid="add-task-select"]')).toBeVisible()
+      await expect(page.locator('[data-testid="add-task-submit"]')).toBeVisible()
+      await expect(page.locator('[data-testid="add-task-cancel"]')).toBeVisible()
     }
   })
 
   test('填写任务名并提交，应调用 createTask API', async ({ page }) => {
     await goToProjectDetail(page)
 
-    const addCard = page.locator('.add-task-card').first()
+    const addCard = page.locator('[data-testid="add-task-card"]').first()
     if (!await addCard.isVisible()) {
       test.skip() // 无里程碑时跳过
       return
     }
 
     await addCard.click()
-    await page.locator('.add-task-input').fill(`E2E-TASK-${Date.now()}`)
-    await page.locator('.add-task-submit').click()
+    await page.locator('[data-testid="add-task-input"]').fill(`E2E-TASK-${Date.now()}`)
+    await page.locator('[data-testid="add-task-submit"]').click()
 
     // 成功后表应收起或页面刷新
-    await expect(page.locator('.add-task-card')).toBeVisible({ timeout: 8000 })
+    await expect(page.locator('[data-testid="add-task-card"]')).toBeVisible({ timeout: 8000 })
   })
 
   test('按 Escape 键应取消新建任务', async ({ page }) => {
     await goToProjectDetail(page)
 
-    const addCard = page.locator('.add-task-card').first()
+    const addCard = page.locator('[data-testid="add-task-card"]').first()
     if (!await addCard.isVisible()) {
       test.skip()
       return
     }
 
     await addCard.click()
-    await expect(page.locator('.add-task-form')).toBeVisible()
+    await expect(page.locator('[data-testid="add-task-form"]')).toBeVisible()
     await page.keyboard.press('Escape')
 
     // 应恢复为虚线卡片状态
-    await expect(page.locator('.add-task-card')).toBeVisible()
+    await expect(page.locator('[data-testid="add-task-card"]')).toBeVisible()
   })
 
   test('空任务名提交按钮应为禁用状态', async ({ page }) => {
     await goToProjectDetail(page)
 
-    const addCard = page.locator('.add-task-card').first()
+    const addCard = page.locator('[data-testid="add-task-card"]').first()
     if (!await addCard.isVisible()) {
       test.skip()
       return
     }
 
     await addCard.click()
-    const submitBtn = page.locator('.add-task-submit')
+    const submitBtn = page.locator('[data-testid="add-task-submit"]')
 
     // 空输入时应禁用
     await expect(submitBtn).toBeDisabled()
 
     // 输入后启用
-    await page.locator('.add-task-input').fill('有内容的任务')
+    await page.locator('[data-testid="add-task-input"]').fill('有内容的任务')
     await expect(submitBtn).toBeEnabled()
   })
 })

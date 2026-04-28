@@ -1,0 +1,118 @@
+/* === ADD TASK CARD === */
+.addTaskCard {
+  border: 1px dashed var(--border);
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  color: var(--warm-gray);
+  font-size: 0.75rem;
+  transition: all 0.3s;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.addTaskCard:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(212, 33, 61, 0.03);
+}
+
+.addTaskPlus {
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.addTaskForm {
+  border: 1px solid var(--border);
+  padding: 0.8rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 2px;
+}
+
+.addTaskInput {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.addTaskInput:focus { border-color: var(--red); }
+
+.addTaskOptions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.addTaskSelect {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.72rem;
+  outline: none;
+  flex: 1;
+}
+
+.addTaskSelect:focus { border-color: var(--red); }
+
+.addTaskXpLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.addTaskXpLabel input[type="range"] {
+  width: 60px;
+  height: 4px;
+  accent-color: var(--red);
+}
+
+.addTaskActions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.addTaskSubmit {
+  padding: 0.35rem 0.9rem;
+  background: var(--red);
+  color: white;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.3s;
+}
+
+.addTaskSubmit:hover:not(:disabled) { background: var(--red-dark); }
+.addTaskSubmit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.addTaskCancel {
+  padding: 0.35rem 0.9rem;
+  background: transparent;
+  color: var(--warm-gray);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.3s;
+}
+
+.addTaskCancel:hover {
+  border-color: var(--ink-light);
+  color: var(--ink-light);
+}

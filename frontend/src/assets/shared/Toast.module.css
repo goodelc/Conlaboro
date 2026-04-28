@@ -1,0 +1,33 @@
+/* ============================================================
+   Toast.module.css — 全局提示组件
+   使用: import toast from '../assets/shared/Toast.module.css'
+        className={toast.toast}
+   ============================================================ */
+
+.toast {
+  position: fixed;
+  top: 90px; right: 2rem;
+  padding: 1rem 1.5rem;
+  background: var(--ink);
+  color: white;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  animation: toastIn 0.4s ease, toastOut 0.4s ease 2.6s forwards;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  z-index: 300;
+}
+
+.success { border-left: 4px solid var(--success); }
+.info { border-left: 4px solid var(--gold); }
+.warning { border-left: 4px solid var(--gold); }
+.error { border-left: 4px solid var(--red); }
+
+@media (max-width: 480px) {
+  .toast {
+    top: auto; bottom: 1rem;
+    right: 1rem; left: 1rem;
+    width: auto;
+  }
+}

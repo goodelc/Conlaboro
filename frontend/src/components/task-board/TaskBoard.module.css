@@ -1,0 +1,49 @@
+/* === TASK BOARD === */
+.taskBoard { margin-top: 1rem; }
+
+.boardColumns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.taskColumn {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  min-height: 200px;
+}
+
+.columnHeader {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.tchCount {
+  background: white;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  color: var(--warm-gray);
+}
+
+.openCol .columnHeader { color: var(--red); }
+.progressCol .columnHeader { color: #8B6914; }
+.doneCol .columnHeader { color: var(--success); }
+
+.columnBody {
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.emptyState {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+}
