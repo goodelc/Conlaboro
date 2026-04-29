@@ -25,6 +25,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const RecruitingProjectsPage = lazy(() => import('./pages/RecruitingProjectsPage'))
 const IdeaWallPage = lazy(() => import('./pages/IdeaWallPage'))
 const IdeaDetailPage = lazy(() => import('./pages/IdeaDetailPage'))
+const HatchPage = lazy(() => import('./pages/HatchPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 function PageLoader() {
@@ -57,6 +58,7 @@ export default function App() {
                 <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
                 <Route path="/idea-wall" element={<IdeaWallPage />} />
                 <Route path="/idea/:id" element={<IdeaDetailPage />} />
+                <Route path="/hatch" element={<RequireAuth><HatchPage /></RequireAuth>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>

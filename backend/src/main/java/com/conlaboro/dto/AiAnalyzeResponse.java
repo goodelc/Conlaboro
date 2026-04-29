@@ -5,12 +5,16 @@ import java.util.List;
 
 @Data
 public class AiAnalyzeResponse {
+    private String analysis;       // AI分析报告（结构化文本）
     private String name;
     private String tagline;
     private String category;
     private String duration;
     private List<RoleItem> roles;
     private List<MilestoneItem> milestones;
+    private Integer feasibilityScore; // 可行性评分 1-5
+    private String techStack;         // 技术栈建议（JSON字符串数组）
+    private String targetUsers;       // 目标用户画像描述
     private boolean fallback;  // 是否使用了降级方案
 
     @Data

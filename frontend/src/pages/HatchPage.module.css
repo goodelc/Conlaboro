@@ -1,0 +1,671 @@
+/* ============================================================
+   HatchPage.module.css — AI 孵化工作台
+   Layout: 双栏工作台 (60/40)
+   ============================================================ */
+
+.page {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+/* ---- 顶部标题区 ---- */
+.header {
+  padding: 2rem 2rem 0;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.headerSubtitle {
+  color: var(--warm-gray);
+  font-size: 0.88rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- 步骤进度条 ---- */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--warm-gray);
+  background: transparent;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.stepActive {
+  color: white;
+  background: var(--red);
+  font-weight: 700;
+}
+
+.stepDone {
+  color: var(--success);
+}
+
+.stepNum {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.stepActive .stepNum {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.stepDone .stepNum {
+  border-color: var(--success);
+  background: var(--success);
+  color: white;
+}
+
+.stepConnector {
+  width: 32px;
+  height: 2px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.stepConnectorDone {
+  background: var(--success);
+}
+
+/* ---- 双栏布局 ---- */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  align-items: start;
+}
+
+/* ---- 左侧交互区 ---- */
+.leftPanel {
+  min-width: 0;
+}
+
+/* ---- 描述输入区 ---- */
+.inputSection {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s;
+}
+
+.inputSection:focus-within {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(212, 33, 61, 0.06);
+}
+
+.inputSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.inputSectionHeader h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.inputSectionIcon {
+  font-size: 1.15rem;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  background: var(--cream);
+  border-radius: 8px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.textarea:focus {
+  border-color: var(--red);
+  background: white;
+}
+
+.textarea::placeholder {
+  color: var(--warm-gray);
+}
+
+/* 引导提示 */
+.guideTip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #FFF9ED, #FFFBF5);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 168, 67, 0.15);
+  animation: tipFadeIn 0.4s ease;
+}
+
+@keyframes tipFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.guideTipIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.guideTipText {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-light);
+}
+
+.guideTipText strong {
+  color: var(--gold);
+}
+
+/* 操作按钮区 */
+.inputActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ---- AI 加载状态 ---- */
+.loadingState {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: hatchSpin 0.9s linear infinite;
+  margin: 0 auto 1.2rem;
+}
+
+@keyframes hatchSpin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingTitle {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.loadingDesc {
+  font-size: 0.82rem;
+  color: var(--warm-gray);
+  line-height: 1.6;
+}
+
+/* 加载进度动画点 */
+.loadingDots {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.loadingDots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--warm-gray);
+  animation: dotPulse 1.4s ease-in-out infinite;
+}
+
+.loadingDots span:nth-child(2) { animation-delay: 0.2s; }
+.loadingDots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ---- AI 评估报告 ---- */
+.reportCard {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  animation: reportSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes reportSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reportHeader {
+  padding: 1.5rem 1.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reportHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.reportHeaderLeft h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.reportIcon {
+  font-size: 1.3rem;
+}
+
+.fallbackBadge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  background: rgba(212, 168, 67, 0.12);
+  color: #B8860B;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+/* 可行性评分 */
+.scoreBar {
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(135deg, #FFFBF5, #FFF9ED);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scoreLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scoreLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.scoreStars {
+  display: flex;
+  gap: 3px;
+}
+
+.scoreStar {
+  font-size: 1.1rem;
+  transition: transform 0.2s;
+}
+
+.scoreStarActive {
+  transform: scale(1.1);
+}
+
+.scoreDesc {
+  font-size: 0.78rem;
+  color: var(--warm-gray);
+  font-weight: 500;
+}
+
+/* 分析区块 */
+.reportBody {
+  padding: 0.5rem 0;
+}
+
+.analysisBlock {
+  padding: 1.1rem 1.75rem;
+  border-bottom: 1px solid rgba(212, 33, 61, 0.05);
+}
+
+.analysisBlock:last-child {
+  border-bottom: none;
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.blockIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.blockHeader h4 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.blockText {
+  font-size: 0.87rem;
+  line-height: 1.8;
+  color: var(--ink-light);
+  padding-left: 1.5rem;
+}
+
+.blockList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.blockList li {
+  position: relative;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+  padding: 0.2rem 0 0.2rem 1rem;
+}
+
+.blockList li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--red);
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+/* 技术栈标签 */
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.techTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  transition: all 0.2s;
+}
+
+.techTag:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* 目标用户 */
+.targetUsersText {
+  font-size: 0.87rem;
+  line-height: 1.8;
+  color: var(--ink-light);
+  padding-left: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+/* 报告操作栏 */
+.reportActions {
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ---- 底部操作区 ---- */
+.bottomActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---- 右侧预览区 ---- */
+.rightPanel {
+  position: sticky;
+  top: 100px;
+}
+
+.previewContainer {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.previewHeader {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.previewHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.previewHeader h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.previewIcon {
+  font-size: 1rem;
+}
+
+.previewDeviceToggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.deviceBtn {
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.deviceBtn:hover {
+  background: var(--cream);
+}
+
+.deviceBtnActive {
+  background: var(--ink);
+}
+
+.previewBody {
+  padding: 1rem;
+  min-height: 400px;
+  background: #F5F5F5;
+  display: flex;
+  justify-content: center;
+}
+
+.previewFrame {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  min-height: 380px;
+  transition: width 0.3s ease;
+}
+
+.previewFrameMobile {
+  max-width: 375px;
+}
+
+/* 空状态 */
+.previewEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  color: var(--warm-gray);
+  gap: 0.75rem;
+}
+
+.previewEmptyIcon {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.previewEmptyText {
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 1024px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .rightPanel {
+    position: static;
+  }
+
+  .steps {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .stepConnector {
+    width: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 70px;
+  }
+
+  .header {
+    padding: 1.5rem 1rem 0;
+  }
+
+  .header h1 {
+    font-size: 1.35rem;
+  }
+
+  .workspace {
+    padding: 0 1rem 3rem;
+  }
+
+  .inputSection {
+    padding: 1.25rem;
+  }
+
+  .reportCard .analysisBlock {
+    padding: 0.9rem 1.25rem;
+  }
+
+  .scoreBar {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .reportActions {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bottomActions {
+    flex-direction: column;
+  }
+
+  .previewBody {
+    min-height: 300px;
+  }
+}

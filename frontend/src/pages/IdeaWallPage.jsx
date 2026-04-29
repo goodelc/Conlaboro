@@ -117,12 +117,18 @@ export default function IdeaWallPage() {
     setHatchModal({ ideaId: idea.id, ideaContent: idea.content })
   }
 
-  // 路径选择后→跳转 /create
+  // 路径选择后→AI路径跳/hatch，手动路径跳/create
   const handlePathSelect = ({ mode, ideaContent }) => {
     setHatchModal(null)
-    navigate('/create', {
-      state: { ideaContent, ideaId: hatchModal.ideaId, mode }
-    })
+    if (mode === 'ai') {
+      navigate('/hatch', {
+        state: { ideaContent, ideaId: hatchModal.ideaId }
+      })
+    } else {
+      navigate('/create', {
+        state: { ideaContent, ideaId: hatchModal.ideaId, mode: 'manual' }
+      })
+    }
   }
 
   // 参与意愿切换

@@ -1,6 +1,6 @@
 /* ============================================================
-   CreatePage.module.css — 发起项目页面
-   共用: shared/Forms.module.css (form-group, form-input, form-row, form-section, form-actions)
+   CreatePage.module.css — 发起项目页面（纯手动创建）
+   共用: shared/Forms.module.css, shared/Buttons.module.css
    ============================================================ */
 
 .page {
@@ -30,34 +30,28 @@
   font-size: 0.9rem;
 }
 
-/* 版本切换器 */
-.versionSwitcher {
+/* AI 预填充横幅 */
+.aiPrefillBanner {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding: 0.5rem;
-  background-color: var(--warm-gray-light);
-  border-radius: 8px;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #FFFBF5, #FFF9ED);
+  border: 1px solid rgba(212, 168, 67, 0.15);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  animation: bannerFadeIn 0.5s ease;
 }
 
-.versionBtn {
-  flex: 1;
-  padding: 0.7rem;
-  border-radius: 6px;
-  border: none;
-  background-color: transparent;
-  color: var(--warm-gray);
-  cursor: pointer;
-  font-weight: 400;
-  transition: all 0.3s ease;
-  font-family: 'Noto Sans SC', sans-serif;
-  font-size: 0.9rem;
+@keyframes bannerFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.versionBtnActive {
-  background-color: var(--red);
-  color: white;
-  font-weight: 600;
+.aiPrefillIcon {
+  font-size: 1.15rem;
 }
 
 /* 步骤徽章 */
@@ -124,9 +118,6 @@
 /* textarea 最小高度 */
 .textareaMinHeight { min-height: 120px; }
 
-/* AI 分析按钮间距 */
-.aiBtnMargin { margin-top: 1rem; }
-
 /* 淡入动画 */
 .fadeIn { animation: fadeIn 0.5s ease; }
 
@@ -135,4 +126,15 @@
   font-size: 0.8rem;
   color: var(--warm-gray);
   margin-bottom: 1rem;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .inner {
+    padding: 2rem 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
 }
