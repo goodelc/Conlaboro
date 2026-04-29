@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { AppProvider } from './context/AppContext'
 import { DataProvider } from './context/DataContext'
@@ -9,21 +10,26 @@ import BadgeModal from './components/BadgeModal'
 import RequireAuth from './components/RequireAuth'
 import ScrollToTop from './components/ScrollToTop'
 import ErrorBoundary from './components/ErrorBoundary'
-import HomePage from './pages/HomePage'
-import DetailPage from './pages/DetailPage'
-import ProfilePage from './pages/ProfilePage'
-import LeaderboardPage from './pages/LeaderboardPage'
-import ShowcasePage from './pages/ShowcasePage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
-import CreatePage from './pages/CreatePage'
-import DashboardPage from './pages/DashboardPage'
-import SettingsPage from './pages/SettingsPage'
-import RecruitingProjectsPage from './pages/RecruitingProjectsPage'
-import IdeaWallPage from './pages/IdeaWallPage'
-import IdeaDetailPage from './pages/IdeaDetailPage'
-import NotFound from './pages/NotFound'
+
+const HomePage = lazy(() => import('./pages/HomePage'))
+const DetailPage = lazy(() => import('./pages/DetailPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'))
+const ShowcasePage = lazy(() => import('./pages/ShowcasePage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const CreatePage = lazy(() => import('./pages/CreatePage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const RecruitingProjectsPage = lazy(() => import('./pages/RecruitingProjectsPage'))
+const IdeaWallPage = lazy(() => import('./pages/IdeaWallPage'))
+const IdeaDetailPage = lazy(() => import('./pages/IdeaDetailPage'))
+const NotFound = lazy(() => import('./pages/NotFound'))
+
+function PageLoader() {
+  return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', color: 'var(--warm-gray)' }}>加载中...</div>
+}
 
 export default function App() {
   return (
@@ -34,6 +40,7 @@ export default function App() {
           <ScrollToTop />
           <Navbar />
             <main className="main-content">
+              <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/home" element={<HomePage />} />
@@ -52,6 +59,7 @@ export default function App() {
                 <Route path="/idea/:id" element={<IdeaDetailPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </main>
             <ToastContainer />
             <NotificationPanel />

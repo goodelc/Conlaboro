@@ -67,6 +67,11 @@ function appReducer(state, action) {
     case 'LOGOUT':
       localStorage.removeItem('conlaboro_auth')
       return { ...state, isLoggedIn: false, currentUser: null, loading: false }
+    case 'UPDATE_USER': {
+      const updated = { ...state.currentUser, ...action.user }
+      localStorage.setItem('conlaboro_auth', JSON.stringify({ isLoggedIn: state.isLoggedIn, currentUser: updated }))
+      return { ...state, currentUser: updated }
+    }
     default:
       return state
   }
@@ -134,6 +139,11 @@ export function AppProvider({ children }) {
     dispatch({ type: 'LOGOUT' })
   }, [])
 
+  // 更新本地用户状态（不调用登录API）
+  const updateCurrentUser = useCallback((partial) => {
+    dispatch({ type: 'UPDATE_USER', user: partial })
+  }, [])
+
   // 拉取未读通知数
   const fetchUnreadCount = useCallback(async () => {
     try {
@@ -144,7 +154,7 @@ export function AppProvider({ children }) {
     }
   }, [])
 
-  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal, login, register, logout, fetchUnreadCount }
+  const value = { ...state, showToast, removeToast, toggleNotif, openJoinModal, closeJoinModal, openBadgeModal, closeBadgeModal, login, register, logout, updateCurrentUser, fetchUnreadCount }
 
   return (
     <AppContext.Provider value={value}>

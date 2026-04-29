@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import { useApp } from '../context/AppContext'
@@ -21,7 +21,7 @@ export default function DetailPage() {
   const [detail, setDetail] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activities, setActivities] = useState([])
-  const [isFavorited, setIsFavorited] = useState(false)
+  const [isFavorited, setIsFavorited] = useState(null)
 
   const [editModalOpen, setEditModalOpen] = useState(false)
 
@@ -122,6 +122,36 @@ export default function DetailPage() {
     }
   }
 
+  const p = useMemo(() => {
+    if (!detail) return {}
+    const proj = detail.project || {}
+    proj.roles = detail.roles || []
+    proj.tasks = detail.tasks || []
+    proj.comments = (detail.comments || []).map(c => ({
+      user: c.authorName || c.author || c.userName || '匿名',
+      text: c.content || c.text || '',
+      time: c.time || c.createdAt || '',
+      color: c.authorColor || c.color || c.userColor || '#999',
+    }))
+    proj.files = (detail.files || []).map(f => ({
+      name: f.fileName || f.name || '文件',
+      icon: '📄',
+      uploader: f.uploaderName || f.uploader || '未知',
+      time: f.time || f.createdAt || '',
+    }))
+
+    const tasksByMilestone = {}
+    ;(detail.tasks || []).forEach(t => {
+      if (!tasksByMilestone[t.milestoneId]) tasksByMilestone[t.milestoneId] = []
+      tasksByMilestone[t.milestoneId].push(t)
+    })
+    proj.milestones = (detail.milestones || []).map(ms => ({
+      ...ms,
+      tasks: tasksByMilestone[ms.id] || []
+    }))
+    return proj
+  }, [detail])
+
   if (loading) {
     return <div className={styles.loadingCenter}>加载中...</div>
   }
@@ -135,34 +165,6 @@ export default function DetailPage() {
       </div>
     )
   }
-
-  const p = detail.project || {}
-  p.roles = detail.roles || []
-  p.tasks = detail.tasks || []
-  p.comments = (detail.comments || []).map(c => ({
-    user: c.authorName || c.author || c.userName || '匿名',
-    text: c.content || c.text || '',
-    time: c.time || c.createdAt || '',
-    color: c.authorColor || c.color || c.userColor || '#999',
-  }))
-  p.files = (detail.files || []).map(f => ({
-    name: f.fileName || f.name || '文件',
-    icon: '📄',
-    uploader: f.uploaderName || f.uploader || '未知',
-    time: f.time || f.createdAt || '',
-  }))
-
-  const tasksByMilestone = {}
-  ;(detail.tasks || []).forEach(t => {
-    if (!tasksByMilestone[t.milestoneId]) {
-      tasksByMilestone[t.milestoneId] = []
-    }
-    tasksByMilestone[t.milestoneId].push(t)
-  })
-  p.milestones = (detail.milestones || []).map(ms => ({
-    ...ms,
-    tasks: tasksByMilestone[ms.id] || []
-  }))
 
   const msIconClass = (status) => status === 'done' ? styles.msIconDone : status === 'current' ? styles.msIconCurrent : styles.msIconPending
   const rankStyleClass = (rank) => rank === 'gold' ? styles.rankGold : rank === 'silver' ? styles.rankSilver : rank === 'bronze' ? styles.rankBronze : styles.rankNormal
@@ -181,7 +183,7 @@ export default function DetailPage() {
               <div className={styles.actions}>
                 <button className="btn-secondary" onClick={() => setEditModalOpen(true)} title="编辑项目信息">✏️ 编辑</button>
 
-                {p.status !== 'done' && <button className="btn-secondary" onClick={handleFavoriteToggle}>{isFavorited ? '♥ 已收藏' : '♡ 收藏'}</button>}
+                {p.status !== 'done' && isFavorited !== null && <button className="btn-secondary" onClick={handleFavoriteToggle}>{isFavorited ? '♥ 已收藏' : '♡ 收藏'}</button>}
                 {p.status !== 'done' && <button className="btn-primary" onClick={() => openJoinModal(Number(p.id), '', p)}>🤝 加入项目</button>}
               </div>
             </div>

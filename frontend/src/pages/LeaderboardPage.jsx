@@ -52,9 +52,9 @@ export default function LeaderboardPage() {
               <button key={t.key} className={`lb-tab ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}>{t.label}</button>
             ))}
           </div>
-          <div className="lb-podium">
+          <div className="lb-podium" style={{ gridTemplateColumns: top3.length >= 3 ? '1fr 1fr 1fr' : `repeat(${top3.length}, 1fr)` }}>
             {top3.map((u, i) => (
-              <div key={u.name} className={`lb-podium-item ${i === 0 ? 'first' : ''}`} onClick={() => navigate(`/profile/${u.name}`)}>
+              <div key={u.name} className={`lb-podium-item ${i === 0 && top3.length >= 3 ? 'first' : ''}`} onClick={() => navigate(`/profile/${u.name}`)}>
                 <div className="podium-rank">{medals[i]}</div>
                 <div className="podium-avatar" style={{ background: u.color }}>{u.name[0]}</div>
                 <div className="podium-name">{u.name}</div>

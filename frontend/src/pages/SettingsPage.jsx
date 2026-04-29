@@ -52,7 +52,7 @@ function EditModal({ open, title, desc, children, onClose, onSave }) {
 
 export default function SettingsPage() {
   const navigate = useNavigate()
-  const { currentUser, isLoggedIn, showToast, login } = useApp()
+  const { currentUser, isLoggedIn, showToast, updateCurrentUser } = useApp()
   const { users } = useData()
 
   /* ── 弹窗状态 ── */
@@ -149,7 +149,7 @@ export default function SettingsPage() {
       const url = await uploadAvatar(file)
       showToast('头像更新成功', 'success')
       // 刷新用户数据以显示新头像
-      login({ ...currentUser, avatarUrl: url })
+      updateCurrentUser({ avatarUrl: url })
     } catch (err) {
       showToast(err.message || '头像上传失败', 'error')
     } finally { setAvatarUploading(false) }
@@ -170,7 +170,7 @@ export default function SettingsPage() {
       await updateProfile(partial)
       // 同步更新本地状态
       const updated = { ...u, ...partial }
-      login(updated)
+      updateCurrentUser(updated)
       showToast('已保存 ✅', 'success')
       setEditField(null)
     } catch (err) {
