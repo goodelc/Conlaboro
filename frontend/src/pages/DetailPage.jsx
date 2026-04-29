@@ -152,6 +152,8 @@ export default function DetailPage() {
     return proj
   }, [detail])
 
+  const isCreator = currentUser && (currentUser.name === (p.authorName || p.author))
+
   if (loading) {
     return <div className={styles.loadingCenter}>加载中...</div>
   }
@@ -181,10 +183,10 @@ export default function DetailPage() {
             <div className={styles.titleRow}>
               <h1><span className={`card-tag ${TAG_CLASS[p.status]}`} style={{ marginRight: '0.8rem' }}>{STATUS_MAP[p.status]}</span>{p.title}</h1>
               <div className={styles.actions}>
-                <button className="btn-secondary" onClick={() => setEditModalOpen(true)} title="编辑项目信息">✏️ 编辑</button>
+                {isCreator && <button className="btn-secondary" onClick={() => setEditModalOpen(true)} title="编辑项目信息">✏️ 编辑</button>}
 
                 {p.status !== 'done' && isFavorited !== null && <button className="btn-secondary" onClick={handleFavoriteToggle}>{isFavorited ? '♥ 已收藏' : '♡ 收藏'}</button>}
-                {p.status !== 'done' && <button className="btn-primary" onClick={() => openJoinModal(Number(p.id), '', p)}>🤝 加入项目</button>}
+                {p.status !== 'done' && !isCreator && <button className="btn-primary" onClick={() => openJoinModal(Number(p.id), '', p)}>🤝 加入项目</button>}
               </div>
             </div>
             <div className={styles.meta}>
@@ -203,7 +205,7 @@ export default function DetailPage() {
             <div className={styles.section}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <h2>项目描述</h2>
-                <button className="btn-secondary" onClick={() => setEditModalOpen(true)} style={{ fontSize: '0.78rem', padding: '0.35rem 0.9rem' }}>✏️ 编辑</button>
+                {isCreator && <button className="btn-secondary" onClick={() => setEditModalOpen(true)} style={{ fontSize: '0.78rem', padding: '0.35rem 0.9rem' }}>✏️ 编辑</button>}
               </div>
               <p>{p.description || p.desc || '暂无描述'}</p>
             </div>

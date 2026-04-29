@@ -115,12 +115,7 @@ public class UserService {
             user.setBio(req.getBio().trim());
         }
         if (req.getPreferences() != null) {
-            try {
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                user.setPreferences(mapper.writeValueAsString(req.getPreferences()));
-            } catch (Exception e) {
-                log.warn("序列化 preferences 失败: {}", e.getMessage());
-            }
+            user.setPreferences(req.getPreferences());
         }
         userMapper.updateById(user);
 

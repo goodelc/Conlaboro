@@ -64,6 +64,9 @@ export default function Navbar() {
               style={{ background: currentUser?.color || '#D4213d' }}
               title={currentUser?.name || '用户'}
             >{(currentUser?.name || '你')[0]}</div>
+            <div className={styles.iconBtn} onClick={() => navigate('/settings')} title="个人设置" style={{ cursor: 'pointer', fontSize: '1.15rem' }}>
+              ⚙️
+            </div>
             <button className={`${btn.secondary} ${styles.logoutBtn}`} onClick={() => { logout(); navigate('/home'); window.location.reload() }} style={{ marginLeft: '0.3rem', padding: '0.35rem 0.8rem', fontSize: '0.8rem' }}>
               退出
             </button>

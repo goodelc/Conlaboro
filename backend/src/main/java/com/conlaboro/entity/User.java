@@ -1,12 +1,14 @@
 package com.conlaboro.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.conlaboro.config.JsonbTypeHandler;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 @Data
-@TableName("users")
+@TableName(value = "users", autoResultMap = true)
 public class User {
 
     @TableId(type = IdType.AUTO)
@@ -27,8 +29,8 @@ public class User {
     @TableField("joined_at")
     private LocalDate joinedAt;
     private String bio;
-    @TableField("preferences")
-    private String preferences;
+    @TableField(value = "preferences", typeHandler = JsonbTypeHandler.class)
+    private Map<String, Object> preferences;
     @TableField("avatar_url")
     private String avatarUrl;
     private OffsetDateTime createdAt;
