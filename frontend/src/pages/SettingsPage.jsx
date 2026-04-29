@@ -347,7 +347,7 @@ export default function SettingsPage() {
           style={{ resize: 'vertical' }}
           autoFocus
         />
-        <div className={`${styles.charCount} ${selectedSkills.size > 6 ? styles.charCountError : ''}`}>
+        <div className={`${styles.charCount} ${bioVal.length > 200 ? styles.charCountError : ''}`}>
           {bioVal.length}/200
         </div>
       </EditModal>

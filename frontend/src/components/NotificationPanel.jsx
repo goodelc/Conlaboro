@@ -37,7 +37,7 @@ export default function NotificationPanel() {
   }, [notifOpen, isLoggedIn])
 
   const handleClick = useCallback((item) => {
-    if (!item.isRead) {
+    if (!item.isRead && !item.is_read) {
       markAsRead(item.id).catch(() => {})
     }
     if (item.link) {
@@ -46,7 +46,7 @@ export default function NotificationPanel() {
     }
   }, [navigate, toggleNotif])
 
-  const unreadCount = list.filter(n => !n.isRead).length
+  const unreadCount = list.filter(n => !(n.is_read || n.isRead)).length
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function NotificationPanel() {
             list.map((n) => (
               <div
                 key={n.id}
-                className={`${styles.notifItem} ${!n.is_read ? styles.notifItemUnread : ''}`}
+                className={`${styles.notifItem} ${!(n.is_read || n.isRead) ? styles.notifItemUnread : ''}`}
                 onClick={() => handleClick(n)}
               >
                 <div className={styles.niType}>{n.type_icon || '📢'} {n.title}</div>

@@ -40,19 +40,6 @@ export default function DashboardPage() {
   const [userBadges, setUserBadges] = useState([])
   const [activities, setActivities] = useState([])
 
-  if (!isLoggedIn || !currentUser) {
-    return (
-      <div className="page active" id="page-dashboard">
-        <div className={styles.loginPrompt}>
-          <h2>请先登录</h2>
-          <p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>
-            <button className={`${btn.primary} ${styles.loginBtn}`} onClick={() => navigate('/login')}>前往登录</button>
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   useEffect(() => {
     if (isLoggedIn && currentUser?.id) {
       getMyBadges(currentUser.id).then(data => {
@@ -70,6 +57,19 @@ export default function DashboardPage() {
     }
   }, [isLoggedIn, currentUser?.id])
 
+  if (!isLoggedIn || !currentUser) {
+    return (
+      <div className="page active" id="page-dashboard">
+        <div className={styles.loginPrompt}>
+          <h2>请先登录</h2>
+          <p style={{ color: 'var(--warm-gray)', marginTop: '1rem' }}>
+            <button className={`${btn.primary} ${styles.loginBtn}`} onClick={() => navigate('/login')}>前往登录</button>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   const raw = users[currentUser.name] || currentUser
   const u = {
     name: raw.name || '用户', color: raw.color || '#D4213D', role: raw.role || '新社员',
@@ -79,7 +79,10 @@ export default function DashboardPage() {
   }
   const userProjects = (projects || []).filter(item => {
     const p = item.project || item; const roles = item.roles || []
-    return roles.some(role => role.members && role.members.includes(u.name))
+    return roles.some(role => {
+      const members = role.members || []
+      return members.some(m => (typeof m === 'string' ? m : m.name) === u.name)
+    })
   })
   const nextXp = NEXT_LEVEL_XP[u.level] || 1500
   const xpPct = Math.min(100, Math.round((u.xp / nextXp) * 100))
@@ -129,7 +132,10 @@ export default function DashboardPage() {
               <ul className={styles.list}>
                 {userProjects.length > 0 ? userProjects.map(item => {
                   const p = item.project || item; const roles = item.roles || []
-                  const userRole = roles.find(role => role.members && role.members.includes(u.name)); const role = userRole || null
+                  const userRole = roles.find(role => {
+                    const members = role.members || []
+                    return members.some(m => (typeof m === 'string' ? m : m.name) === u.name)
+                  }); const role = userRole || null
                   const rgb = parseInt((u.color || '#D4213d').slice(1), 16)
                   const rVal = (rgb >> 16) & 255, gVal = (rgb >> 8) & 255, bVal = rgb & 255
                   return (

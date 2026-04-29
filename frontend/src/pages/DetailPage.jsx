@@ -31,44 +31,22 @@ export default function DetailPage() {
   const [editingMsId, setEditingMsId] = useState(null)
   const [msEditTitle, setMsEditTitle] = useState('')
 
-  function handleTaskCreated() {
+  function refreshData() {
     getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
     getProjectActivities(id).then(data => {
       const transformedActivities = (data || []).map(activity => ({
-        user: activity.userName,
-        color: activity.userColor,
-        time: activity.createdAt,
-        text: activity.text
+        user: activity.userName || '匿名',
+        color: activity.userColor || '#999',
+        time: activity.createdAt || '',
+        text: activity.text || ''
       }))
       setActivities(transformedActivities)
     }).catch(() => {})
   }
 
-  function handleTaskClaimed() {
-    getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
-    getProjectActivities(id).then(data => {
-      const transformedActivities = (data || []).map(activity => ({
-        user: activity.userName,
-        color: activity.userColor,
-        time: activity.createdAt,
-        text: activity.text
-      }))
-      setActivities(transformedActivities)
-    }).catch(() => {})
-  }
-
-  function handleCommented() {
-    getProjectDetail(id).then(data => setDetail(data)).catch(() => {})
-    getProjectActivities(id).then(data => {
-      const transformedActivities = (data || []).map(activity => ({
-        user: activity.userName,
-        color: activity.userColor,
-        time: activity.createdAt,
-        text: activity.text
-      }))
-      setActivities(transformedActivities)
-    }).catch(() => {})
-  }
+  const handleTaskCreated = refreshData
+  const handleTaskClaimed = refreshData
+  const handleCommented = refreshData
 
   async function handleFavoriteToggle() {
     if (!isLoggedIn) { showToast('请先登录后再操作', 'warning'); return }
@@ -95,10 +73,10 @@ export default function DetailPage() {
     ]).then(([detailRes, activitiesRes]) => {
       setDetail(detailRes)
       const transformedActivities = (activitiesRes || []).map(activity => ({
-        user: activity.userName,
-        color: activity.userColor,
-        time: activity.createdAt,
-        text: activity.text
+        user: activity.userName || '匿名',
+        color: activity.userColor || '#999',
+        time: activity.createdAt || '',
+        text: activity.text || ''
       }))
       setActivities(transformedActivities)
       setLoading(false)

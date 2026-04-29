@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { getAllUsers, getAllProjects, getAllBadges, getLeaderboard } from '../api'
 
 const DataContext = createContext(null)
@@ -33,18 +33,20 @@ export function DataProvider({ children }) {
   useEffect(() => { fetchData() }, [fetchData])
 
   // 转换 users 数组为 name-keyed 对象（兼容旧代码用 users[name] 访问）
-  const userMap = {}
-  users.forEach(u => {
-    // 转换字段名称以兼容前端代码
-    const userData = {
-      ...u,
-      joined: u.joinedAt, // 转换 joinedAt 为 joined
-      badges: u.badgeCount, // 转换 badgeCount 为 badges
-      projects: u.projectCount, // 转换 projectCount 为 projects
-      earnedBadges: u.earnedBadgeIds // 转换 earnedBadgeIds 为 earnedBadges
-    }
-    userMap[u.name] = userData
-  })
+  const userMap = useMemo(() => {
+    const map = {}
+    users.forEach(u => {
+      const userData = {
+        ...u,
+        joined: u.joinedAt,
+        badges: u.badgeCount,
+        projects: u.projectCount,
+        earnedBadges: u.earnedBadgeIds
+      }
+      map[u.name] = userData
+    })
+    return map
+  }, [users])
 
   const value = { badges, projects, users: userMap, userList: users, leaderboard, dataLoading, refetch: fetchData }
 

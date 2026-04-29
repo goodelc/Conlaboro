@@ -32,7 +32,7 @@ export default function RecruitingProjectsPage() {
     })
   }
 
-  if (sortBy === 'latest') filtered.sort((a, b) => new Date((a.project || a).createdAt || 0) - new Date((b.project || b).createdAt || 0) * -1)
+  if (sortBy === 'latest') filtered.sort((a, b) => new Date((b.project || b).createdAt || 0) - new Date((a.project || a).createdAt || 0))
   else if (sortBy === 'roles') filtered.sort((a, b) => (b.roles || []).filter(r => r.status === 'open').length - (a.roles || []).filter(r => r.status === 'open').length)
 
   return (

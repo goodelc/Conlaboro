@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useApp } from '../context/AppContext'
@@ -8,11 +9,17 @@ export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const { notifCount, toggleNotif, isLoggedIn, currentUser, logout, fetchUnreadCount } = useApp()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   // 登录后自动拉取未读通知数
   useEffect(() => {
     if (isLoggedIn) fetchUnreadCount()
-  }, [isLoggedIn])
+  }, [isLoggedIn, fetchUnreadCount])
+
+  // 路由变化时关闭移动菜单
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
 
   // 登录/注册页隐藏导航栏（必须在所有hooks之后）
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -25,7 +32,7 @@ export default function Navbar() {
           <span className={styles.star}></span>
           共创公社
         </div>
-        <ul className={styles.links}>
+        <ul className={`${styles.links} ${menuOpen ? styles.linksOpen : ''}`}>
           <li><Link to="/home" className={styles.link}>首页</Link></li>
           <li><span className={styles.link} onClick={() => { navigate('/home'); setTimeout(() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }), 100) }}>探索项目</span></li>
           <li><Link to="/leaderboard" className={styles.link}>排行榜</Link></li>
@@ -33,7 +40,12 @@ export default function Navbar() {
           <li><Link to="/dashboard" className={styles.link}>我的公社</Link></li>
         </ul>
       </div>
-      <div className={styles.right}>
+      <button className={styles.hamburger} onClick={() => setMenuOpen(v => !v)} aria-label="菜单">
+        <span className={`${styles.hamburgerLine} ${menuOpen ? styles.hamburgerOpen : ''}`}></span>
+        <span className={`${styles.hamburgerLine} ${menuOpen ? styles.hamburgerOpen : ''}`}></span>
+        <span className={`${styles.hamburgerLine} ${menuOpen ? styles.hamburgerOpen : ''}`}></span>
+      </button>
+      <div className={`${styles.right} ${menuOpen ? styles.rightOpen : ''}`}>
         {isLoggedIn && (
           <div className={styles.iconBtn} onClick={toggleNotif} title="通知">
             🔔

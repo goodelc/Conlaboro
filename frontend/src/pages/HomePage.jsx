@@ -28,12 +28,19 @@ export default function HomePage() {
   // 快速导航按钮状态
   const [showNavButtons, setShowNavButtons] = useState(false)
   
-  // 监听滚动事件
+  // 监听滚动事件（节流）
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      setShowNavButtons(window.scrollY > 300)
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(() => {
+          setShowNavButtons(window.scrollY > 300)
+          ticking = false
+        })
+      }
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
   

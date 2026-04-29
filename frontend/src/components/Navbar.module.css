@@ -127,6 +127,29 @@
   box-shadow: 0 4px 12px rgba(212, 33, 61, 0.3);
 }
 
+/* 汉堡菜单按钮 */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px; height: 36px;
+  background: none; border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  gap: 5px; padding: 6px;
+  transition: all 0.3s;
+}
+.hamburger:hover { border-color: var(--red); }
+
+.hamburgerLine {
+  display: block; width: 18px; height: 2px;
+  background: var(--ink); border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburgerOpen:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburgerOpen:nth-child(2) { opacity: 0; }
+.hamburgerOpen:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
 /* 响应式 */
 @media (max-width: 1024px) {
   .nav { padding: 1rem 1.5rem; }

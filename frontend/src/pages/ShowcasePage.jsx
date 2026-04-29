@@ -7,9 +7,11 @@ export default function ShowcasePage() {
   const navigate = useNavigate()
   const { projects } = useData()
 
-  const doneProjects = projects.filter(p => p.status === 'done')
-  const featured = doneProjects[0]
-  const rest = doneProjects.slice(1)
+  const getProject = (item) => item.project || item
+
+  const doneProjects = projects.filter(p => getProject(p).status === 'done')
+  const featured = doneProjects[0] ? getProject(doneProjects[0]) : null
+  const rest = doneProjects.slice(1).map(getProject)
 
   return (
     <div className="page active" id="page-showcase">
@@ -22,8 +24,8 @@ export default function ShowcasePage() {
               <h2>{featured.title}</h2>
               <p className={styles.featuredDesc}>{featured.desc}</p>
               <div className={styles.metaRow}>
-                <span>👤 发起人：<strong>{featured.author}</strong></span>
-                <span>👥 团队：<strong>{featured.contributors ? featured.contributors.length : featured.roles.reduce((a,r)=>a+r.members.length,0)} 人</strong></span>
+                <span>👤 发起人：<strong>{featured.author || featured.authorName}</strong></span>
+                <span>👥 团队：<strong>{featured.contributors ? featured.contributors.length : (featured.roles || []).reduce((a,r)=>a+(r.members||[]).length,0)} 人</strong></span>
                 <span>⏱ 总用时：<strong>{featured.totalHours || 0} 小时</strong></span>
                 <span>📅 上线：<strong>{featured.completedAt || ''}</strong></span>
               </div>
@@ -37,9 +39,9 @@ export default function ShowcasePage() {
                 <div key={p.id} className={styles.card} onClick={() => navigate(`/detail/${p.id}`)}>
                   <span className={styles.badge}>✅ 已完成</span>
                   <h3>{p.title}</h3>
-                  <p className={styles.cardDesc}>{p.desc.substring(0, 80)}…</p>
+                  <p className={styles.cardDesc}>{(p.desc || '').substring(0, 80)}…</p>
                   <div className={styles.stats}>
-                    <span>发起人：<strong>{p.author}</strong></span>
+                    <span>发起人：<strong>{p.author || p.authorName}</strong></span>
                     <span>用时：<strong>{p.totalHours || '?'}h</strong></span>
                     <span>提交：<strong>{p.totalCommits || '?'}次</strong></span>
                   </div>

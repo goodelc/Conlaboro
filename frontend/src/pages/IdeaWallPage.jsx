@@ -46,14 +46,21 @@ export default function IdeaWallPage() {
   // 初始加载
   useEffect(() => { fetchIdeas(0, searchKeyword, sortBy) }, [])
 
-  // 滚动加载更多
+  // 滚动加载更多（节流）
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 200) {
-        if (!loadingRef.current && hasMore && !loading) setPage(prev => prev + 1)
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(() => {
+          if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 200) {
+            if (!loadingRef.current && hasMore && !loading) setPage(prev => prev + 1)
+          }
+          ticking = false
+        })
       }
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [hasMore, loading])
 
