@@ -2,7 +2,8 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import IdeaCard from '../components/idea-wall/IdeaCard'
-import { getIdeas, createIdea, likeIdea, unlikeIdea } from '../api/idea'
+import HatchPathSelector from '../components/idea-wall/HatchPathSelector'
+import { getIdeas, createIdea, likeIdea, unlikeIdea, expressInterest, cancelInterest, getInterestedUsers } from '../api/idea'
 import styles from './IdeaWallPage.module.css'
 
 export default function IdeaWallPage() {
@@ -20,11 +21,16 @@ export default function IdeaWallPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const [likedIds, setLikedIds] = useState(new Set())
+  const [interestedIds, setInterestedIds] = useState(new Set())
+  const [interestedUsersMap, setInterestedUsersMap] = useState({})
   const [searchKeyword, setSearchKeyword] = useState('')
   const [sortBy, setSortBy] = useState('latest')
   const loadingRef = useRef(false)
 
-  // 搜索/排序变化后重新加载（显式传参，避免闭包循环依赖）
+  // 孵化路径选择弹窗
+  const [hatchModal, setHatchModal] = useState(null)
+
+  // 搜索/排序变化后重新加载
   const fetchIdeas = useCallback(async (pageNum, keyword, sort) => {
     if (loadingRef.current) return
     loadingRef.current = true
@@ -39,14 +45,13 @@ export default function IdeaWallPage() {
       showToast('获取想法列表失败', 'error')
     } finally {
       setLoading(false)
-      loadingRef.current = false
-    }
+      loadingRef.current = false }
   }, [showToast])
 
   // 初始加载
   useEffect(() => { fetchIdeas(0, searchKeyword, sortBy) }, [])
 
-  // 滚动加载更多（节流）
+  // 滚动加载更多
   useEffect(() => {
     let ticking = false
     const handleScroll = () => {
@@ -64,31 +69,18 @@ export default function IdeaWallPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [hasMore, loading])
 
-  // page 变化时加载下一页（使用最新 keyword/sortBy）
   useEffect(() => { if (page > 0) fetchIdeas(page, searchKeyword, sortBy) }, [page])
 
-  // 搜索处理：回车触发
   const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      doSearch()
-    }
+    if (e.key === 'Enter') { e.preventDefault(); doSearch() }
   }
 
-  // 排序变化处理
   const handleSortChange = (e) => {
-    const val = e.target.value
-    setSortBy(val)
-    setPage(0)
-    setHasMore(true)
-    fetchIdeas(0, searchKeyword, val)
+    const val = e.target.value; setSortBy(val); setPage(0); setHasMore(true); fetchIdeas(0, searchKeyword, val)
   }
 
-  // 统一执行搜索/刷新
   const doSearch = useCallback(() => {
-    setPage(0)
-    setHasMore(true)
-    fetchIdeas(0, searchKeyword, sortBy)
+    setPage(0); setHasMore(true); fetchIdeas(0, searchKeyword, sortBy)
   }, [searchKeyword, sortBy, fetchIdeas])
 
   const handleSubmit = async (e) => {
@@ -96,27 +88,17 @@ export default function IdeaWallPage() {
     if (!content.trim()) { showToast('请输入想法内容', 'warning'); return }
     setSubmitting(true)
     try {
-      await createIdea({
-        content: content.trim(),
-        authorName: isLoggedIn ? (currentUser?.name || '匿名用户') : '匿名用户'
-      })
-      setContent('')
-      setShowCreateModal(false)
-      setPage(0); setHasMore(true)
-      fetchIdeas(0, searchKeyword, sortBy)
-      showToast('发布成功！', 'success')
-    } catch (err) {
-      showToast('发布失败，请重试', 'error')
-    } finally { setSubmitting(false) }
+      await createIdea({ content: content.trim(), authorName: isLoggedIn ? (currentUser?.name || '匿名用户') : '匿名用户' })
+      setContent(''); setShowCreateModal(false); setPage(0); setHasMore(true); fetchIdeas(0, searchKeyword, sortBy); showToast('发布成功！', 'success')
+    } catch (err) { showToast('发布失败，请重试', 'error') }
+    finally { setSubmitting(false) }
   }
 
   const handleLike = async (id) => {
     if (!isLoggedIn) { showToast('请先登录后再操作', 'warning'); return }
     try {
       await likeIdea(id)
-      setIdeas(prev => prev.map(idea =>
-        idea.id === id ? { ...idea, likeCount: (idea.likeCount || 0) + 1 } : idea
-      ))
+      setIdeas(prev => prev.map(idea => idea.id === id ? { ...idea, likeCount: (idea.likeCount || 0) + 1 } : idea))
       setLikedIds(prev => new Set([...prev, id]))
     } catch (err) { showToast(err.response?.data?.message || '点赞失败', 'error') }
   }
@@ -125,40 +107,56 @@ export default function IdeaWallPage() {
     if (!isLoggedIn) return
     try {
       await unlikeIdea(id)
-      setIdeas(prev => prev.map(idea =>
-        idea.id === id ? { ...idea, likeCount: Math.max((idea.likeCount || 0) - 1, 0) } : idea
-      ))
+      setIdeas(prev => prev.map(idea => idea.id === id ? { ...idea, likeCount: Math.max((idea.likeCount || 0) - 1, 0) } : idea))
       setLikedIds(prev => { const next = new Set(prev); next.delete(id); return next })
     } catch (err) { showToast('取消点赞失败', 'error') }
   }
 
-  const handleConvertToProject = (idea) => {
-    navigate('/create', { state: { ideaContent: idea.content } })
+  // 孵化按钮点击 → 打开路径选择弹窗
+  const handleHatchClick = (idea) => {
+    setHatchModal({ ideaId: idea.id, ideaContent: idea.content })
+  }
+
+  // 路径选择后→跳转 /create
+  const handlePathSelect = ({ mode, ideaContent }) => {
+    setHatchModal(null)
+    navigate('/create', {
+      state: { ideaContent, ideaId: hatchModal.ideaId, mode }
+    })
+  }
+
+  // 参与意愿切换
+  const handleExpressInterest = async (ideaId, isInterested) => {
+    // 乐观更新状态
+    if (isInterested) {
+      setInterestedIds(prev => new Set([...prev, ideaId]))
+      setIdeas(prev => prev.map(idea =>
+        idea.id === ideaId ? { ...idea, interestCount: (idea.interestCount || 0) + 1 } : idea
+      ))
+      // 加载头像
+      try {
+        const res = await getInterestedUsers(ideaId, 5)
+        setInterestedUsersMap(prev => ({ ...prev, [ideaId]: res.data || [] }))
+      } catch (_) { /* ignore */ }
+    } else {
+      setInterestedIds(prev => { const next = new Set(prev); next.delete(ideaId); return next })
+      setIdeas(prev => prev.map(idea =>
+        idea.id === ideaId ? { ...idea, interestCount: Math.max((idea.interestCount || 0) - 1, 0) } : idea
+      ))
+    }
   }
 
   return (
     <div className="page active">
-      {/* Hero 区域 */}
+      {/* Hero */}
       <section className={styles.hero}>
-        <div className="hero-badge"><span className="dot"></span>想法 · 分享 · 交流</div>
+        <div className="hero-badge"><span className="dot"></span>想法 · 分享 ·交流</div>
         <h1>想法墙</h1>
         <p className="hero-sub">分享你的想法，发现有趣的灵魂</p>
 
-        {/* 搜索 & 排序 */}
         <div className={styles.toolbar}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="🔍 搜索想法..."
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
-          />
-          <select
-            className={styles.sortSelect}
-            value={sortBy}
-            onChange={handleSortChange}
-          >
+          <input type="text" className={styles.searchInput} placeholder="🔍 搜索想法..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} onKeyDown={handleSearchKeyDown} />
+          <select className={styles.sortSelect} value={sortBy} onChange={handleSortChange}>
             <option value="latest">最新发布</option>
             <option value="mostLikes">最多点赞</option>
             <option value="mostComments">最多评论</option>
@@ -166,7 +164,7 @@ export default function IdeaWallPage() {
         </div>
       </section>
 
-      {/* 想法列表 */}
+      {/* Ideas List */}
       <section className={styles.ideasSection}>
         <div className={styles.ideasList}>
           {ideas.map(idea => (
@@ -176,8 +174,11 @@ export default function IdeaWallPage() {
               onLike={handleLike}
               onUnlike={handleUnlike}
               liked={likedIds.has(idea.id)}
-              onConvertToProject={() => handleConvertToProject(idea)}
+              onConvertToProject={() => handleHatchClick(idea)}
               isLoggedIn={isLoggedIn}
+              onExpressInterest={handleExpressInterest}
+              interested={interestedIds.has(idea.id)}
+              interestedUsers={interestedUsersMap[idea.id]}
             />
           ))}
         </div>
@@ -194,12 +195,12 @@ export default function IdeaWallPage() {
 
       <footer><p>共创公社 · Where Ideas Find Their Team · <a href="#">GitHub</a> · <a href="#">Twitter</a> · <a href="#">Discord</a></p></footer>
 
-      {/* 悬浮发布按钮 */}
+      {/* FAB */}
       <button className={styles.fab} onClick={() => setShowCreateModal(true)} title="发布新想法">
         ✏️
       </button>
 
-      {/* 发布弹窗 */}
+      {/* Create Modal */}
       {showCreateModal && (
         <div className={styles.modalOverlay} onClick={() => setShowCreateModal(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -208,14 +209,7 @@ export default function IdeaWallPage() {
               <button className={styles.closeBtn} onClick={() => setShowCreateModal(false)}>✕</button>
             </div>
             <form onSubmit={handleSubmit}>
-              <textarea
-                className={styles.modalTextarea}
-                placeholder="写下你的想法..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={5}
-                autoFocus
-              />
+              <textarea className={styles.modalTextarea} placeholder="写下你的想法..." value={content} onChange={(e) => setContent(e.target.value)} rows={5} autoFocus />
               <div className={styles.modalActions}>
                 <button type="button" className="btn-secondary" onClick={() => setShowCreateModal(false)}>取消</button>
                 <button type="submit" className="btn-primary" disabled={submitting || !content.trim()}>
@@ -225,6 +219,15 @@ export default function IdeaWallPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Hatch Path Selector Modal */}
+      {hatchModal && (
+        <HatchPathSelector
+          ideaContent={hatchModal.ideaContent}
+          onSelect={handlePathSelect}
+          onClose={() => setHatchModal(null)}
+        />
       )}
     </div>
   )

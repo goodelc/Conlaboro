@@ -33,6 +33,7 @@ public class ProjectService {
     private final UserMapper userMapper;
     private final BadgeAutoService badgeAutoService;
     private final UserService userService;
+    private final IdeaService ideaService;
 
     /** 创建项目（含角色和里程碑），事务操作 */
     @Transactional
@@ -83,7 +84,18 @@ public class ProjectService {
         }
 
         // 返回完整详情
-        return getProjectDetail(project.getId());
+        Map<String, Object> detail = getProjectDetail(project.getId());
+
+        // 回写孵化关联：如果是从想法孵化的，记录project_id到ideas表
+        if (req.getSourceIdeaId() != null) {
+            try {
+                ideaService.updateProjectId(req.getSourceIdeaId(), project.getId());
+            } catch (Exception e) {
+                log.warn("回写想法关联项目ID失败（不影响创建结果）: {}", e.getMessage());
+            }
+        }
+
+        return detail;
     }
 
     public Map<String, Object> getProjectDetail(Long id) {

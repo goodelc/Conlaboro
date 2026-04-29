@@ -18,6 +18,8 @@ services:
       - conlaboro-network
     depends_on:
       - postgres
+    env_file:
+      - backend/.env
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/conlaboro
       - SPRING_DATASOURCE_USERNAME=postgres

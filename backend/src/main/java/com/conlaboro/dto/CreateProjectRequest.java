@@ -12,6 +12,7 @@ public class CreateProjectRequest {
     private Integer duration;        // 预计周期（天）
     private List<RoleConfig> roles;
     private List<MilestoneConfig> milestones;
+    private Long sourceIdeaId;       // 来源想法ID（孵化场景）
 
     @Data
     public static class RoleConfig {

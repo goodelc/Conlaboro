@@ -23,4 +23,8 @@ public class Idea {
     private OffsetDateTime createdAt;
     @TableField("updated_at")
     private OffsetDateTime updatedAt;
+    @TableField("project_id")
+    private Long projectId;
+    @TableField("interest_count")
+    private Integer interestCount;
 }

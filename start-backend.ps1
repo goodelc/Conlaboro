@@ -12,6 +12,21 @@ if (-not (Test-Path $BackendPath)) {
 Write-Host "正在启动后端 Spring Boot 应用..." -ForegroundColor Cyan
 Set-Location $BackendPath
 
+# 加载 .env 环境变量
+$EnvFile = Join-Path $BackendPath ".env"
+if (Test-Path $EnvFile) {
+    Get-Content $EnvFile | ForEach-Object {
+        if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
+            $key = $matches[1].Trim()
+            $val = $matches[2].Trim()
+            [System.Environment]::SetEnvironmentVariable($key, $val)
+        }
+    }
+    Write-Host "已加载环境变量: $EnvFile" -ForegroundColor DarkGray
+} else {
+    Write-Host "警告: 未找到 $EnvFile，请从 .env.example 复制并配置" -ForegroundColor Yellow
+}
+
 if (-not (Test-Path "pom.xml")) {
     Write-Host "错误: 找不到 pom.xml 文件" -ForegroundColor Red
     exit 1

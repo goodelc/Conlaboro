@@ -1,87 +1,260 @@
 /* ============================================================
-   IdeaCard.module.css — 想法墙卡片
+   IdeaCard.module.css \u2014 \u60f3\u6cd5\u589e\u5361\u91cd\u8bbe\u8ba1
+   Design: Warm Minimalism + Micro-interactions
    ============================================================ */
 
 .card {
   background: white;
   border: 1px solid var(--border);
-  padding: 2rem;
-  transition: all 0.4s ease;
+  padding: 1.75rem;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D4213D, #D4A843, #2DAA5E);
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
 .card:hover {
-  border-color: var(--red);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  border-color: rgba(212, 33, 61, 0.3);
+  transform: translateY(-5px);
+  box-shadow:
+    0 14px 40px rgba(212, 33, 61, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
+.card:hover::before {
+  opacity: 1;
+}
+
+/* ---- Content ---- */
 .content {
-  font-size: 0.85rem;
-  color: var(--ink-light);
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  font-size: 0.92rem;
+  color: var(--ink-light, #555);
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+/* ---- Interest Bar (\u53c2\u4e0e\u610f\u613f\u5c55\u793a\u533a) ---- */
+.interestBar {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.15rem;
+  background: linear-gradient(135deg, #FAF7F0, #FFF8EB);
+  border-radius: 10px;
+  border: 1px solid rgba(212, 168, 67, 0.18);
+  animation: fadeSlideIn 0.3s ease-out both;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.avatarStack {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 28px;
+  min-width: 70px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  position: absolute;
+  overflow: hidden;
+  cursor: default;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, z-index 0s;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar:hover {
+  z-index: 10 !important;
+  transform: scale(1.18) !important;
+}
+
+.moreBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--warm-gray, #8B8578);
+  color: white;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  border: 2px solid white;
+  left: 88px;
+}
+
+.interestText {
+  font-size: 0.78rem;
+  color: #8B8578;
+  margin-left: auto;
+  letter-spacing: 0.02em;
+}
+
+.interestText strong {
+  color: #D4A843;
+  font-weight: 700;
+}
+
+/* ---- Footer ---- */
 .footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-.meta { display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; color: var(--warm-gray); }
-.author { font-weight: 700; color: var(--ink); }
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.74rem;
+  color: var(--warm-gray, #8B8578);
+}
 
-.actions { display: flex; gap: 1rem; }
+.author {
+  font-weight: 700;
+  color: var(--ink, #1A1A1A);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
 
 .actionBtn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.8rem;
+  gap: 0.35rem;
+  padding: 0.38rem 0.72rem;
   border: 1px solid var(--border);
   background: white;
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s ease;
   font-family: 'Noto Sans SC', sans-serif;
+  border-radius: 8px;
 }
 
 .actionBtn:hover,
 .actionBtn.liked {
-  border-color: var(--red);
-  color: var(--red);
+  border-color: var(--red, #D4213D);
+  color: var(--red, #D4213D);
 }
-.actionBtn.liked { background: var(--red); color: white; border-color: var(--red); }
 
+.actionBtn.liked {
+  background: rgba(212, 33, 61, 0.06);
+}
+
+/* \u6211\u60f3\u53c2\u4e0e\u6309\u94ae - \u7eff\u8272\u4e3b\u8c03 */
+.interestBtn {
+  border-color: rgba(45, 170, 94, 0.25);
+  color: #2DAA5E;
+}
+
+.interestBtn:hover {
+  background: rgba(45, 170, 94, 0.06);
+  border-color: #2DAA5E;
+}
+
+.interestedActive {
+  background: linear-gradient(135deg, #2DAA5E, #23944F) !important;
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: 0 2px 8px rgba(45, 170, 94, 0.25);
+}
+
+.commentBtn:hover {
+  border-color: var(--gold, #D4A843);
+  color: var(--gold, #D4A843);
+}
+
+/* ---- Hatch Button ---- */
 .convertBtn {
   margin-top: 1.25rem;
   width: 100%;
-  padding: 0.7rem 1rem;
-  background: linear-gradient(135deg, var(--gold), #e8b830);
+  padding: 0.78rem 1.2rem;
+  background: linear-gradient(135deg, #D4A843, #E89B2C, #D4852A);
   color: white;
   border: none;
   font-family: 'Noto Sans SC', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  letter-spacing: 0.06em;
-  box-shadow: 0 2px 12px rgba(212, 168, 67, 0.25);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.08em;
+  border-radius: 11px;
+  box-shadow: 0 3px 14px rgba(212, 168, 67, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hatchIcon {
+  font-size: 1.1rem;
+  animation: gentlePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 
 .convertBtn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 24px rgba(212, 168, 67, 0.4);
-  filter: brightness(1.05);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 28px rgba(212, 168, 67, 0.42);
+  filter: brightness(1.07);
+  background: linear-gradient(135deg, #E0B03E, #D4A843, #CC9528);
 }
 
-@media (max-width: 480px) {
-  .card { padding: 1.5rem; }
-  .footer { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+.convertBtn:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 520px) {
+  .card { padding: 1.35rem; }
+  .footer { flex-direction: column; gap: 0.85rem; align-items: flex-start; }
+  .actions { width: 100%; justify-content: flex-start; }
+  .actionBtn { flex: 1; justify-content: center; padding: 0.45rem 0.5rem; }
 }

@@ -1,0 +1,246 @@
+/* ============================================================
+   HatchPathSelector.module.css \u2014 \u8def\u5f84\u9009\u62e9\u5f39\u7a97
+   Design: Warm Minimalism + Dual-card selection
+   ============================================================ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+  animation: overlayIn 0.25s ease-out both;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem 2.2rem;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+  animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Header ---- */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--ink, #1A1A1A);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #8B8578;
+  margin: 0;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1.3rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1.15rem;
+  cursor: pointer;
+  color: #8B8578;
+  padding: 0.35rem;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink, #1A1A1A);
+}
+
+/* ---- Path Cards Container ---- */
+.paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ---- Path Card Base ---- */
+.pathCard {
+  background: white;
+  border: 2px solid var(--border, #E5E0DA);
+  border-radius: 14px;
+  padding: 1.65rem 1.4rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: 'Noto Sans SC', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.pathCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.pathCard:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.1);
+}
+
+.pathCard:hover::after {
+  opacity: 1;
+}
+
+.pathCard:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* ---- AI Card ---- */
+.aiCard {
+  background: linear-gradient(145deg, #1A1A2E, #16213E);
+  border-color: transparent;
+  color: white;
+}
+
+.aiCard h3,
+.aiCard .pathDesc,
+.aiCard .pathFeatures,
+.aiCard .pathCta {
+  color: white;
+}
+
+.aiCard .pathFeatures li::marker {
+  color: #D4A843;
+}
+
+.aiCard:hover {
+  box-shadow:
+    0 10px 36px rgba(22, 33, 62, 0.4),
+    0 0 0 2px rgba(212, 168, 67, 0.4);
+  border-color: rgba(212, 168, 67, 0.4);
+}
+
+/* ---- Manual Card ---- */
+.manualCard {
+  background: linear-gradient(145deg, #FAF7F0, #FFF9F2);
+  border-color: rgba(212, 168, 67, 0.2);
+}
+
+.manualCard:hover {
+  border-color: #D4A843;
+  box-shadow:
+    0 10px 32px rgba(212, 168, 67, 0.12),
+    0 0 0 2px rgba(212, 33, 61, 0.08);
+}
+
+.manualCard:hover::after {
+  background: radial-gradient(circle at top right, rgba(212, 168, 67, 0.05), transparent 70%);
+}
+
+/* ---- Shared Card Inner ---- */
+.pathIcon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.pathCard h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.pathDesc {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  margin-bottom: 0.9rem;
+  color: #666;
+  opacity: 0.88;
+}
+
+.pathFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.1rem 0;
+  font-size: 0.76rem;
+  line-height: 1.8;
+}
+
+.pathFeatures li {
+  padding-left: 1rem;
+  position: relative;
+  opacity: 0.9;
+}
+
+.pathFeatures li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.58em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.pathCta {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: transform 0.2s ease;
+}
+
+.pathCard:hover .pathCta {
+  transform: translateX(4px);
+}
+
+/* ---- Footer Hint ---- */
+.hint {
+  text-align: center;
+  font-size: 0.74rem;
+  color: #B0AAA2;
+  margin-top: 1.4rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 520px) {
+  .modal { padding: 1.8rem 1.4rem; }
+  .paths { grid-template-columns: 1fr; }
+  .header h2 { font-size: 1.25rem; }
+}

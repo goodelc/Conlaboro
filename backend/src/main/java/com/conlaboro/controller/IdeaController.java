@@ -77,4 +77,36 @@ public class IdeaController {
         String content = body.get("content");
         return Result.ok(ideaService.createComment(id, userId, content));
     }
+
+    // ========== 参与意愿相关端点 ==========
+
+    @PostMapping("/{id}/interest")
+    public Result<Void> expressInterest(
+            @PathVariable Long id,
+            @RequestAttribute("userId") Long userId) {
+        ideaService.expressInterest(id, userId);
+        return Result.ok();
+    }
+
+    @DeleteMapping("/{id}/interest")
+    public Result<Void> cancelInterest(
+            @PathVariable Long id,
+            @RequestAttribute("userId") Long userId) {
+        ideaService.cancelInterest(id, userId);
+        return Result.ok();
+    }
+
+    @GetMapping("/{id}/interested-users")
+    public Result<List<Map<String, Object>>> getInterestedUsers(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "10") int limit) {
+        return Result.ok(ideaService.getInterestedUsers(id, limit));
+    }
+
+    @GetMapping("/{id}/interested")
+    public Result<Boolean> hasExpressedInterest(
+            @PathVariable Long id,
+            @RequestAttribute("userId") Long userId) {
+        return Result.ok(ideaService.hasExpressedInterest(id, userId));
+    }
 }

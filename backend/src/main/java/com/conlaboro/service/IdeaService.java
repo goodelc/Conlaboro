@@ -8,9 +8,11 @@ import com.conlaboro.entity.IdeaLike;
 import com.conlaboro.entity.IdeaComment;
 import com.conlaboro.entity.User;
 import com.conlaboro.exception.BizException;
+import com.conlaboro.entity.IdeaInterest;
 import com.conlaboro.mapper.IdeaLikeMapper;
 import com.conlaboro.mapper.IdeaMapper;
 import com.conlaboro.mapper.IdeaCommentMapper;
+import com.conlaboro.mapper.IdeaInterestMapper;
 import com.conlaboro.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -28,6 +31,7 @@ public class IdeaService {
     private final IdeaMapper ideaMapper;
     private final IdeaLikeMapper ideaLikeMapper;
     private final IdeaCommentMapper ideaCommentMapper;
+    private final IdeaInterestMapper ideaInterestMapper;
     private final UserMapper userMapper;
 
     public Page<Idea> getIdeasPage(int page, int size, String keyword, String sortBy) {
@@ -172,5 +176,98 @@ public class IdeaService {
         idea.setUpdatedAt(OffsetDateTime.now());
         ideaMapper.updateById(idea);
         return comment;
+    }
+
+    // ========== 参与意愿相关方法 ==========
+
+    @Transactional
+    public void expressInterest(Long ideaId, Long userId) {
+        Idea idea = ideaMapper.selectById(ideaId);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        long existing = ideaInterestMapper.selectCount(
+                new LambdaQueryWrapper<IdeaInterest>()
+                        .eq(IdeaInterest::getIdeaId, ideaId)
+                        .eq(IdeaInterest::getUserId, userId));
+        if (existing > 0) {
+            throw new BizException(ErrorCode.CONFLICT);
+        }
+        IdeaInterest interest = new IdeaInterest();
+        interest.setIdeaId(ideaId);
+        interest.setUserId(userId);
+        interest.setCreatedAt(OffsetDateTime.now());
+        ideaInterestMapper.insert(interest);
+        idea.setInterestCount((idea.getInterestCount() != null ? idea.getInterestCount() : 0) + 1);
+        idea.setUpdatedAt(OffsetDateTime.now());
+        ideaMapper.updateById(idea);
+    }
+
+    @Transactional
+    public void cancelInterest(Long ideaId, Long userId) {
+        Idea idea = ideaMapper.selectById(ideaId);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        LambdaQueryWrapper<IdeaInterest> wrapper = new LambdaQueryWrapper<IdeaInterest>()
+                .eq(IdeaInterest::getIdeaId, ideaId)
+                .eq(IdeaInterest::getUserId, userId);
+        IdeaInterest interest = ideaInterestMapper.selectOne(wrapper);
+        if (interest == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        ideaInterestMapper.deleteById(interest.getId());
+        idea.setInterestCount(Math.max(0, (idea.getInterestCount() != null ? idea.getInterestCount() : 0) - 1));
+        idea.setUpdatedAt(OffsetDateTime.now());
+        ideaMapper.updateById(idea);
+    }
+
+    public boolean hasExpressedInterest(Long ideaId, Long userId) {
+        Idea idea = ideaMapper.selectById(ideaId);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        return ideaInterestMapper.selectCount(
+                new LambdaQueryWrapper<IdeaInterest>()
+                        .eq(IdeaInterest::getIdeaId, ideaId)
+                        .eq(IdeaInterest::getUserId, userId)) > 0;
+    }
+
+    public List<Map<String, Object>> getInterestedUsers(Long ideaId, int limit) {
+        Idea idea = ideaMapper.selectById(ideaId);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        List<IdeaInterest> interests = ideaInterestMapper.selectList(
+                new LambdaQueryWrapper<IdeaInterest>()
+                        .eq(IdeaInterest::getIdeaId, ideaId)
+                        .orderByDesc(IdeaInterest::getCreatedAt)
+                        .last("LIMIT " + limit));
+        
+        return interests.stream().map(interest -> {
+            Map<String, Object> item = new java.util.HashMap<>();
+            User user = userMapper.selectById(interest.getUserId());
+            if (user != null) {
+                item.put("userId", user.getId());
+                item.put("name", user.getName());
+                item.put("avatarUrl", user.getAvatarUrl());
+                item.put("color", user.getColor());
+            } else {
+                item.put("name", "\u533f\u540d\u7528\u6237");
+            }
+            return item;
+        }).toList();
+    }
+
+    /** 回写孵化出的项目ID */
+    @Transactional
+    public void updateProjectId(Long ideaId, Long projectId) {
+        Idea idea = ideaMapper.selectById(ideaId);
+        if (idea == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+        idea.setProjectId(projectId);
+        idea.setUpdatedAt(OffsetDateTime.now());
+        ideaMapper.updateById(idea);
     }
 }

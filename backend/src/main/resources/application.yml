@@ -40,6 +40,13 @@ jwt:
   header: Authorization
   prefix: "Bearer "
 
+# AI Configuration (腾讯MaaS DeepSeek-v4-pro)
+ai:
+  api-key: ${AI_API_KEY}
+  endpoint: https://tokenhub.tencentmaas.com/v1/chat/completions
+  model: deepseek-v4-pro
+  timeout: 30s
+
 # App Custom Config
 app:
   cors:
