@@ -15,6 +15,11 @@ public class AiAnalyzeResponse {
     private Integer feasibilityScore; // 可行性评分 1-5
     private String techStack;         // 技术栈建议（JSON字符串数组）
     private String targetUsers;       // 目标用户画像描述
+    private String coreFeatures;      // 核心功能列表（JSON字符串数组）
+    private String competitiveAdvantage; // 竞争优势（JSON字符串数组）
+    private String monetization;      // 商业模式建议（JSON字符串数组）
+    private String riskMitigation;    // 风险应对策略（JSON字符串数组）
+    private String userScenario;      // 典型使用场景描述
     private boolean fallback;  // 是否使用了降级方案
 
     @Data
@@ -28,5 +33,7 @@ public class AiAnalyzeResponse {
     @Data
     public static class MilestoneItem {
         private String title;
+        private String description; // 阶段描述
+        private String deliverable;  // 交付物
     }
 }

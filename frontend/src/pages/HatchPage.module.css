@@ -333,6 +333,14 @@
   border-radius: 20px;
 }
 
+.reportMeta {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  background: var(--cream);
+  padding: 0.25rem 0.7rem;
+  border-radius: 12px;
+}
+
 /* 可行性评分 */
 .scoreBar {
   padding: 1.25rem 1.75rem;
@@ -361,18 +369,26 @@
 }
 
 .scoreStar {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   transition: transform 0.2s;
 }
 
 .scoreStarActive {
-  transform: scale(1.1);
+  transform: scale(1.15);
+}
+
+.scoreNum {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: 'Noto Serif SC', serif;
 }
 
 .scoreDesc {
   font-size: 0.78rem;
-  color: var(--warm-gray);
-  font-weight: 500;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.04);
 }
 
 /* 分析区块 */
@@ -381,19 +397,45 @@
 }
 
 .analysisBlock {
-  padding: 1.1rem 1.75rem;
-  border-bottom: 1px solid rgba(212, 33, 61, 0.05);
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background 0.2s;
+}
+
+.analysisBlock:hover {
+  background: rgba(0, 0, 0, 0.01);
 }
 
 .analysisBlock:last-child {
   border-bottom: none;
 }
 
+/* 区块变体 */
+.block_risk {
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.block_green {
+  background: rgba(34, 197, 94, 0.02);
+}
+
+.block_gold {
+  background: rgba(212, 168, 67, 0.03);
+}
+
 .blockHeader {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.25rem 0;
+  transition: gap 0.2s;
+}
+
+.blockHeader:hover {
+  gap: 0.6rem;
 }
 
 .blockIcon {
@@ -406,6 +448,33 @@
   font-weight: 700;
   font-size: 0.9rem;
   color: var(--ink);
+  flex: 1;
+}
+
+.blockToggle {
+  font-size: 0.7rem;
+  color: var(--warm-gray);
+  transition: transform 0.2s;
+}
+
+.blockCount {
+  font-size: 0.65rem;
+  color: var(--warm-gray);
+  background: var(--cream);
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.blockContent {
+  margin-top: 0.6rem;
+  animation: blockExpand 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes blockExpand {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 600px; }
 }
 
 .blockText {
@@ -413,6 +482,22 @@
   line-height: 1.8;
   color: var(--ink-light);
   padding-left: 1.5rem;
+}
+
+/* 使用场景卡片 */
+.scenarioCard {
+  margin-left: 1.5rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #EEF2FF, #F5F3FF);
+  border-radius: 8px;
+  border-left: 3px solid #6366F1;
+}
+
+.scenarioText {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: #4338CA;
+  font-style: italic;
 }
 
 .blockList {
@@ -440,6 +525,19 @@
   line-height: 1.4;
 }
 
+/* 列表变体颜色 */
+.list_risk li::before {
+  color: #EF4444;
+}
+
+.list_green li::before {
+  color: #22C55E;
+}
+
+.list_gold li::before {
+  color: #D4A843;
+}
+
 /* 技术栈标签 */
 .techTags {
   display: flex;
@@ -465,15 +563,6 @@
 .techTag:hover {
   border-color: var(--red);
   color: var(--red);
-}
-
-/* 目标用户 */
-.targetUsersText {
-  font-size: 0.87rem;
-  line-height: 1.8;
-  color: var(--ink-light);
-  padding-left: 1.5rem;
-  padding-right: 0.5rem;
 }
 
 /* 报告操作栏 */
@@ -568,17 +657,13 @@
   justify-content: center;
 }
 
-.previewFrame {
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  background: white;
-  min-height: 380px;
-  transition: width 0.3s ease;
-}
-
-.previewFrameMobile {
-  max-width: 375px;
+.previewHint {
+  padding: 0.6rem 1rem;
+  font-size: 0.72rem;
+  color: var(--warm-gray);
+  text-align: center;
+  background: var(--cream);
+  border-top: 1px solid var(--border);
 }
 
 /* 空状态 */
